@@ -1,0 +1,194 @@
+@import url("https://fonts.googleapis.com/css2?family=Kalam:wght@300;400&family=Montserrat:wght@100;200;300;400;500;600;700;800;900&family=Noto+Serif:wght@400;700&family=Poppins:wght@100;400;500&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,500&display=swap");
+
+body {
+  background-color: rgba(70, 31, 92, 255);
+  color: white;
+  margin: 0;
+}
+
+.App {
+  font-family: "Poppins", sans-serif;
+}
+
+a {
+  color: white;
+}
+
+.landing--div {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 100vh;
+}
+
+.landing--div form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.landing--div img {
+  border-radius: 10px;
+  width: 35rem;
+  height: 25rem;
+}
+
+.signup--div {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 100vh;
+}
+
+.signup--div form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.header {
+  background-color: rgba(64, 24, 86, 255);
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  justify-content: space-between;
+}
+
+.header--profilePhoto {
+  height: 3rem;
+  width: 3rem;
+  border-radius: 50%;
+}
+
+.header--logo {
+  width: 10rem;
+  height: 5rem;
+  border-radius: 50%;
+}
+
+.header--nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header--profile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin: 0 1rem;
+}
+
+a {
+  text-decoration: none;
+}
+
+.main--body {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  gap: 5rem;
+}
+
+.posts--div {
+  padding: 4rem;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  margin-top: 1rem;
+  width: 35rem;
+}
+
+.post {
+  margin: 2rem 0;
+}
+
+.suggestedUsers--div .user {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
+}
+
+.suggestedUsers--div .user img {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+}
+
+button {
+  cursor: pointer;
+}
+
+.post--div {
+  background-color: white;
+  color: black;
+  width: 40rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  position: relative;
+  margin-bottom: 4rem;
+  background-color: #f8fafc;
+  cursor: pointer;
+}
+
+.post--div:hover {
+  background-color: #cbd5e1;
+}
+
+.post--div div {
+}
+
+/* .App.blur {
+  filter: blur(4px);
+  pointer-events: none;
+} */
+
+.postbox--div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 2rem;
+  position: relative;
+  bottom: 10rem;
+  width: 45rem;
+}
+
+.postbox--div textarea {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  width: 100%;
+}
+
+.postbox--div .noBlur {
+  filter: none;
+  pointer-events: auto;
+}
+
+.close--btn {
+  position: relative;
+  top: -13rem;
+  border: none;
+  left: 42rem;
+  background-color: white;
+  font-weight: 600;
+}
+
+/* ??????????????? */
+.post--btn {
+  position: relative;
+  bottom: 7rem;
+  left: 40rem;
+}
