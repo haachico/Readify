@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { useContext, useState } from "react";
 
 import { LoginProvider } from "..";
-import { Link } from "react-router-dom";
 
 function Home() {
   const {
@@ -30,13 +29,20 @@ function Home() {
   const [content, setContent] = useState("");
   const [posts, setPosts] = useState([]);
   const [editedPost, setEditedPost] = useState("");
+  const [editedImgContent, setEditedImgContent] = useState("");
   const [editedPostID, setEditedPostID] = useState("");
+  const [imgContent, setImgContent] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const [isEditBoxOpen, setIsEditBoxOpen] = useState(false);
+  const [editboxPreviewImg, setEditPreviewImg] = useState(null);
 
   const handleEdit = (id) => {
     const post = posts.find((e) => e._id == id);
 
     setEditedPost(post.content);
+    setEditedImgContent(post.imgContent);
     setEditedPostID(post._id);
+    setIsEditBoxOpen((prevState) => !prevState);
   };
 
   console.log(followedUsers, "FOLLOWED USERS");
@@ -53,6 +59,7 @@ function Home() {
         body: JSON.stringify({
           postData: {
             content: editedPost,
+            imgContent: editedImgContent,
           },
         }),
       });
@@ -61,12 +68,14 @@ function Home() {
       console.log("Success:", result);
       setPosts(result.posts);
       setEditedPostID("");
+      setIsEditBoxOpen((prevState) => !prevState);
       // setEditedPost("");
     } catch (err) {
       console.error(err);
     }
   };
 
+  console.log(imgContent, "IMAGE CONTENt");
   const handlePost = async () => {
     if (!content) return;
     try {
@@ -80,7 +89,10 @@ function Home() {
         body: JSON.stringify({
           postData: {
             content: content,
+            imgContent: imgContent,
             image: profileImg,
+            firstName: firstName,
+            lastName: lastName,
           },
         }),
       });
@@ -232,9 +244,48 @@ function Home() {
     }
   };
 
+  const getDate = (timestamp) => {
+    const date = new Date(timestamp);
+    const options = {
+      weekday: "short",
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    };
+    return date.toLocaleDateString("en-US", options).replace(/,/g, "");
+  };
+
+  useEffect(() => {
+    if (!imgContent) {
+      setPreview(undefined);
+
+      return;
+    }
+
+    // const objectUrl = URL.createObjectURL(imgContent);
+    setPreview(imgContent);
+
+    // free memory when ever this component is unmounted
+    // return () => URL.revokeObjectURL(objectUrl);
+  }, [imgContent]);
+
+  useEffect(() => {
+    if (!editedImgContent) {
+      setEditPreviewImg(undefined);
+    }
+    setEditPreviewImg(editedImgContent);
+  }, [editedImgContent]);
+
+  console.log(editboxPreviewImg, "EDIT prev");
+  console.log(imgContent, "IMG");
+
+  const handlePrevImgCloseClick = () => {
+    setPreview(null);
+    setImgContent(null);
+  };
   return (
     <div className="main--body">
-      <div></div>
+      <div className="empty--div"></div>
       <div className="posts--div">
         <div
           className="post--div"
@@ -247,32 +298,71 @@ function Home() {
           />
           <div>What is in your mind, {firstName}?</div>
         </div>
+
         {isPostboxOpen && (
           <div className={`postbox--div ${isPostboxOpen ? "noBlur" : ""}`}>
             <textarea
               type="text"
               value={content}
               onChange={(e) => setContent(e.target.value)}
+              rows={4}
+              color="40"
               style={{
                 width: "42rem",
                 height: "10rem",
               }}
               placeholder={`What is in your mind, ${firstName}?`}
             />
+
             <button
               className="close--btn"
               onClick={() => setIsPostBoxOpen(false)}
             >
               x
             </button>
+
             <button onClick={handlePost} className="post--btn">
               Post
             </button>
+            <img src={profileImg} className="postbox--profile" alt="" />
+            <div className="select--image">
+              {imgContent && preview && (
+                <div className="previewImg--div">
+                  <i
+                    class="fa-sharp fa-regular fa-circle-xmark"
+                    id="close--icon"
+                    onClick={handlePrevImgCloseClick}
+                  ></i>
+                  <img
+                    src={preview}
+                    alt=""
+                    style={{ width: "4rem", height: "4rem" }}
+                    className="preview--img"
+                  />
+                </div>
+              )}
+              <label htmlFor="file-input" className="img--select--label">
+                <i
+                  class="fa-solid fa-image"
+                  // onClick={() => setIsPreviewImgOpen((prevState) => !prevState)}
+                ></i>
+              </label>
+              <input
+                id="file-input"
+                type="file"
+                accept="image/*"
+                className="img--select"
+                onChange={(e) =>
+                  setImgContent(URL.createObjectURL(e.target.files[0]))
+                } // Set the selected image file to the state
+              />
+            </div>
           </div>
         )}
         <div>
           {sortedPosts.map(
             (post) =>
+              // Those we have followed, that is those in the followedUsers array, we check if any of the usernames in the folllowedUser array contains the username of the post OR if the post's username is equal to loggedin user's username then only show the post. In short, we ensuring that only the posts of those we FOLLOW as welll as the logged in user's posts should appear.
               (followedUsers
                 .map((e) => e.followUser?.username)
                 .includes(post.username) ||
@@ -282,6 +372,7 @@ function Home() {
                     style={{
                       display: "flex",
                       alignItems: "center",
+                      justifyContent: "flex-start",
                       gap: "1rem",
                     }}
                   >
@@ -294,25 +385,107 @@ function Home() {
                         borderRadius: "50%",
                       }}
                     />
-
-                    <p>{post.username}</p>
+                    <div>
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: "5px",
+                          justifyContent: "flex-start",
+                          alignItems: "flex-end",
+                        }}
+                      >
+                        {" "}
+                        <h4 style={{ marginBottom: "0px" }}>
+                          {post.firstName}
+                        </h4>{" "}
+                        <h4 style={{ marginBottom: "0px" }}>{post.lastName}</h4>
+                        <span>•</span>
+                        <p
+                          style={{
+                            marginBottom: "2px",
+                            marginTop: "0px",
+                            fontSize: "12px",
+                          }}
+                        >
+                          {getDate(post.createdAt)}
+                        </p>
+                      </div>
+                      <div style={{ marginTop: "-5px" }}>
+                        <p style={{ fontSize: "12px", marginTop: "5px" }}>
+                          @{post.username}
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                  {post._id === editedPostID ? (
-                    <>
+                  {post._id === editedPostID && isEditBoxOpen && (
+                    <div className="editBox--div">
                       <textarea
+                        rows={4}
+                        column={40}
                         type="text"
                         value={editedPost}
                         onChange={(e) => setEditedPost(e.target.value)}
                         style={{ width: "18rem", height: "6rem" }}
+                        className="editTextArea"
                       />
-                      <button onClick={() => handleUpdate(post._id)}>
+                      {editboxPreviewImg && (
+                        <div className="editbox-previewImg--div">
+                          <i
+                            class="fa-sharp fa-regular fa-circle-xmark"
+                            id="editbox-close--icon"
+                            onClick={() => setEditPreviewImg(null)}
+                          ></i>
+                          <img
+                            src={editboxPreviewImg}
+                            alt=""
+                            style={{ width: "4rem", height: "4rem" }}
+                            className="editbox-preview--img"
+                          />
+                        </div>
+                      )}
+                      <label
+                        htmlFor="editbox-file-input"
+                        className="editbox-img--select--label"
+                      >
+                        <i
+                          class="fa-solid fa-image"
+                          id="editbox-image-icon"
+                        ></i>{" "}
+                      </label>
+                      <input
+                        id="editbox-file-input"
+                        type="file"
+                        accept="image/*"
+                        className="editbox-img--select"
+                        onChange={(e) =>
+                          setEditedImgContent(
+                            URL.createObjectURL(e.target.files[0])
+                          )
+                        } // Set the selected image file to the state
+                      />
+                      <button
+                        onClick={() => handleUpdate(post._id)}
+                        className="editbox-update--btn"
+                      >
                         Update
                       </button>
-                    </>
-                  ) : (
-                    <p style={{ color: "white" }}>{post.content}</p>
+                      <button
+                        className="editbox-close-btn"
+                        onClick={() => setIsEditBoxOpen(false)}
+                      >
+                        x
+                      </button>
+                    </div>
                   )}
 
+                  <p>{post.content}</p>
+                  {post.imgContent && (
+                    <img
+                      src={post.imgContent}
+                      alt=""
+                      style={{ width: "100%", height: "25rem" }}
+                    />
+                  )}
                   <p>Likes: {post.likes.likeCount}</p>
 
                   {likedPosts.map((e) => e._id === post._id).includes(true) ? (
@@ -336,6 +509,7 @@ function Home() {
                   {post.username === username && (
                     <button onClick={() => handleEdit(post._id)}>Edit</button>
                   )}
+                  <hr className="break--line" />
                 </div>
               )
           )}
@@ -355,7 +529,28 @@ function Home() {
               ) : (
                 <div className="user">
                   <img src={user.image} alt={user.username} />
-                  <p>{user.username}</p>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-start",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "5px",
+                        justifyContent: "flex-start",
+                        alignItems: "flex-end",
+                      }}
+                    >
+                      <p style={{ marginBottom: "0px" }}>{user.firstName}</p>
+                      <p style={{ marginBottom: "0px" }}>{user.lastName}</p>
+                    </div>
+                    <p style={{ fontSize: "10px", marginTop: "2px" }}>
+                      @{user.username}
+                    </p>
+                  </div>
                   <button onClick={() => handleFollow(user._id)}>Follow</button>
                 </div>
               )}{" "}

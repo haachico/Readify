@@ -11,9 +11,11 @@ export const posts = [
     _id: uuid(),
     content:
       "I am reading Aristotle and Dante Discovers the secrets of the universe book and I am loving it!!!!!",
-    username: "Diksha Shahakar",
-    firstName: "",
-    lastNamae: "",
+    imgContent:
+      "https://thevisionmsms.org/wp-content/uploads/2017/09/IMG_0767.jpg",
+    username: "dikshahakar",
+    firstName: "Diksha",
+    lastName: "Shahakar",
     email: "",
     image:
       "https://baudhkaro.com/wp-content/uploads/2020/10/diksha-e1603395889173.png",
@@ -31,9 +33,11 @@ export const posts = [
   {
     _id: uuid(),
     content: "I AM IN LOVE WITH MURAKAMI's SURREALISM!!!!!",
-    username: "Vruttant M",
-    firstName: "",
-    lastNamae: "",
+    imgContent:
+      "https://s.yimg.com/uu/api/res/1.2/Ql4LtcVoCGQ8rOfO7103ZA--~B/aD0zMzE4O3c9NTAwMDtzbT0xO2FwcGlkPXl0YWNoeW9u/http://media.zenfs.com/en_us/News/ap_webfeeds/37ff6911599644dd861c145ff3f6bfeb.jpg",
+    username: "baudhkaro_vruttant",
+    firstName: "Vruttant",
+    lastName: "Manwatkar",
     email: "",
     image:
       "https://pbs.twimg.com/profile_images/1247146809824169984/SW5yQ9gX_400x400.jpg",

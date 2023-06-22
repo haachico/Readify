@@ -97,16 +97,28 @@ a {
 .posts--div {
   padding: 4rem;
   text-align: left;
-  display: flex;
+  /* display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: flex-start;
+  align-items: flex-start; */
   margin-top: 1rem;
-  width: 35rem;
+  background-color: rgba(64, 24, 86, 255);
+  width: 42rem;
+  position: relative;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  padding: 2rem;
+}
+
+.empty--div {
+  width: 15rem;
 }
 
 .post {
   margin: 2rem 0;
+
+  width: 100%;
 }
 
 .suggestedUsers--div .user {
@@ -162,33 +174,175 @@ button {
   justify-content: center;
   align-items: flex-start;
   gap: 2rem;
-  position: relative;
-  bottom: 10rem;
-  width: 45rem;
+  position: absolute;
+  top: 1rem;
+  width: 40rem;
+  margin-bottom: 4rem;
 }
 
 .postbox--div textarea {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  width: 100%;
+  resize: none;
+  overflow: auto;
+  padding: 3rem 6rem;
+  box-sizing: border-box;
 }
 
 .postbox--div .noBlur {
   filter: none;
   pointer-events: auto;
 }
-
+.postbox--profile {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  position: absolute;
+  top: 1.5rem;
+  left: 1rem;
+}
 .close--btn {
-  position: relative;
-  top: -13rem;
+  position: absolute;
+  top: 2rem;
   border: none;
-  left: 42rem;
+  right: 0rem;
   background-color: white;
   font-weight: 600;
 }
 
 /* ??????????????? */
 .post--btn {
+  position: absolute;
+  top: 9rem;
+  right: 0rem;
+}
+
+.img--select--label {
+  position: absolute;
+  left: 0.1rem;
+  top: 4.5rem;
+  color: black;
+  cursor: pointer;
+}
+
+.img--select {
+  display: none;
+}
+/* 
+.img--select--label {
+  display: inline-block;
+  padding: 8px 12px;
+  color: black;
+  cursor: pointer;
+  display: block;
+  margin-bottom: 2px;
+  position: absolute;
+  top: 4rem;
+  background-color: red;
+  left: 0.2rem;
+} */
+
+.preview--img {
+  /* position: relative;
+  bottom: 14rem;
+  left: 2rem; */
+  margin-top: 2px;
+}
+
+.select--image {
+  position: absolute;
+  top: 4.5rem;
+  left: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.previewImg--div {
   position: relative;
-  bottom: 7rem;
-  left: 40rem;
+  z-index: 1;
+}
+
+#close--icon {
+  position: absolute;
+  color: red;
+  font-weight: 600;
+  right: 0px;
+  top: 0px;
+  cursor: pointer;
+}
+
+.editBox--div {
+  position: absolute;
+  /* background-color: red; */
+  /* display: inline-block; */
+}
+
+.editTextArea {
+  padding: 3rem 6rem;
+}
+
+.update--btn {
+  position: absolute;
+  top: 7.2rem;
+  right: 1rem;
+}
+/* #image-icon {
+  position: absolute;
+  color: black;
+  width: 2rem;
+  height: 2rem;
+  left: 0.5rem;
+  top: 3.5rem;
+  background-color: red;
+} */
+
+.editbox-update--btn {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+}
+
+.editbox-img--select {
+  display: none;
+}
+
+#editbox-image-icon {
+  position: absolute;
+  bottom: 1rem;
+  left: 0.5rem;
+  color: black;
+  cursor: pointer;
+}
+
+.editbox-img--select--label {
+  display: flex;
+}
+
+.editbox-previewImg--div {
+  position: absolute;
+  display: inline-block;
+  left: 0.5rem;
+  bottom: 3rem;
+}
+
+#editbox-close--icon {
+  position: absolute;
+  right: 0;
+  color: red;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.editbox-close-btn {
+  position: absolute;
+  right: 1rem;
+  top: 2rem;
+  background-color: white;
+  font-weight: 600;
+  border: none;
+}
+
+.break--line {
+  color: red;
+  width: 100%;
 }
