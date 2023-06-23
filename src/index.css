@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Kalam:wght@300;400&family=Montserrat:wght@100;200;300;400;500;600;700;800;900&family=Noto+Serif:wght@400;700&family=Poppins:wght@100;400;500&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,500&display=swap");
 
 body {
-  background-color: rgba(70, 31, 92, 255);
+  background-color: #2a4259;
   color: white;
   margin: 0;
 }
@@ -49,7 +49,7 @@ a {
 }
 
 .header {
-  background-color: rgba(64, 24, 86, 255);
+  background-color: #223547;
   display: flex;
   align-items: center;
   padding: 1rem;
@@ -102,8 +102,9 @@ a {
   justify-content: center;
   align-items: flex-start; */
   margin-top: 1rem;
-  background-color: rgba(64, 24, 86, 255);
+  background-color: #223547;
   width: 42rem;
+  height: 100vh;
   position: relative;
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -112,7 +113,18 @@ a {
 }
 
 .empty--div {
-  width: 15rem;
+  width: 12rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.empty--div a {
+  margin-left: 4rem;
+  font-weight: 600;
 }
 
 .post {
@@ -120,7 +132,10 @@ a {
 
   width: 100%;
 }
-
+.suggestedUsers--div {
+  padding: 1rem;
+  margin-right: 4rem;
+}
 .suggestedUsers--div .user {
   display: flex;
   justify-content: flex-start;

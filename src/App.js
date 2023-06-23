@@ -12,6 +12,7 @@ import Explore from "./Pages/Explore";
 import BookmarkPosts from "./Pages/BookmarkPosts";
 import HomeLayout from "./components/HomeLayout";
 import Trending from "./Pages/Trending";
+import Profile from "./Pages/Profile";
 
 function App() {
   const { isLogin, isPostboxOpen } = useContext(LoginProvider);
@@ -25,9 +26,10 @@ function App() {
             <Route path="/" element={<HomeLayout />}>
               <Route index element={<Home />} />
               <Route path="/trending" element={<Trending />} />
+              <Route path="/explore" element={<Explore />} />
+              <Route path="/bookmark" element={<BookmarkPosts />} />
             </Route>
-            <Route path="/explore" element={<Explore />} />
-            <Route path="/bookmark" element={<BookmarkPosts />} />
+            <Route path="/profile/:profileID" element={<Profile />} />
             <Route path="/mockman" element={<Mockman />} />
           </Route>
         )}

@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useContext, useState } from "react";
+import { Link } from "react-router-dom";
 
 import { LoginProvider } from "..";
 
@@ -25,9 +26,12 @@ function Home() {
     setIsPostBoxOpen,
     profileImg,
     setProfileImg,
+    setIsLogin,
+    posts,
+    setPosts,
   } = useContext(LoginProvider);
   const [content, setContent] = useState("");
-  const [posts, setPosts] = useState([]);
+
   const [editedPost, setEditedPost] = useState("");
   const [editedImgContent, setEditedImgContent] = useState("");
   const [editedPostID, setEditedPostID] = useState("");
@@ -36,6 +40,8 @@ function Home() {
   const [isEditBoxOpen, setIsEditBoxOpen] = useState(false);
   const [editboxPreviewImg, setEditPreviewImg] = useState(null);
 
+  console.log(allUsers, "ALL USERS");
+  console.log(posts, "POSTSS");
   const handleEdit = (id) => {
     const post = posts.find((e) => e._id == id);
 
@@ -226,23 +232,23 @@ function Home() {
 
   console.log(sortedPosts, " SORTED POST");
 
-  const handleFollow = async (id) => {
-    try {
-      const response = await fetch(`/api/users/follow/${id}`, {
-        method: "POST", // or 'PUT'
-        headers: {
-          "Content-Type": "application/json",
-          authorization: encodedToken,
-        },
-      });
+  // const handleFollow = async (id) => {
+  //   try {
+  //     const response = await fetch(`/api/users/follow/${id}`, {
+  //       method: "POST", // or 'PUT'
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         authorization: encodedToken,
+  //       },
+  //     });
 
-      const result = await response.json();
-      console.log(result, "followers result");
-      setFollowedUsers([...followedUsers, result]);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  //     const result = await response.json();
+  //     console.log(result, "followers result");
+  //     setFollowedUsers([...followedUsers, result]);
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
 
   const getDate = (timestamp) => {
     const date = new Date(timestamp);
@@ -283,9 +289,9 @@ function Home() {
     setPreview(null);
     setImgContent(null);
   };
+
   return (
-    <div className="main--body">
-      <div className="empty--div"></div>
+    <div>
       <div className="posts--div">
         <div
           className="post--div"
@@ -376,47 +382,53 @@ function Home() {
                       gap: "1rem",
                     }}
                   >
-                    <img
-                      src={post.image}
-                      alt={post.username}
-                      style={{
-                        width: "2rem",
-                        height: "2rem",
-                        borderRadius: "50%",
-                      }}
-                    />
-                    <div>
-                      <div
+                    <Link to={`/profile/${post._id}`}>
+                      <img
+                        src={post.image}
+                        alt={post.username}
                         style={{
-                          display: "flex",
-                          gap: "5px",
-                          justifyContent: "flex-start",
-                          alignItems: "flex-end",
+                          width: "2rem",
+                          height: "2rem",
+                          borderRadius: "50%",
                         }}
-                      >
-                        {" "}
-                        <h4 style={{ marginBottom: "0px" }}>
-                          {post.firstName}
-                        </h4>{" "}
-                        <h4 style={{ marginBottom: "0px" }}>{post.lastName}</h4>
-                        <span>•</span>
-                        <p
+                      />
+
+                      <div>
+                        <div
                           style={{
-                            marginBottom: "2px",
-                            marginTop: "0px",
-                            fontSize: "12px",
+                            display: "flex",
+                            gap: "5px",
+                            justifyContent: "flex-start",
+                            alignItems: "flex-end",
                           }}
                         >
-                          {getDate(post.createdAt)}
-                        </p>
+                          {" "}
+                          <h4 style={{ marginBottom: "0px" }}>
+                            {post.firstName}
+                          </h4>{" "}
+                          <h4 style={{ marginBottom: "0px" }}>
+                            {post.lastName}
+                          </h4>
+                          <span>•</span>
+                          <p
+                            style={{
+                              marginBottom: "2px",
+                              marginTop: "0px",
+                              fontSize: "12px",
+                            }}
+                          >
+                            {getDate(post.createdAt)}
+                          </p>
+                        </div>
+                        <div style={{ marginTop: "-5px" }}>
+                          <p style={{ fontSize: "12px", marginTop: "5px" }}>
+                            @{post.username}
+                          </p>
+                        </div>
                       </div>
-                      <div style={{ marginTop: "-5px" }}>
-                        <p style={{ fontSize: "12px", marginTop: "5px" }}>
-                          @{post.username}
-                        </p>
-                      </div>
-                    </div>
+                    </Link>
                   </div>
+
                   {post._id === editedPostID && isEditBoxOpen && (
                     <div className="editBox--div">
                       <textarea
@@ -514,48 +526,6 @@ function Home() {
               )
           )}
         </div>
-      </div>
-      <div className="suggestedUsers--div">
-        <h2>Suggested users</h2>
-        {allUsers
-          .filter((e) => e.username !== username)
-          .map((user) => (
-            <div>
-              {/* if the followed user username is equal to current user username then show nothing else show user */}
-              {followedUsers
-                .map((e) => e.followUser.username)
-                .includes(user.username) ? (
-                ""
-              ) : (
-                <div className="user">
-                  <img src={user.image} alt={user.username} />
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "flex-start",
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        gap: "5px",
-                        justifyContent: "flex-start",
-                        alignItems: "flex-end",
-                      }}
-                    >
-                      <p style={{ marginBottom: "0px" }}>{user.firstName}</p>
-                      <p style={{ marginBottom: "0px" }}>{user.lastName}</p>
-                    </div>
-                    <p style={{ fontSize: "10px", marginTop: "2px" }}>
-                      @{user.username}
-                    </p>
-                  </div>
-                  <button onClick={() => handleFollow(user._id)}>Follow</button>
-                </div>
-              )}{" "}
-            </div>
-          ))}
       </div>
     </div>
   );
