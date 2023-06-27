@@ -27,6 +27,8 @@ function Home() {
     profileImg,
     setProfileImg,
     setIsLogin,
+    loggedInUserDetails,
+    setLoggedInUserDetails,
     posts,
     setPosts,
   } = useContext(LoginProvider);
@@ -52,6 +54,7 @@ function Home() {
   };
 
   console.log(followedUsers, "FOLLOWED USERS");
+  console.log(loggedInUserDetails, "LOGGED IN USER DETAILS");
 
   const handleUpdate = async (id) => {
     // /api/posts/edit/:postId
@@ -71,7 +74,6 @@ function Home() {
       });
 
       const result = await response.json();
-      console.log("Success:", result);
       setPosts(result.posts);
       setEditedPostID("");
       setIsEditBoxOpen((prevState) => !prevState);
@@ -217,7 +219,7 @@ function Home() {
 
       const result = await response.json();
       console.log(result);
-      setBookmarkPosts(result.bookmarks);
+      setBookmarkPosts((prevState) => [...prevState, ...result.bookmarks]);
     } catch (err) {
       console.error(err);
     }
@@ -290,6 +292,8 @@ function Home() {
     setImgContent(null);
   };
 
+  console.log(posts, "POSTSSSSSSSSS");
+  console.log(bookmarkPosts, "BOOKMARK POSTS");
   return (
     <div>
       <div className="posts--div">
@@ -374,15 +378,15 @@ function Home() {
                 .includes(post.username) ||
                 post.username === username) && (
                 <div className="post">
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "flex-start",
-                      gap: "1rem",
-                    }}
-                  >
-                    <Link to={`/profile/${post._id}`}>
+                  <Link to={`/profile/${post.username}`}>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "flex-start",
+                        gap: "1rem",
+                      }}
+                    >
                       <img
                         src={post.image}
                         alt={post.username}
@@ -426,9 +430,8 @@ function Home() {
                           </p>
                         </div>
                       </div>
-                    </Link>
-                  </div>
-
+                    </div>
+                  </Link>
                   {post._id === editedPostID && isEditBoxOpen && (
                     <div className="editBox--div">
                       <textarea

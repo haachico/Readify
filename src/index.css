@@ -70,6 +70,7 @@ a {
 
 .header--nav {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 1rem;
@@ -97,19 +98,15 @@ a {
 .posts--div {
   padding: 4rem;
   text-align: left;
-  /* display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start; */
   margin-top: 1rem;
   background-color: #223547;
   width: 42rem;
-  height: 100vh;
   position: relative;
   word-wrap: break-word;
   overflow-wrap: break-word;
   white-space: pre-wrap;
   padding: 2rem;
+  height: 100vh;
 }
 
 .empty--div {
@@ -141,6 +138,13 @@ a {
   justify-content: flex-start;
   align-items: center;
   gap: 1rem;
+}
+
+.search--user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: flex-start;
 }
 
 .suggestedUsers--div .user img {
@@ -360,4 +364,94 @@ button {
 .break--line {
   color: red;
   width: 100%;
+}
+
+.profile--div {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 2rem;
+
+  margin-top: 2rem;
+  border: 1px solid gray;
+  padding: 2rem;
+}
+
+.edit--form {
+}
+
+/* .profile--dp {
+  position: relative;
+}
+
+.profile--camera {
+  position: absolute;
+  bottom: 3.5px;
+  left: 1.5rem;
+  cursor: pointer;
+  border-radius: 50%;
+  background-color: white;
+  width: 2rem;
+  height: 2rem;
+  color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+} */
+
+.profile--div {
+  position: relative;
+}
+
+.edit--form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  border: 1px solid white;
+  padding: 1rem;
+  position: absolute;
+  width: 30rem;
+  height: 12rem;
+  background-color: #223547;
+  border-radius: 10px;
+  gap: 1rem;
+}
+
+.edit--form label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.edit--form label span {
+  margin-left: 2rem;
+}
+
+.edit--form input {
+  background-color: #2a4259;
+  padding: 5px;
+  border-radius: 5px;
+  margin-left: 1rem;
+  color: white;
+  width: 17rem;
+}
+
+.edit--form button {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+}
+
+.search--input {
+  width: 20rem;
+  padding: 10px;
+  margin-right: 2rem;
+  border-radius: 10px;
+}
+
+.search--list {
+  background-color: #223547;
+  padding: 0px 10px;
+  height: 100%;
 }

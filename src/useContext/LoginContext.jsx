@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
-
 import { createContext } from "react";
+import Avatar from "@mui/material/Avatar";
 
 export const LoginProvider = createContext();
 
@@ -19,10 +19,22 @@ export function LoginContext({ children }) {
   const [allUsers, setAllUsers] = useState([]);
   const [followedUsers, setFollowedUsers] = useState([]);
   const [isPostboxOpen, setIsPostBoxOpen] = useState(false);
-  const [profileImg, setProfileImg] = useState(
-    "https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI="
-  );
   const [posts, setPosts] = useState([]);
+  const [loggedInUserDetails, setLoggedInUserDetails] = useState({});
+  const [profileImg, setProfileImg] = useState(
+    "https://img.freepik.com/free-icon/user_318-159711.jpg"
+  );
+  const [about, setAbout] = useState("");
+  const [link, setLink] = useState("");
+  const [searchText, setSearchText] = useState("");
+  // const UserAvatar = ({ name }) => {
+  //   const initials = name
+  //     .split(" ")s
+  //     .map((part) => part.charAt(0).toUpperCase())
+  //     .join("");
+
+  //   return <Avatar>{initials}</Avatar>;
+  // };
 
   return (
     <div>
@@ -57,6 +69,14 @@ export function LoginContext({ children }) {
           setProfileImg,
           posts,
           setPosts,
+          loggedInUserDetails,
+          setLoggedInUserDetails,
+          about,
+          setAbout,
+          link,
+          setLink,
+          searchText,
+          setSearchText,
         }}
       >
         {children}

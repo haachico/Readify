@@ -20,6 +20,11 @@ function Landing() {
     username,
     firstName,
     lastName,
+    loggedInUserDetails,
+    setLoggedInUserDetails,
+    profileImg,
+    about,
+    link,
   } = useContext(LoginProvider);
 
   const handleLogin = async (e) => {
@@ -37,13 +42,15 @@ function Landing() {
           email: email,
           firstName: firstName,
           lastName: lastName,
-          image: "",
+          image: profileImg,
+          about: about,
+          link: link,
         }),
       });
 
       const result = await response.json();
       console.log("Success:", result);
-
+      setLoggedInUserDetails(result.foundUser);
       if (result.errors) {
         setErrMsg("User not found!");
       } else {
@@ -55,6 +62,8 @@ function Landing() {
       console.error("Error:", error);
     }
   };
+
+  console.log(loggedInUserDetails, "LOGGED IN USER DETAILS");
 
   return (
     <div className="landing--div">

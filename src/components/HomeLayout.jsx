@@ -20,6 +20,9 @@ function HomeLayout() {
 
     setIsLogin,
     posts,
+    loggedInUserDetails,
+    searchText,
+    setSearchText,
   } = useContext(LoginProvider);
 
   const handleLogoutClick = () => {
@@ -44,15 +47,12 @@ function HomeLayout() {
     }
   };
 
+  const filteredUser = [...allUsers].filter((e) =>
+    e.username.toLowerCase().includes(searchText.toLowerCase())
+  );
+
   return (
     <div className="main--body">
-      {/* <Link to="/" style={{ margin: "0 8rem" }}>
-        Latest
-      </Link>
-      <span>|</span>
-      <Link to="/trending" style={{ margin: "0 10rem" }}>
-        Trending
-      </Link> */}
       <div className="empty--div">
         <Link to="/">Home</Link>
         <Link to="trending">Trending</Link>
@@ -61,11 +61,13 @@ function HomeLayout() {
         <Link to="/" onClick={handleLogoutClick}>
           Logout
         </Link>
+
+        {/* <span>|</span> */}
+
         <div className="header--profile">
-          {/* <span>|</span> */}
           <img
             src={profileImg}
-            alt={firstName}
+            alt={loggedInUserDetails.firstName}
             className="header--profilePhoto"
           />
           {/* )} */}
@@ -73,54 +75,110 @@ function HomeLayout() {
         </div>
       </div>
       <Outlet />
-      <div className="suggestedUsers--div">
-        <h2>Suggested users</h2>
-        {allUsers
-          .filter((e) => e.username !== username)
-          .map((user) => (
-            <div>
-              {/* if the followed user username is equal to current user username then show nothing else show user */}
-              {followedUsers
-                .map((e) => e.followUser.username)
-                .includes(user.username) ? (
-                ""
-              ) : (
-                <div className="user">
-                  <Link to={`/profile/${user._id}`}>
-                    {" "}
-                    <img src={user.image} alt={user.username} />
-                  </Link>
-                  <Link to={`/profile/${user._id}`}>
-                    {" "}
+      <div>
+        <div className="search--list">
+          {searchText &&
+            filteredUser.map((user) => (
+              <div className="search--user">
+                <Link
+                  to={`/profile/${user.username}`}
+                  onClick={() => setSearchText("")}
+                >
+                  {" "}
+                  <img
+                    src={user.image}
+                    alt={user.username}
+                    style={{
+                      width: "2rem",
+                      height: "2rem",
+                      borderRadius: "50%",
+                    }}
+                  />
+                </Link>
+                <Link
+                  to={`/profile/${user.username}`}
+                  onClick={() => setSearchText("")}
+                >
+                  {" "}
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-start",
+                    }}
+                  >
                     <div
                       style={{
                         display: "flex",
-                        flexDirection: "column",
-                        alignItems: "flex-start",
+                        gap: "5px",
+                        justifyContent: "flex-start",
+                        alignItems: "flex-end",
                       }}
                     >
+                      <p style={{ marginBottom: "0px" }}>{user.firstName}</p>
+                      <p style={{ marginBottom: "0px" }}>{user.lastName}</p>
+                    </div>
+                    <p style={{ fontSize: "10px", marginTop: "2px" }}>
+                      @{user.username}
+                    </p>
+                  </div>
+                </Link>
+              </div>
+            ))}
+        </div>
+        <div className="suggestedUsers--div">
+          <h2>Suggested users</h2>
+          {allUsers
+            .filter((e) => e.username !== username)
+            .map((user) => (
+              <div>
+                {/* if the followed user username is equal to current user username then show nothing else show user */}
+                {followedUsers
+                  .map((e) => e.followUser.username)
+                  .includes(user.username) ? (
+                  ""
+                ) : (
+                  <div className="user">
+                    <Link to={`/profile/${user.username}`}>
+                      {" "}
+                      <img src={user.image} alt={user.username} />
+                    </Link>
+                    <Link to={`/profile/${user.username}`}>
+                      {" "}
                       <div
                         style={{
                           display: "flex",
-                          gap: "5px",
-                          justifyContent: "flex-start",
-                          alignItems: "flex-end",
+                          flexDirection: "column",
+                          alignItems: "flex-start",
                         }}
                       >
-                        <p style={{ marginBottom: "0px" }}>{user.firstName}</p>
-                        <p style={{ marginBottom: "0px" }}>{user.lastName}</p>
+                        <div
+                          style={{
+                            display: "flex",
+                            gap: "5px",
+                            justifyContent: "flex-start",
+                            alignItems: "flex-end",
+                          }}
+                        >
+                          <p style={{ marginBottom: "0px" }}>
+                            {user.firstName}
+                          </p>
+                          <p style={{ marginBottom: "0px" }}>{user.lastName}</p>
+                        </div>
+                        <p style={{ fontSize: "10px", marginTop: "2px" }}>
+                          @{user.username}
+                        </p>
                       </div>
-                      <p style={{ fontSize: "10px", marginTop: "2px" }}>
-                        @{user.username}
-                      </p>
-                    </div>
-                  </Link>
+                    </Link>
 
-                  <button onClick={() => handleFollow(user._id)}>Follow</button>
-                </div>
-              )}{" "}
-            </div>
-          ))}
+                    <button onClick={() => handleFollow(user._id)}>
+                      Follow
+                    </button>
+                  </div>
+                )}{" "}
+              </div>
+            ))}
+        </div>
       </div>
     </div>
   );

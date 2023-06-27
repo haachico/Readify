@@ -13,7 +13,8 @@ export const users = [
     username: "dikshahakar",
     email: "diksha",
     password: "diksha123",
-
+    about: "Bibliophile, Music lover",
+    link: "https://baudhkaro.com/",
     createdAt: formatDate(),
     updatedAt: formatDate(),
     image:
@@ -25,6 +26,8 @@ export const users = [
     lastName: "M",
     username: "baudhkaro_vruttant",
     password: "vruttant123",
+    about: "Bibliophile, Art lover",
+    link: "https://baudhkaro.com/",
     email: "vruttant",
     createdAt: formatDate(),
     updatedAt: formatDate(),

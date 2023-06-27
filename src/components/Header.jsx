@@ -1,21 +1,23 @@
-import React, { useContext } from "react";
+import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
+import SearchComponent from "./SearchComponent";
 
 import { LoginProvider } from "..";
-import Nilesh from "../Assets/Nilesh.jpg";
-import Logo from "../Assets/readify.png";
 
 function Header() {
-  const { setIsLogin, firstName, username, profileImg } =
-    useContext(LoginProvider);
+  // const { allUsers, setAllUsers } = useContext(LoginProvider);
+  // const { setIsLogin, firstName, username, profileImg } =
+  //   useContext(LoginProvider);
 
   return (
     <div className="header">
       {/* <img src={Logo} alt="logo" className="header--logo" /> */}
-      <h1>
+      <h1 style={{ marginLeft: "2rem" }}>
         <Link to="/">Readify</Link>
       </h1>
-      <div className="header--nav"></div>
+      <div className="header--nav">
+        <SearchComponent />
+      </div>
     </div>
   );
 }

@@ -28,11 +28,11 @@ function App() {
               <Route path="/trending" element={<Trending />} />
               <Route path="/explore" element={<Explore />} />
               <Route path="/bookmark" element={<BookmarkPosts />} />
+              <Route path="/profile/:profileName" element={<Profile />} />
             </Route>
-            <Route path="/profile/:profileID" element={<Profile />} />
-            <Route path="/mockman" element={<Mockman />} />
           </Route>
         )}
+        <Route path="/mockman" element={<Mockman />} />
       </Routes>
     </div>
   );

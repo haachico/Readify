@@ -16,6 +16,9 @@ function Signup() {
     setEmail,
     username,
     setUsername,
+    profileImg,
+    about,
+    link,
   } = useContext(LoginProvider);
 
   const [password, setPassword] = useState("");
@@ -33,9 +36,12 @@ function Signup() {
         body: JSON.stringify({
           email: email,
           password: password,
-          firstNamme: firstName,
+          firstName: firstName,
           lastName: lastName,
           username: username,
+          image: profileImg,
+          about: about,
+          link: link,
         }),
       });
 

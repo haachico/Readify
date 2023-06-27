@@ -224,24 +224,6 @@ function Trending() {
 
   console.log(sortedPosts, " SORTED POST");
 
-  // const handleFollow = async (id) => {
-  //   try {
-  //     const response = await fetch(`/api/users/follow/${id}`, {
-  //       method: "POST", // or 'PUT'
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         authorization: encodedToken,
-  //       },
-  //     });
-
-  //     const result = await response.json();
-  //     console.log(result, "followers result");
-  //     setFollowedUsers([...followedUsers, result]);
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // };
-
   const getDate = (timestamp) => {
     const date = new Date(timestamp);
     const options = {
