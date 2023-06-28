@@ -54,11 +54,34 @@ function HomeLayout() {
   return (
     <div className="main--body">
       <div className="empty--div">
-        <Link to="/">Home</Link>
-        <Link to="trending">Trending</Link>
-        <Link to="/explore">Explore</Link>
-        <Link to="/bookmark">Bookmark</Link>
+        <Link to="/">
+          <span>
+            <i class="fa-solid fa-house"></i>
+          </span>
+          Home
+        </Link>
+        <Link to="trending">
+          <span>
+            <i class="fa-solid fa-arrow-trend-up"></i>
+          </span>
+          Trending
+        </Link>
+        <Link to="/explore">
+          <span>
+            <i class="fa-regular fa-compass"></i>
+          </span>
+          Explore
+        </Link>
+        <Link to="/bookmark">
+          <span>
+            <i class="fa-regular fa-bookmark"></i>
+          </span>
+          Bookmark
+        </Link>
         <Link to="/" onClick={handleLogoutClick}>
+          <span>
+            <i class="fa-solid fa-right-from-bracket"></i>
+          </span>
           Logout
         </Link>
 
@@ -71,7 +94,12 @@ function HomeLayout() {
             className="header--profilePhoto"
           />
           {/* )} */}
-          <h4>{firstName}</h4>
+          <div>
+            <Link to={`/profile/${username}`}>
+              <h4 style={{ margin: "2px" }}>{firstName}</h4>
+              <p style={{ fontSize: "0.8rem", margin: "2px" }}>@{username}</p>
+            </Link>
+          </div>
         </div>
       </div>
       <Outlet />
@@ -171,7 +199,10 @@ function HomeLayout() {
                       </div>
                     </Link>
 
-                    <button onClick={() => handleFollow(user._id)}>
+                    <button
+                      onClick={() => handleFollow(user._id)}
+                      className="btn"
+                    >
                       Follow
                     </button>
                   </div>

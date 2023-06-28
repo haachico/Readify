@@ -7,6 +7,8 @@ import { LoginProvider } from "..";
 
 function Profile() {
   const [isEditFormOpen, setIsEditFormOpen] = useState(false);
+  const [isFollowersBoxOpen, setIsFollowersBoxOpen] = useState(false);
+  const [isFollowingsBoxOpen, setIsFollowingsBoxOpen] = useState(false);
 
   const {
     firstName,
@@ -199,6 +201,24 @@ function Profile() {
     }
   };
 
+  const handleRemoveBookmark = async (id) => {
+    try {
+      const response = await fetch(`/api/users/remove-bookmark/${id}`, {
+        method: "POST", // or 'PUT'
+        headers: {
+          "Content-Type": "application/json",
+          authorization: encodedToken,
+        },
+      });
+
+      const result = await response.json();
+      console.log(result, "REMOVE BOOKMARK RESULT");
+      setBookmarkPosts(result.bookmarks);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   // const handleFollow = async (id) => {
   //   try {
   //     const response = await fetch(`/api/users/follow/${id}`, {
@@ -302,6 +322,46 @@ function Profile() {
     }
   };
 
+  const handleFollowClick = async (id) => {
+    try {
+      const response = await fetch(`/api/users/follow/${id}`, {
+        method: "POST", // or 'PUT'
+        headers: {
+          "Content-Type": "application/json",
+          authorization: encodedToken,
+        },
+      });
+
+      const result = await response.json();
+      console.log(result, "followers result");
+      setFollowedUsers([...followedUsers, result]);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleUnfollowClick = async (id) => {
+    try {
+      const response = await fetch(`/api/users/unfollow/${id}`, {
+        method: "POST", // or 'PUT'
+        headers: {
+          "Content-Type": "application/json",
+          authorization: encodedToken,
+        },
+      });
+
+      const result = await response.json();
+      console.log(result, "unfollowresult");
+      setFollowedUsers(
+        followedUsers.filter(
+          (e) => e.followUser.username !== result.followUser.username
+        )
+      );
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const sortedPosts = posts.sort((a, b) => {
     const dateA = new Date(a.createdAt);
     const dateB = new Date(b.createdAt);
@@ -310,7 +370,9 @@ function Profile() {
   });
 
   console.log(allUsers, "NEW ALL USERS");
-  console.log(posts, "POSTS");
+  console.log(followedUsers, "FOLLOWED USERSSSSS");
+
+  console.log(posts, "PROFILE POSTS");
 
   return (
     <div>
@@ -321,6 +383,28 @@ function Profile() {
             alt=""
             style={{ width: "8rem", height: "8rem", borderRadius: "50%" }}
           />
+
+          {selectedUser.username !== username ? (
+            followedUsers
+              .map((e) => e.followUser.username === selectedUser.username)
+              .includes(true) ? (
+              <button
+                onClick={() => handleUnfollowClick(selectedUser._id)}
+                className="btn"
+              >
+                Unfollow
+              </button>
+            ) : (
+              <button
+                onClick={() => handleFollowClick(selectedUser._id)}
+                className="btn"
+              >
+                Follow
+              </button>
+            )
+          ) : (
+            ""
+          )}
         </div>
         {
           <div>
@@ -329,17 +413,162 @@ function Profile() {
             </h2>
             <p>@{selectedUser?.username}</p>
             <p>About : {selectedUser.about}</p>
-            <p>Link : {selectedUser.link}</p>
+            <p>
+              Link :{" "}
+              <a
+                href={link}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: "rgba(0,184,255)" }}
+              >
+                {selectedUser.link}
+              </a>
+            </p>
 
-            <div style={{ display: "flex", gap: "1rem" }}>
-              <p>Followers: 0</p>
-              <p>Following :0</p>
+            <div className="profile--btns">
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <p style={{ margin: "2px" }}>{selectedUser.following.length}</p>
+                <button
+                  style={{ margin: "2px" }}
+                  onClick={() => setIsFollowingsBoxOpen(true)}
+                >
+                  Following
+                </button>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <p style={{ margin: "2px" }}>{selectedUser.followers.length}</p>
+                <button
+                  style={{ margin: "2px" }}
+                  onClick={() => setIsFollowersBoxOpen(true)}
+                >
+                  Followers
+                </button>
+              </div>
+            </div>
+            <div>
+              {isFollowersBoxOpen &&
+                selectedUser.followers.map((user) => (
+                  <div className="followers--box">
+                    <Link to={`/profile/${user.username}`}>
+                      {" "}
+                      <img
+                        src={user.image}
+                        alt={user.username}
+                        style={{
+                          width: "2rem",
+                          height: "2rem",
+                          borderRadius: "50%",
+                        }}
+                      />
+                    </Link>
+                    <Link to={`/profile/${user.username}`}>
+                      {" "}
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "flex-start",
+                        }}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            gap: "5px",
+                            justifyContent: "flex-start",
+                            alignItems: "flex-end",
+                          }}
+                        >
+                          <p style={{ marginBottom: "0px" }}>
+                            {user.firstName}
+                          </p>
+                          <p style={{ marginBottom: "0px" }}>{user.lastName}</p>
+                        </div>
+                        <p style={{ fontSize: "10px", marginTop: "2px" }}>
+                          @{user.username}
+                        </p>
+                      </div>
+                    </Link>
+                    <button
+                      onClick={() => setIsFollowersBoxOpen(false)}
+                      className="followersBox--close"
+                    >
+                      x
+                    </button>
+                  </div>
+                ))}
+              {isFollowingsBoxOpen &&
+                selectedUser?.following?.map((user) => (
+                  <div className="followers--box">
+                    <Link to={`/profile/${user.username}`}>
+                      {" "}
+                      <img
+                        src={user.image}
+                        alt={user.username}
+                        style={{
+                          width: "2rem",
+                          height: "2rem",
+                          borderRadius: "50%",
+                        }}
+                      />
+                    </Link>
+                    <Link to={`/profile/${user.username}`}>
+                      {" "}
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "flex-start",
+                        }}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            gap: "5px",
+                            justifyContent: "flex-start",
+                            alignItems: "flex-end",
+                          }}
+                        >
+                          <p style={{ marginBottom: "0px" }}>
+                            {user.firstName}
+                          </p>
+                          <p style={{ marginBottom: "0px" }}>{user.lastName}</p>
+                        </div>
+                        <p style={{ fontSize: "10px", marginTop: "2px" }}>
+                          @{user.username}
+                        </p>
+                      </div>
+                    </Link>
+                    <button
+                      onClick={() => setIsFollowingsBoxOpen(false)}
+                      className="followersBox--close"
+                    >
+                      x
+                    </button>
+                  </div>
+                ))}
             </div>
           </div>
         }
         {selectedUser.username === username ? (
           <div>
-            <button onClick={() => setIsEditFormOpen(true)}>
+            <button
+              onClick={() => setIsEditFormOpen(true)}
+              className="editProfile--btn"
+            >
               Edit profile
             </button>
           </div>
@@ -386,7 +615,9 @@ function Profile() {
                 onChange={(e) => setLink(e.target.value)}
               />
             </label>
-            <button onClick={handleSaveEditForm}>Save</button>
+            <button onClick={handleSaveEditForm} className="btn">
+              Save
+            </button>
           </form>
         )}
       </div>
@@ -402,17 +633,19 @@ function Profile() {
                   gap: "1rem",
                 }}
               >
-                <img
-                  src={e?.image}
-                  alt={e?.username}
-                  style={{
-                    width: "2rem",
-                    height: "2rem",
-                    borderRadius: "50%",
-                  }}
-                />
+                <Link to={`/profile/${e.username}`}>
+                  <img
+                    src={e.image}
+                    alt={e.username}
+                    style={{
+                      width: "2rem",
+                      height: "2rem",
+                      borderRadius: "50%",
+                    }}
+                  />
+                </Link>
 
-                <div>
+                <div style={{ width: "100%" }}>
                   <div
                     style={{
                       display: "flex",
@@ -422,8 +655,17 @@ function Profile() {
                     }}
                   >
                     {" "}
-                    <h4 style={{ marginBottom: "0px" }}>{e?.firstName}</h4>{" "}
-                    <h4 style={{ marginBottom: "0px" }}>{e?.lastName}</h4>
+                    <h4 style={{ marginBottom: "0px" }}>
+                      <Link
+                        to={`/profile/${e.username}`}
+                        style={{ height: "" }}
+                      >
+                        {e.firstName}
+                      </Link>
+                    </h4>{" "}
+                    <h4 style={{ marginBottom: "0px" }}>
+                      <Link to={`/profile/${e.username}`}>{e.lastName}</Link>
+                    </h4>
                     <span>•</span>
                     <p
                       style={{
@@ -432,25 +674,33 @@ function Profile() {
                         fontSize: "12px",
                       }}
                     >
-                      {getDate(e?.createdAt)}
+                      {getDate(e.createdAt)}
                     </p>
+                    {e.username === username && (
+                      <span style={{ marginLeft: "auto" }}>
+                        <i
+                          class="fa-solid fa-pen-to-square"
+                          onClick={() => handleEdit(e._id)}
+                        ></i>
+                      </span>
+                    )}
                   </div>
                   <div style={{ marginTop: "-5px" }}>
                     <p style={{ fontSize: "12px", marginTop: "5px" }}>
-                      @{e?.username}
+                      @{e.username}
                     </p>
                   </div>
                 </div>
               </div>
 
-              {e?._id === editedPostID && isEditBoxOpen && (
+              {e._id === editedPostID && isEditBoxOpen && (
                 <div className="editBox--div">
                   <textarea
                     rows={4}
                     column={40}
                     type="text"
                     value={editedPost}
-                    onChange={(e) => setEditedPost(e?.target.value)}
+                    onChange={(e) => setEditedPost(e.target.value)}
                     style={{ width: "18rem", height: "6rem" }}
                     className="editTextArea"
                   />
@@ -487,7 +737,7 @@ function Profile() {
                     } // Set the selected image file to the state
                   />
                   <button
-                    onClick={() => handleUpdate(e?._id)}
+                    onClick={() => handleUpdate(e._id)}
                     className="editbox-update--btn"
                   >
                     Update
@@ -500,34 +750,53 @@ function Profile() {
                   </button>
                 </div>
               )}
-
-              <p>{e?.content}</p>
-              {e?.imgContent && (
+              <div style={{ margin: "2rem 0" }}>
+                <p>{e.content}</p>
+              </div>
+              {e.imgContent && (
                 <img
-                  src={e?.imgContent}
+                  src={e.imgContent}
                   alt=""
                   style={{ width: "100%", height: "25rem" }}
                 />
               )}
-              <p>Likes: {e?.likes.likeCount}</p>
 
-              {likedPosts.map((e) => e?._id === e?._id).includes(true) ? (
-                <button
-                  onClick={() => handleDislike(e?._id)}
-                  style={{ color: "blue" }}
-                >
-                  Like:
-                </button>
-              ) : (
-                <button onClick={() => handleLike(e?._id)}>Like </button>
-              )}
-              <button onClick={() => handleBookmark(e?._id)}>Bookmark</button>
-              {e.username === username && (
-                <button onClick={() => handleDelete(e?._id)}>Delete</button>
-              )}
-              {e.username === username && (
-                <button onClick={() => handleEdit(e?._id)}>Edit</button>
-              )}
+              <div className="post--btns">
+                <div>
+                  {likedPosts.map((e) => e._id === e._id).includes(true) ? (
+                    <span onClick={() => handleDislike(e._id)}>
+                      <i class="fa-solid fa-heart"></i>
+                    </span>
+                  ) : (
+                    <span onClick={() => handleLike(e._id)}>
+                      <i class="fa-regular fa-heart"></i>
+                    </span>
+                  )}{" "}
+                  {e.likes.likeCount}
+                </div>
+                <i class="fa-regular fa-comment"></i>
+
+                {bookmarkPosts
+                  .map(
+                    (e) =>
+                      e.content === e.content || e.imgContent === e.imgContent
+                  )
+                  .includes(true) ? (
+                  <span onClick={() => handleRemoveBookmark(e._id)}>
+                    {" "}
+                    <i class="fa-solid fa-bookmark"></i>
+                  </span>
+                ) : (
+                  <span onClick={() => handleBookmark(e._id)}>
+                    <i class="fa-regular fa-bookmark"></i>
+                  </span>
+                )}
+                {e.username === username && (
+                  <span onClick={() => handleDelete(e._id)}>
+                    <i class="fa-solid fa-trash-can"></i>
+                  </span>
+                )}
+              </div>
               <hr className="break--line" />
             </div>
           ) : (

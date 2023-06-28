@@ -50,7 +50,7 @@ function Home() {
     setEditedPost(post.content);
     setEditedImgContent(post.imgContent);
     setEditedPostID(post._id);
-    setIsEditBoxOpen((prevState) => !prevState);
+    setIsEditBoxOpen(true);
   };
 
   console.log(followedUsers, "FOLLOWED USERS");
@@ -76,7 +76,7 @@ function Home() {
       const result = await response.json();
       setPosts(result.posts);
       setEditedPostID("");
-      setIsEditBoxOpen((prevState) => !prevState);
+      setIsEditBoxOpen(false);
       // setEditedPost("");
     } catch (err) {
       console.error(err);
@@ -225,6 +225,24 @@ function Home() {
     }
   };
 
+  const handleRemoveBookmark = async (id) => {
+    try {
+      const response = await fetch(`/api/users/remove-bookmark/${id}`, {
+        method: "POST", // or 'PUT'
+        headers: {
+          "Content-Type": "application/json",
+          authorization: encodedToken,
+        },
+      });
+
+      const result = await response.json();
+      console.log(result, "REMOVE BOOKMARK RESULT");
+      setBookmarkPosts(result.bookmarks);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const sortedPosts = posts.sort((a, b) => {
     const dateA = new Date(a.createdAt);
     const dateB = new Date(b.createdAt);
@@ -293,10 +311,11 @@ function Home() {
   };
 
   console.log(posts, "POSTSSSSSSSSS");
-  console.log(bookmarkPosts, "BOOKMARK POSTS");
+  console.log(allUsers, "ALL USERS");
   return (
     <div>
       <div className="posts--div">
+        <h2 style={{ textAlign: "center" }}>Home</h2>
         <div
           className="post--div"
           onClick={() => setIsPostBoxOpen((prevState) => !prevState)}
@@ -378,15 +397,15 @@ function Home() {
                 .includes(post.username) ||
                 post.username === username) && (
                 <div className="post">
-                  <Link to={`/profile/${post.username}`}>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "flex-start",
-                        gap: "1rem",
-                      }}
-                    >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "flex-start",
+                      gap: "1rem",
+                    }}
+                  >
+                    <Link to={`/profile/${post.username}`}>
                       <img
                         src={post.image}
                         alt={post.username}
@@ -396,42 +415,60 @@ function Home() {
                           borderRadius: "50%",
                         }}
                       />
+                    </Link>
 
-                      <div>
-                        <div
+                    <div style={{ width: "100%" }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: "5px",
+                          justifyContent: "flex-start",
+                          alignItems: "flex-end",
+                        }}
+                      >
+                        {" "}
+                        <h4 style={{ marginBottom: "0px" }}>
+                          <Link
+                            to={`/profile/${post.username}`}
+                            style={{ height: "" }}
+                          >
+                            {post.firstName}
+                          </Link>
+                        </h4>{" "}
+                        <h4 style={{ marginBottom: "0px" }}>
+                          <Link to={`/profile/${post.username}`}>
+                            {post.lastName}
+                          </Link>
+                        </h4>
+                        <span>•</span>
+                        <p
                           style={{
-                            display: "flex",
-                            gap: "5px",
-                            justifyContent: "flex-start",
-                            alignItems: "flex-end",
+                            marginBottom: "2px",
+                            marginTop: "0px",
+                            fontSize: "12px",
                           }}
                         >
-                          {" "}
-                          <h4 style={{ marginBottom: "0px" }}>
-                            {post.firstName}
-                          </h4>{" "}
-                          <h4 style={{ marginBottom: "0px" }}>
-                            {post.lastName}
-                          </h4>
-                          <span>•</span>
-                          <p
-                            style={{
-                              marginBottom: "2px",
-                              marginTop: "0px",
-                              fontSize: "12px",
-                            }}
+                          {getDate(post.createdAt)}
+                        </p>
+                        {post.username === username && (
+                          <span
+                            style={{ marginLeft: "auto", cursor: "pointer" }}
                           >
-                            {getDate(post.createdAt)}
-                          </p>
-                        </div>
-                        <div style={{ marginTop: "-5px" }}>
-                          <p style={{ fontSize: "12px", marginTop: "5px" }}>
-                            @{post.username}
-                          </p>
-                        </div>
+                            <i
+                              class="fa-solid fa-pen-to-square"
+                              onClick={() => handleEdit(post._id)}
+                            ></i>
+                          </span>
+                        )}
+                      </div>
+                      <div style={{ marginTop: "-5px" }}>
+                        <p style={{ fontSize: "12px", marginTop: "5px" }}>
+                          @{post.username}
+                        </p>
                       </div>
                     </div>
-                  </Link>
+                  </div>
+
                   {post._id === editedPostID && isEditBoxOpen && (
                     <div className="editBox--div">
                       <textarea
@@ -492,8 +529,9 @@ function Home() {
                       </button>
                     </div>
                   )}
-
-                  <p>{post.content}</p>
+                  <div style={{ margin: "2rem 0" }}>
+                    <p>{post.content}</p>
+                  </div>
                   {post.imgContent && (
                     <img
                       src={post.imgContent}
@@ -501,29 +539,46 @@ function Home() {
                       style={{ width: "100%", height: "25rem" }}
                     />
                   )}
-                  <p>Likes: {post.likes.likeCount}</p>
 
-                  {likedPosts.map((e) => e._id === post._id).includes(true) ? (
-                    <button
-                      onClick={() => handleDislike(post._id)}
-                      style={{ color: "blue" }}
-                    >
-                      Like:
-                    </button>
-                  ) : (
-                    <button onClick={() => handleLike(post._id)}>Like </button>
-                  )}
-                  <button onClick={() => handleBookmark(post._id)}>
-                    Bookmark
-                  </button>
-                  {post.username === username && (
-                    <button onClick={() => handleDelete(post._id)}>
-                      Delete
-                    </button>
-                  )}
-                  {post.username === username && (
-                    <button onClick={() => handleEdit(post._id)}>Edit</button>
-                  )}
+                  <div className="post--btns">
+                    <div>
+                      {likedPosts
+                        .map((e) => e._id === post._id)
+                        .includes(true) ? (
+                        <span onClick={() => handleDislike(post._id)}>
+                          <i class="fa-solid fa-heart"></i>
+                        </span>
+                      ) : (
+                        <span onClick={() => handleLike(post._id)}>
+                          <i class="fa-regular fa-heart"></i>
+                        </span>
+                      )}{" "}
+                      {post.likes.likeCount}
+                    </div>
+                    <i class="fa-regular fa-comment"></i>
+
+                    {bookmarkPosts
+                      .map(
+                        (e) =>
+                          e.content === post.content ||
+                          e.imgContent === post.imgContent
+                      )
+                      .includes(true) ? (
+                      <span onClick={() => handleRemoveBookmark(post._id)}>
+                        {" "}
+                        <i class="fa-solid fa-bookmark"></i>
+                      </span>
+                    ) : (
+                      <span onClick={() => handleBookmark(post._id)}>
+                        <i class="fa-regular fa-bookmark"></i>
+                      </span>
+                    )}
+                    {post.username === username && (
+                      <span onClick={() => handleDelete(post._id)}>
+                        <i class="fa-solid fa-trash-can"></i>
+                      </span>
+                    )}
+                  </div>
                   <hr className="break--line" />
                 </div>
               )
