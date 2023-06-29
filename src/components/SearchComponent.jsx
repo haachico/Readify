@@ -2,8 +2,8 @@ import { useContext } from "react";
 
 import { LoginProvider } from "../useContext/LoginContext";
 
-function SearchComponent() {
-  const { searchText, setSearchText } = useContext(LoginProvider);
+function SearchComponent({ searchText, setSearchText }) {
+  // const { searchText, setSearchText } = useContext(LoginProvider);
   return (
     <div>
       <input

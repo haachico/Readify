@@ -61,13 +61,13 @@ function Profile() {
     setEditedPost(post.content);
     setEditedImgContent(post.imgContent);
     setEditedPostID(post._id);
-    setIsEditBoxOpen((prevState) => !prevState);
+    setIsEditBoxOpen(true);
   };
 
   const handleUpdate = async (id) => {
     // /api/posts/edit/:postId
     try {
-      const response = await fetch(`api/posts/edit/${id}`, {
+      const response = await fetch(`/api/posts/edit/${id}`, {
         method: "POST", // or 'PUT'
         headers: {
           "Content-Type": "application/json",
@@ -83,9 +83,11 @@ function Profile() {
 
       const result = await response.json();
 
+      console.log(result, "UPDATE EDIT POST RESULT");
+
       setPosts(result.posts);
       setEditedPostID("");
-      setIsEditBoxOpen((prevState) => !prevState);
+      setIsEditBoxOpen(false);
       // setEditedPost("");
     } catch (err) {
       console.error(err);
@@ -219,24 +221,6 @@ function Profile() {
     }
   };
 
-  // const handleFollow = async (id) => {
-  //   try {
-  //     const response = await fetch(`/api/users/follow/${id}`, {
-  //       method: "POST", // or 'PUT'
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         authorization: encodedToken,
-  //       },
-  //     });
-
-  //     const result = await response.json();
-  //     console.log(result, "followers result");
-  //     setFollowedUsers([...followedUsers, result]);
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // };
-
   const getDate = (timestamp) => {
     const date = new Date(timestamp);
     const options = {
@@ -276,11 +260,11 @@ function Profile() {
 
   const { profileName } = useParams();
 
-  const selectedUser = allUsers.find((user) => user.username === profileName);
+  const selectedUser = allUsers.find((user) => user?.username === profileName);
 
   console.log(selectedUser, "Selected user");
 
-  const handleSaveEditForm = async (e) => {
+  const handleSaveEditForm = async (id) => {
     console.log("SUBMITEDDDD");
 
     try {
@@ -302,20 +286,37 @@ function Profile() {
       const result = await response.json();
 
       console.log(result, " USER RESPONSE RESULT");
-      // setNewUserData(result.user);
       setAllUsers(
         allUsers.map((user) =>
           user.username === result.user.username ? result.user : user
         )
       );
 
-      setPosts(
-        posts.map((post) =>
-          post.username === result.user.username
-            ? { ...post, image: result.user.image }
-            : post
-        )
-      );
+      // setPosts(
+      //   posts.map((post) =>
+      //     post.username === result.user.username
+      //       ? { ...post, image: result.user.image }
+      //       : post
+      //   )
+      // );
+
+      const postResponse = await fetch(`/api/posts/edit/${id}`, {
+        method: "POST", // or 'PUT'
+        headers: {
+          "Content-Type": "application/json",
+          authorization: encodedToken,
+        },
+        body: JSON.stringify({
+          postData: {
+            image: profileImg,
+          },
+        }),
+      });
+      const postResult = await postResponse.json();
+      setPosts(postResult.posts);
+      setEditedPostID("");
+      // setIsEditBoxOpen(false);
+
       setIsEditFormOpen(false);
     } catch (err) {
       console.error(err);
@@ -335,6 +336,12 @@ function Profile() {
       const result = await response.json();
       console.log(result, "followers result");
       setFollowedUsers([...followedUsers, result]);
+
+      setAllUsers(
+        allUsers.map((e) =>
+          e.username === result.followUser.username ? result.followUser : e
+        )
+      );
     } catch (err) {
       console.error(err);
     }
@@ -350,11 +357,19 @@ function Profile() {
         },
       });
 
+      //ALL USERS NOT GETTING UPDATED //////////
       const result = await response.json();
-      console.log(result, "unfollowresult");
+      console.log(result, "UNFOLLOW RESULT");
+
       setFollowedUsers(
         followedUsers.filter(
           (e) => e.followUser.username !== result.followUser.username
+        )
+      );
+
+      setAllUsers(
+        allUsers.map((e) =>
+          e.username === result.followUser.username ? result.followUser : e
         )
       );
     } catch (err) {
@@ -374,6 +389,10 @@ function Profile() {
 
   console.log(posts, "PROFILE POSTS");
 
+  const postUpdateProfileId = posts.find(
+    (e) => e.username === selectedUser.username
+  )._id;
+
   return (
     <div>
       <div className="profile--div">
@@ -392,7 +411,7 @@ function Profile() {
                 onClick={() => handleUnfollowClick(selectedUser._id)}
                 className="btn"
               >
-                Unfollow
+                Following
               </button>
             ) : (
               <button
@@ -615,7 +634,10 @@ function Profile() {
                 onChange={(e) => setLink(e.target.value)}
               />
             </label>
-            <button onClick={handleSaveEditForm} className="btn">
+            <button
+              onClick={() => handleSaveEditForm(postUpdateProfileId)}
+              className="saveEdit--btn"
+            >
               Save
             </button>
           </form>

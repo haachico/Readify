@@ -59,7 +59,7 @@ function Home() {
   const handleUpdate = async (id) => {
     // /api/posts/edit/:postId
     try {
-      const response = await fetch(`api/posts/edit/${id}`, {
+      const response = await fetch(`/api/posts/edit/${id}`, {
         method: "POST", // or 'PUT'
         headers: {
           "Content-Type": "application/json",
@@ -72,11 +72,11 @@ function Home() {
           },
         }),
       });
-
       const result = await response.json();
       setPosts(result.posts);
       setEditedPostID("");
       setIsEditBoxOpen(false);
+
       // setEditedPost("");
     } catch (err) {
       console.error(err);
@@ -251,24 +251,7 @@ function Home() {
   });
 
   console.log(sortedPosts, " SORTED POST");
-
-  // const handleFollow = async (id) => {
-  //   try {
-  //     const response = await fetch(`/api/users/follow/${id}`, {
-  //       method: "POST", // or 'PUT'
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         authorization: encodedToken,
-  //       },
-  //     });
-
-  //     const result = await response.json();
-  //     console.log(result, "followers result");
-  //     setFollowedUsers([...followedUsers, result]);
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // };
+  console.log(allUsers, "ALL USERS IN HOME");
 
   const getDate = (timestamp) => {
     const date = new Date(timestamp);
@@ -340,7 +323,7 @@ function Home() {
                 width: "42rem",
                 height: "10rem",
               }}
-              placeholder={`What is in your mind, ${firstName}?`}
+              placeholder={`Start writing here, ${firstName}!`}
             />
 
             <button

@@ -1,7 +1,6 @@
 import React from "react";
 import { useState } from "react";
 import { createContext } from "react";
-import Avatar from "@mui/material/Avatar";
 
 export const LoginProvider = createContext();
 
@@ -26,15 +25,7 @@ export function LoginContext({ children }) {
   );
   const [about, setAbout] = useState("");
   const [link, setLink] = useState("");
-  const [searchText, setSearchText] = useState("");
-  // const UserAvatar = ({ name }) => {
-  //   const initials = name
-  //     .split(" ")s
-  //     .map((part) => part.charAt(0).toUpperCase())
-  //     .join("");
-
-  //   return <Avatar>{initials}</Avatar>;
-  // };
+  // const [searchText, setSearchText] = useState("");
 
   return (
     <div>
@@ -75,8 +66,8 @@ export function LoginContext({ children }) {
           setAbout,
           link,
           setLink,
-          searchText,
-          setSearchText,
+          // searchText,
+          // setSearchText,
         }}
       >
         {children}
