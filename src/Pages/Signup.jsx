@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 import { useContext } from "react";
 import { LoginProvider } from "..";
-import appImg from "../Assets/readify.png";
+import appImg from "../Assets/logo.png";
 
 function Signup() {
   const {
@@ -55,57 +55,52 @@ function Signup() {
   };
   return (
     <div className="signup--div">
-      <div>
+      <div className="signup--logoImg">
         <img src={appImg} alt="App img" />
       </div>
-      <div className="form--div">
+      <div className="signup--form">
         <form>
-          <label>
-            Enter your first name :
-            <input
-              type="text"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-            />
-          </label>
-          <label>
-            Enter your last name :
-            <input
-              type="text"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-            />
-          </label>
-          <label>
-            Enter your username :
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
-          </label>
-          <label>
-            Enter an email :
-            <input
-              type="text"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </label>
-          <label>
-            Enter password :
-            <input
-              type="text"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </label>
+          <label>First name : </label>
+          <input
+            type="text"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+          />
+
+          <label>Last name : </label>
+          <input
+            type="text"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+          />
+
+          <label> Username : </label>
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+
+          <label>Email : </label>
+          <input
+            type="text"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+
+          <label>Password : </label>
+          <input
+            type="text"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+
           <button onClick={handleSignup}>Sign up</button>
         </form>
         <div>
           <h4>{message}</h4>
           <span>Already have an account? </span>
-          <Link to="/" style={{ color: "white" }}>
+          <Link to="/" style={{ color: "white", textDecoration: "underline" }}>
             Log In!
           </Link>
         </div>

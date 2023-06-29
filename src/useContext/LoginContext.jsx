@@ -25,6 +25,7 @@ export function LoginContext({ children }) {
   );
   const [about, setAbout] = useState("");
   const [link, setLink] = useState("");
+  const [updatedFollowings, setUpdatingFollowings] = useState({});
   // const [searchText, setSearchText] = useState("");
 
   return (
@@ -66,6 +67,8 @@ export function LoginContext({ children }) {
           setAbout,
           link,
           setLink,
+          updatedFollowings,
+          setUpdatingFollowings,
           // searchText,
           // setSearchText,
         }}

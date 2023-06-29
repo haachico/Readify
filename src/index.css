@@ -21,17 +21,66 @@ a {
   height: 100vh;
 }
 
-.landing--div form {
+.landing--div img,
+.signup--div img {
+  border-radius: 10px;
+  width: 35rem;
+  height: 25rem;
+}
+
+.login--logoImg,
+.signup--logoImg {
+  background-color: #223547;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  height: 100vh;
+  flex: 1;
 }
 
-.landing--div img {
-  border-radius: 10px;
-  width: 35rem;
-  height: 25rem;
+.login--form,
+.signup--form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  flex: 1;
+}
+
+.login--form form,
+.signup--form form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.login--form form label,
+.signup--form form label {
+  font-weight: 600;
+}
+
+.login--form form input,
+.signup--form form input {
+  width: 25rem;
+  padding: 12px;
+  margin-top: 5px;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  border-radius: 5px;
+}
+
+.login--form button,
+.signup--form button {
+  width: 100%;
+  padding: 10px;
+
+  border-radius: 5px;
+  background-color: #223547;
+  color: white;
+  font-weight: 600;
 }
 
 .signup--div {
@@ -39,13 +88,6 @@ a {
   justify-content: space-around;
   align-items: center;
   height: 100vh;
-}
-
-.signup--div form {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
 }
 
 .header {
@@ -118,24 +160,12 @@ a span {
   overflow: auto;
 }
 
-.empty--div {
-  /* width: 12rem;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 2rem;
-  margin-top: 3rem; */
-}
-
-.empty--div a {
-  /* margin-left: 4rem;
-  font-weight: 600; */
-}
-
 .post {
   margin: 2rem 0;
-  /* position: relative; */
+  position: relative;
+  background-color: #2a4259;
+  padding: 10px;
+  border-radius: 10px;
 
   width: 100%;
 }
@@ -240,12 +270,11 @@ button {
   font-weight: 600;
 }
 
-/* ??????????????? */
 .post--btn {
   position: absolute;
   top: 9rem;
   right: 0rem;
-  background-color: rgb(102, 137, 151);
+  background-color: rgba(0, 184, 255);
   border-radius: 2px;
   border: none;
   width: 4rem;
@@ -505,7 +534,7 @@ button {
   padding: 10px;
   margin-right: 2rem;
   border-radius: 10px;
-  margin-bottom: 0px;
+  margin-bottom: ;
 }
 
 .search--list {
@@ -546,8 +575,11 @@ button {
   gap: 10px;
   justify-content: flex-start;
   background-color: #223547;
-  padding: 10px;
-  border-radius: 10px;
+  padding: 0 10px;
+}
+
+.followings--box {
+  background-color: #223547;
   position: relative;
 }
 

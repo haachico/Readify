@@ -12,7 +12,7 @@ function HomeLayout() {
     username,
 
     allUsers,
-
+    setAllUsers,
     followedUsers,
     setFollowedUsers,
 
@@ -23,6 +23,8 @@ function HomeLayout() {
     loggedInUserDetails,
     searchText,
     setSearchText,
+    updatedFollowings,
+    setUpdatedFollowings,
   } = useContext(LoginProvider);
 
   const handleLogoutClick = () => {
@@ -42,6 +44,18 @@ function HomeLayout() {
       const result = await response.json();
       console.log(result, "followers result");
       setFollowedUsers([...followedUsers, result]);
+      // setUpdatedFollowings(result);
+
+      const updatedAllUsers = allUsers.map((e) =>
+        e.username === result.followUser.username
+          ? result.followUser
+          : e.username === result.user.username
+          ? result.user
+          : e
+      );
+
+      console.log(updatedAllUsers, "UPDATED ALL USERS");
+      setAllUsers(updatedAllUsers);
     } catch (err) {
       console.error(err);
     }

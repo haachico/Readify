@@ -40,6 +40,8 @@ function Profile() {
     setAbout,
     link,
     setLink,
+    updatedFollowings,
+    setUpdatedFollowings,
   } = useContext(LoginProvider);
   const [changedProfileImg, setChangedProfileImg] = useState(profileImg);
   // const [changedAbout, setChangedAbout] = useState(about);
@@ -260,7 +262,7 @@ function Profile() {
 
   const { profileName } = useParams();
 
-  const selectedUser = allUsers.find((user) => user?.username === profileName);
+  const selectedUser = allUsers.find((user) => user.username === profileName);
 
   console.log(selectedUser, "Selected user");
 
@@ -291,14 +293,6 @@ function Profile() {
           user.username === result.user.username ? result.user : user
         )
       );
-
-      // setPosts(
-      //   posts.map((post) =>
-      //     post.username === result.user.username
-      //       ? { ...post, image: result.user.image }
-      //       : post
-      //   )
-      // );
 
       const postResponse = await fetch(`/api/posts/edit/${id}`, {
         method: "POST", // or 'PUT'
@@ -334,14 +328,18 @@ function Profile() {
       });
 
       const result = await response.json();
-      console.log(result, "followers result");
+      console.log(result, "follow fn called result");
       setFollowedUsers([...followedUsers, result]);
 
-      setAllUsers(
-        allUsers.map((e) =>
-          e.username === result.followUser.username ? result.followUser : e
-        )
+      const updatedAllUsers = allUsers.map((e) =>
+        e.username === result.followUser.username
+          ? result.followUser
+          : e.username === result.user.username
+          ? result.user
+          : e
       );
+
+      setAllUsers(updatedAllUsers);
     } catch (err) {
       console.error(err);
     }
@@ -366,12 +364,16 @@ function Profile() {
           (e) => e.followUser.username !== result.followUser.username
         )
       );
-
-      setAllUsers(
-        allUsers.map((e) =>
-          e.username === result.followUser.username ? result.followUser : e
-        )
+      const updatedAllUsers = allUsers.map((e) =>
+        e.username === result.followUser.username
+          ? result.followUser
+          : e.username === result.user.username
+          ? result.user
+          : e
       );
+
+      console.log(updatedAllUsers, "UPDATED ALL USERS");
+      setAllUsers(updatedAllUsers);
     } catch (err) {
       console.error(err);
     }
@@ -529,56 +531,63 @@ function Profile() {
                     </button>
                   </div>
                 ))}
-              {isFollowingsBoxOpen &&
-                selectedUser?.following?.map((user) => (
-                  <div className="followers--box">
-                    <Link to={`/profile/${user.username}`}>
-                      {" "}
-                      <img
-                        src={user.image}
-                        alt={user.username}
-                        style={{
-                          width: "2rem",
-                          height: "2rem",
-                          borderRadius: "50%",
-                        }}
-                      />
-                    </Link>
-                    <Link to={`/profile/${user.username}`}>
-                      {" "}
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "flex-start",
-                        }}
-                      >
-                        <div
-                          style={{
-                            display: "flex",
-                            gap: "5px",
-                            justifyContent: "flex-start",
-                            alignItems: "flex-end",
-                          }}
-                        >
-                          <p style={{ marginBottom: "0px" }}>
-                            {user.firstName}
-                          </p>
-                          <p style={{ marginBottom: "0px" }}>{user.lastName}</p>
-                        </div>
-                        <p style={{ fontSize: "10px", marginTop: "2px" }}>
-                          @{user.username}
-                        </p>
+              {isFollowingsBoxOpen && (
+                <div className="followings--box">
+                  <button
+                    onClick={() => setIsFollowingsBoxOpen(false)}
+                    className="followersBox--close"
+                  >
+                    x
+                  </button>
+                  {selectedUser?.following?.map((user) => (
+                    <div>
+                      <div className="followers--box">
+                        <Link to={`/profile/${user.username}`}>
+                          {" "}
+                          <img
+                            src={user.image}
+                            alt={user.username}
+                            style={{
+                              width: "2rem",
+                              height: "2rem",
+                              borderRadius: "50%",
+                            }}
+                          />
+                        </Link>
+                        <Link to={`/profile/${user.username}`}>
+                          {" "}
+                          <div
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              alignItems: "flex-start",
+                            }}
+                          >
+                            <div
+                              style={{
+                                display: "flex",
+                                gap: "5px",
+                                justifyContent: "flex-start",
+                                alignItems: "flex-end",
+                              }}
+                            >
+                              <p style={{ marginBottom: "0px" }}>
+                                {user.firstName}
+                              </p>
+                              <p style={{ marginBottom: "0px" }}>
+                                {user.lastName}
+                              </p>
+                            </div>
+                            <p style={{ fontSize: "10px", marginTop: "2px" }}>
+                              @{user.username}
+                            </p>
+                          </div>
+                        </Link>
                       </div>
-                    </Link>
-                    <button
-                      onClick={() => setIsFollowingsBoxOpen(false)}
-                      className="followersBox--close"
-                    >
-                      x
-                    </button>
-                  </div>
-                ))}
+                    </div>
+                  ))}{" "}
+                </div>
+              )}
             </div>
           </div>
         }
@@ -636,7 +645,7 @@ function Profile() {
             </label>
             <button
               onClick={() => handleSaveEditForm(postUpdateProfileId)}
-              className="saveEdit--btn"
+              className="saveEditForm--btn"
             >
               Save
             </button>

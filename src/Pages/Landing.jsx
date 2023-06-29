@@ -1,4 +1,4 @@
-import readify from "../Assets/readify.png";
+import readify from "../Assets/logo.png";
 
 import React, { useState } from "react";
 import { useContext } from "react";
@@ -67,35 +67,36 @@ function Landing() {
 
   return (
     <div className="landing--div">
-      <div>
+      <div className="login--form">
         <form>
-          <label>
-            Enter your email:
-            <input
-              type="text"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </label>
-          <label>
-            Enter password :
-            <input
-              type="text"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </label>
+          <label>Email: </label>
+          <input
+            type="text"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+
+          <label>Password : </label>
+          <input
+            type="text"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+
           <button onClick={handleLogin}>Submit</button>
         </form>
         <h4>{errMsg}</h4>
         <span>Don't have an account? </span>
         <span>
-          <Link to="/signup" style={{ color: "white" }}>
+          <Link
+            to="/signup"
+            style={{ color: "white", textDecoration: "underline" }}
+          >
             Sign up!
           </Link>
         </span>
       </div>
-      <div>
+      <div className="login--logoImg">
         <img src={readify} alt="" />
       </div>
     </div>
