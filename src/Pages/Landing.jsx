@@ -11,11 +11,10 @@ function Landing() {
   const [password, setPassword] = useState("");
   const [errMsg, setErrMsg] = useState("");
   const {
-    isLogin,
     setIsLogin,
-    encodedToken,
+
     setEncodedToken,
-    userID,
+
     setUserID,
     username,
     firstName,

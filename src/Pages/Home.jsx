@@ -8,27 +8,26 @@ function Home() {
   const {
     firstName,
     lastName,
-    email,
+
     encodedToken,
     username,
-    userID,
+
     bookmarkPosts,
     setBookmarkPosts,
     likedPosts,
-    dislikedPosts,
+
     setLikedPosts,
-    setDislikedPosts,
+
     allUsers,
     setAllUsers,
     followedUsers,
-    setFollowedUsers,
+
     isPostboxOpen,
     setIsPostBoxOpen,
     profileImg,
-    setProfileImg,
-    setIsLogin,
+
     loggedInUserDetails,
-    setLoggedInUserDetails,
+
     posts,
     setPosts,
   } = useContext(LoginProvider);
@@ -45,7 +44,7 @@ function Home() {
   console.log(allUsers, "ALL USERS");
   console.log(posts, "POSTSS");
   const handleEdit = (id) => {
-    const post = posts.find((e) => e._id == id);
+    const post = posts.find((e) => e._id === id);
 
     setEditedPost(post.content);
     setEditedImgContent(post.imgContent);

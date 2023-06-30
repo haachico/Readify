@@ -255,14 +255,14 @@ function Profile() {
     setEditPreviewImg(editedImgContent);
   }, [editedImgContent]);
 
-  const handlePrevImgCloseClick = () => {
-    setPreview(null);
-    setImgContent(null);
-  };
+  // const handlePrevImgCloseClick = () => {
+  //   setPreview(null);
+  //   setImgContent(null);
+  // };
 
   const { profileName } = useParams();
 
-  const selectedUser = allUsers.find((user) => user.username === profileName);
+  const selectedUser = allUsers?.find((user) => user.username === profileName);
 
   console.log(selectedUser, "Selected user");
 

@@ -6,9 +6,6 @@ import { LoginProvider } from "..";
 
 function Explore() {
   const {
-    firstName,
-    lastName,
-
     encodedToken,
     username,
 
