@@ -25,9 +25,10 @@ function Header() {
           searchText={searchText}
           setSearchText={setSearchText}
         />
-        <div className="search--list">
-          {searchText &&
-            filteredUser.map((user) => (
+
+        {searchText && (
+          <div className="search--list">
+            {filteredUser.map((user) => (
               <div
                 className="search--user"
                 style={{
@@ -81,8 +82,9 @@ function Header() {
                   </div>
                 </Link>
               </div>
-            ))}
-        </div>
+            ))}{" "}
+          </div>
+        )}
       </div>
     </div>
   );
