@@ -18,7 +18,7 @@ export const posts = [
     lastName: "Shahakar",
     email: "",
     image:
-      "https://baudhkaro.com/wp-content/uploads/2020/10/diksha-e1603395889173.png",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSi1Hgu8_UbdT_WxVylrEf52pHTbX6K58iBCw&usqp=CAU",
     followers: [],
     following: [],
     likes: {
@@ -40,7 +40,7 @@ export const posts = [
     lastName: "Manwatkar",
     email: "",
     image:
-      "https://pbs.twimg.com/profile_images/1247146809824169984/SW5yQ9gX_400x400.jpg",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_xLUvUB1HlFLZiyg31p8IuJerm8CtBH6-hw&usqp=CAU",
     followers: [],
     following: [],
     likes: {
