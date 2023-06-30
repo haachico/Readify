@@ -411,7 +411,7 @@ function Profile() {
               .includes(true) ? (
               <button
                 onClick={() => handleUnfollowClick(selectedUser._id)}
-                className="profileUnfollow---btn"
+                className="profileUnfollow--btn"
               >
                 Following
               </button>
