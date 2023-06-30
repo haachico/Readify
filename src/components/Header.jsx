@@ -28,7 +28,15 @@ function Header() {
         <div className="search--list">
           {searchText &&
             filteredUser.map((user) => (
-              <div className="search--user">
+              <div
+                className="search--user"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                  justifyContent: "flex-start",
+                }}
+              >
                 <Link
                   to={`/profile/${user.username}`}
                   onClick={() => setSearchText("")}
