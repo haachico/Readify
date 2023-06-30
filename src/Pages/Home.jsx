@@ -40,6 +40,8 @@ function Home() {
   const [preview, setPreview] = useState(null);
   const [isEditBoxOpen, setIsEditBoxOpen] = useState(false);
   const [editboxPreviewImg, setEditPreviewImg] = useState(null);
+  const [pressedButton, setPressedButton] = useState(null);
+  // const [sortOption, setSortOption] = useState("LATEST");
 
   console.log(allUsers, "ALL USERS");
   console.log(posts, "POSTSS");
@@ -242,14 +244,27 @@ function Home() {
     }
   };
 
-  const sortedPosts = posts.sort((a, b) => {
-    const dateA = new Date(a.createdAt);
-    const dateB = new Date(b.createdAt);
+  // below in return while mapping if you see, we set posts. as default
+  const handleSort = (option) => {
+    let sortedData = [...posts];
+    if (option === "LATEST") {
+      sortedData.sort((a, b) => {
+        const dateA = new Date(a.createdAt);
+        const dateB = new Date(b.createdAt);
 
-    return dateB - dateA;
-  });
+        return dateB - dateA;
+      });
+      setPressedButton(option);
+    } else if (option === "TRENDING") {
+      sortedData.sort((a, b) => b.likes.likeCount - a.likes.likeCount);
+      setPressedButton(option);
+    }
 
-  console.log(sortedPosts, " SORTED POST");
+    // setSortOption(option);
+    setPosts(sortedData);
+  };
+
+  // console.log(sortedPosts, " SORTED POST");
   console.log(allUsers, "ALL USERS IN HOME");
 
   const getDate = (timestamp) => {
@@ -263,6 +278,7 @@ function Home() {
     return date.toLocaleDateString("en-US", options).replace(/,/g, "");
   };
 
+  console.log(pressedButton, "PRESSED BUTTOn");
   useEffect(() => {
     if (!imgContent) {
       setPreview(undefined);
@@ -297,6 +313,28 @@ function Home() {
   return (
     <div>
       <h2 style={{ textAlign: "center" }}>Home</h2>
+      <div className="sort--btns">
+        <button
+          onClick={() => handleSort("LATEST")}
+          // className={pressedButton === "LATEST" ? "highlight" : ""}
+          style={{
+            backgroundColor: pressedButton === "LATEST" ? "#cbd5e1" : "",
+            color: pressedButton === "LATEST" ? "black" : "",
+          }}
+        >
+          Latest
+        </button>
+        <button
+          onClick={() => handleSort("TRENDING")}
+          // className={pressedButton === "TRENDING" ? "highlight" : ""}
+          style={{
+            backgroundColor: pressedButton === "TRENDING" ? "#cbd5e1" : "",
+            color: pressedButton === "TRENDING" ? "black" : "",
+          }}
+        >
+          Trending
+        </button>
+      </div>
       <div className="posts--div">
         <div
           className="post--div"
@@ -371,7 +409,7 @@ function Home() {
           </div>
         )}
         <div>
-          {sortedPosts.map(
+          {posts.map(
             (post) =>
               // Those we have followed, that is those in the followedUsers array, we check if any of the usernames in the folllowedUser array contains the username of the post OR if the post's username is equal to loggedin user's username then only show the post. In short, we ensuring that only the posts of those we FOLLOW as welll as the logged in user's posts should appear.
               (followedUsers

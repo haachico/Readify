@@ -553,6 +553,23 @@ button {
   height: 100%;
 }
 
+.sort--btns {
+  display: flex;
+  gap: 1rem;
+}
+
+.highlight {
+  background-color: #cbd5e1;
+  color: black;
+}
+
+.sort--btns button {
+  background-color: #223547;
+  color: white;
+  padding: 5px;
+  font-weight: 600;
+}
+
 .post--btns {
   display: flex;
   justify-content: space-between;
