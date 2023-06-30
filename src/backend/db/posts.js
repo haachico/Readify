@@ -27,7 +27,7 @@ export const posts = [
       dislikedBy: [],
     },
 
-    createdAt: formatDate(),
+    createdAt: "2023-06-25T13:53:51+05:30",
     updatedAt: formatDate(),
   },
   {
@@ -49,7 +49,7 @@ export const posts = [
       dislikedBy: [],
     },
 
-    createdAt: formatDate(),
+    createdAt: "2023-06-27T13:53:51+05:30",
     updatedAt: formatDate(),
   },
   {
@@ -72,7 +72,7 @@ export const posts = [
       dislikedBy: [],
     },
 
-    createdAt: formatDate(),
+    createdAt: "2023-06-14T13:53:51+05:30",
     updatedAt: formatDate(),
   },
   {
@@ -95,7 +95,7 @@ export const posts = [
       dislikedBy: [],
     },
 
-    createdAt: formatDate(),
+    createdAt: "2023-06-27T13:53:51+05:30",
     updatedAt: formatDate(),
   },
   {
@@ -116,7 +116,7 @@ export const posts = [
       dislikedBy: [],
     },
 
-    createdAt: formatDate(),
+    createdAt: "2023-05-27T13:53:51+05:30",
     updatedAt: formatDate(),
   },
   {
@@ -137,7 +137,7 @@ export const posts = [
       dislikedBy: [],
     },
 
-    createdAt: formatDate(),
+    createdAt: "2023-06-20T13:53:51+05:30",
     updatedAt: formatDate(),
   },
   {
@@ -158,7 +158,7 @@ export const posts = [
       dislikedBy: [],
     },
 
-    createdAt: formatDate(),
+    createdAt: "2023-05-25T13:53:51+05:30",
     updatedAt: formatDate(),
   },
   {
@@ -202,7 +202,7 @@ export const posts = [
       dislikedBy: [],
     },
 
-    createdAt: formatDate(),
+    createdAt: "2023-06-15T13:53:51+05:30",
     updatedAt: formatDate(),
   },
   {
@@ -223,7 +223,7 @@ export const posts = [
       dislikedBy: [],
     },
 
-    createdAt: formatDate(),
+    createdAt: "2023-06-25T13:53:51+05:30",
     updatedAt: formatDate(),
   },
   {
@@ -244,7 +244,7 @@ export const posts = [
       dislikedBy: [],
     },
 
-    createdAt: formatDate(),
+    createdAt: "2023-06-21T13:53:51+05:30",
     updatedAt: formatDate(),
   },
 ];
