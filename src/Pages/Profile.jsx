@@ -481,67 +481,74 @@ function Profile() {
               </div>
             </div>
             <div>
-              {isFollowersBoxOpen &&
-                selectedUser.followers.map((user) => (
-                  <div className="followers--box">
-                    <Link to={`/profile/${user.username}`}>
-                      {" "}
-                      <img
-                        src={user.image}
-                        alt={user.username}
-                        style={{
-                          width: "2rem",
-                          height: "2rem",
-                          borderRadius: "50%",
-                        }}
-                      />
-                    </Link>
-                    <Link to={`/profile/${user.username}`}>
-                      {" "}
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "flex-start",
-                        }}
-                      >
-                        <div
-                          style={{
-                            display: "flex",
-                            gap: "5px",
-                            justifyContent: "flex-start",
-                            alignItems: "flex-end",
-                          }}
-                        >
-                          <p style={{ marginBottom: "0px" }}>
-                            {user.firstName}
-                          </p>
-                          <p style={{ marginBottom: "0px" }}>{user.lastName}</p>
-                        </div>
-                        <p style={{ fontSize: "10px", marginTop: "2px" }}>
-                          @{user.username}
-                        </p>
+              {isFollowersBoxOpen && (
+                <div className="followers--box">
+                  <button
+                    onClick={() => setIsFollowersBoxOpen(false)}
+                    className="followersBox--close"
+                  >
+                    x
+                  </button>
+                  {selectedUser?.followers?.map((user) => (
+                    <div>
+                      <div className="follower--box">
+                        <Link to={`/profile/${user.username}`}>
+                          {" "}
+                          <img
+                            src={user.image}
+                            alt={user.username}
+                            style={{
+                              width: "2rem",
+                              height: "2rem",
+                              borderRadius: "50%",
+                            }}
+                          />
+                        </Link>
+                        <Link to={`/profile/${user.username}`}>
+                          {" "}
+                          <div
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              alignItems: "flex-start",
+                            }}
+                          >
+                            <div
+                              style={{
+                                display: "flex",
+                                gap: "5px",
+                                justifyContent: "flex-start",
+                                alignItems: "flex-end",
+                              }}
+                            >
+                              <p style={{ marginBottom: "0px" }}>
+                                {user.firstName}
+                              </p>
+                              <p style={{ marginBottom: "0px" }}>
+                                {user.lastName}
+                              </p>
+                            </div>
+                            <p style={{ fontSize: "10px", marginTop: "2px" }}>
+                              @{user.username}
+                            </p>
+                          </div>
+                        </Link>
                       </div>
-                    </Link>
-                    <button
-                      onClick={() => setIsFollowersBoxOpen(false)}
-                      className="followersBox--close"
-                    >
-                      x
-                    </button>
-                  </div>
-                ))}
+                    </div>
+                  ))}{" "}
+                </div>
+              )}
               {isFollowingsBoxOpen && (
                 <div className="followings--box">
                   <button
                     onClick={() => setIsFollowingsBoxOpen(false)}
-                    className="followersBox--close"
+                    className="followingsBox--close"
                   >
                     x
                   </button>
                   {selectedUser?.following?.map((user) => (
                     <div>
-                      <div className="followers--box">
+                      <div className="following--box">
                         <Link to={`/profile/${user.username}`}>
                           {" "}
                           <img

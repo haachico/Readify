@@ -597,7 +597,8 @@ button {
 .profile--btns button:hover {
   text-decoration: underline;
 }
-.followers--box {
+.follower--box,
+.following--box {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -606,12 +607,14 @@ button {
   padding: 0 10px;
 }
 
+.followers--box,
 .followings--box {
   background-color: #223547;
   position: relative;
 }
 
-.followersBox--close {
+.followersBox--close,
+.followingsBox--close {
   background-color: #223547;
   border: none;
   color: white;
