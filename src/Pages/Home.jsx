@@ -41,7 +41,7 @@ function Home() {
   const [isEditBoxOpen, setIsEditBoxOpen] = useState(false);
   const [editboxPreviewImg, setEditPreviewImg] = useState(null);
   const [pressedButton, setPressedButton] = useState(null);
-  // const [sortOption, setSortOption] = useState("LATEST");
+  const [sortOption, setSortOption] = useState("LATEST");
 
   console.log(allUsers, "ALL USERS");
   console.log(posts, "POSTSS");
@@ -246,23 +246,53 @@ function Home() {
 
   // below in return while mapping if you see, we set posts. as default
   const handleSort = (option) => {
-    let sortedData = [...posts];
+    // let sortedData = [...posts];
     if (option === "LATEST") {
-      sortedData.sort((a, b) => {
-        const dateA = new Date(a.createdAt);
-        const dateB = new Date(b.createdAt);
+      // sortedData.sort((a, b) => {
+      //   const dateA = new Date(a.createdAt);
+      //   const dateB = new Date(b.createdAt);
 
-        return dateB - dateA;
-      });
+      //   return dateB - dateA;
+      // });
+      setSortOption(option);
+      setPressedButton(option);
+    } else if (option === "OLDEST") {
+      // sortedData.sort((a, b) => {
+      //   const dateA = new Date(a.createdAt);
+      //   const dateB = new Date(b.createdAt);
+
+      //   return dateA - dateB;
+      // });
+      setSortOption(option);
       setPressedButton(option);
     } else if (option === "TRENDING") {
-      sortedData.sort((a, b) => b.likes.likeCount - a.likes.likeCount);
+      // sortedData.sort((a, b) => b.likes.likeCount - a.likes.likeCount);
+      setSortOption(option);
       setPressedButton(option);
     }
 
     // setSortOption(option);
-    setPosts(sortedData);
+    // setPosts(sortedData);
   };
+
+  const postsData =
+    sortOption === "LATEST"
+      ? [...posts].sort((a, b) => {
+          const dateA = new Date(a.createdAt);
+          const dateB = new Date(b.createdAt);
+
+          return dateB - dateA;
+        })
+      : sortOption === "OLDEST"
+      ? [...posts].sort((a, b) => {
+          const dateA = new Date(a.createdAt);
+          const dateB = new Date(b.createdAt);
+
+          return dateA - dateB;
+        })
+      : sortOption === "TRENDING"
+      ? [...posts].sort((a, b) => b.likes.likeCount - a.likes.likeCount)
+      : "";
 
   // console.log(sortedPosts, " SORTED POST");
   console.log(allUsers, "ALL USERS IN HOME");
@@ -310,6 +340,7 @@ function Home() {
 
   console.log(posts, "POSTSSSSSSSSS");
   console.log(allUsers, "ALL USERS");
+
   return (
     <div>
       <h2 style={{ textAlign: "center" }}>Home</h2>
@@ -323,6 +354,16 @@ function Home() {
           }}
         >
           Latest
+        </button>
+        <button
+          onClick={() => handleSort("OLDEST")}
+          // className={pressedButton === "LATEST" ? "highlight" : ""}
+          style={{
+            backgroundColor: pressedButton === "OLDEST" ? "#cbd5e1" : "",
+            color: pressedButton === "OLDEST" ? "black" : "",
+          }}
+        >
+          Oldest
         </button>
         <button
           onClick={() => handleSort("TRENDING")}
@@ -409,7 +450,7 @@ function Home() {
           </div>
         )}
         <div>
-          {posts.map(
+          {postsData.map(
             (post) =>
               // Those we have followed, that is those in the followedUsers array, we check if any of the usernames in the folllowedUser array contains the username of the post OR if the post's username is equal to loggedin user's username then only show the post. In short, we ensuring that only the posts of those we FOLLOW as welll as the logged in user's posts should appear.
               (followedUsers
