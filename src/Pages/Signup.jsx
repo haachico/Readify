@@ -59,39 +59,51 @@ function Signup() {
         <img src={appImg} alt="App img" />
       </div>
       <div className="signup--form">
+        <h1>Sign up</h1>
         <form>
           <label>First name : </label>
           <input
             type="text"
             value={firstName}
+            placeholder="Enter your first name"
             onChange={(e) => setFirstName(e.target.value)}
+            required
           />
 
           <label>Last name : </label>
           <input
             type="text"
             value={lastName}
+            placeholder="Enter your last name"
             onChange={(e) => setLastName(e.target.value)}
+            required
           />
 
           <label> Username : </label>
           <input
             type="text"
             value={username}
+            placeholder="Enter your username"
             onChange={(e) => setUsername(e.target.value)}
+            required
           />
 
           <label>Email : </label>
           <input
-            type="text"
+            type="email"
+            name="email"
+            placeholder="Enter your email"
+            required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
 
           <label>Password : </label>
           <input
-            type="text"
+            type="password"
             value={password}
+            placeholder="Enter a valid password"
+            required
             onChange={(e) => setPassword(e.target.value)}
           />
 

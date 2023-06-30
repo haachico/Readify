@@ -297,8 +297,8 @@ function Home() {
   console.log(allUsers, "ALL USERS");
   return (
     <div>
+      <h2 style={{ textAlign: "center" }}>Home</h2>
       <div className="posts--div">
-        <h2 style={{ textAlign: "center" }}>Home</h2>
         <div
           className="post--div"
           onClick={() => setIsPostBoxOpen((prevState) => !prevState)}
@@ -562,7 +562,7 @@ function Home() {
                       </span>
                     )}
                   </div>
-                  <hr className="break--line" />
+                  {/* <hr className="break--line" /> */}
                 </div>
               )
           )}

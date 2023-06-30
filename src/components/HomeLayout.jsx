@@ -1,6 +1,8 @@
 import React, { useContext } from "react";
 import { Outlet } from "react-router";
 import { Link } from "react-router-dom";
+// import SimpleBar from "simplebar-react";
+// import "simplebar/dist/simplebar.min.css";
 
 import { LoginProvider } from "..";
 
@@ -64,6 +66,8 @@ function HomeLayout() {
   // const filteredUser = [...allUsers].filter((e) =>
   //   e.username.toLowerCase().includes(searchText.toLowerCase())
   // );
+
+  console.log(username, "USERNAME");
 
   return (
     <div className="main--body">
