@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 import { useContext } from "react";
 import { LoginProvider } from "..";
-import appImg from "../Assets/logo.png";
+import appImg from "/Assets/logo.png";
 
 function Signup() {
   const {
