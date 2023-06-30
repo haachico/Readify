@@ -1,4 +1,4 @@
-import readify from "/Assets/logo.png";
+import readify from "../logo.png";
 
 import React, { useState } from "react";
 import { useContext } from "react";
