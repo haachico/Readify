@@ -244,14 +244,6 @@ button {
   background-color: #cbd5e1;
 }
 
-.post--div div {
-}
-
-/* .App.blur {
-  filter: blur(4px);
-  pointer-events: none;
-} */
-
 .postbox--div {
   display: flex;
   flex-direction: column;
@@ -485,12 +477,6 @@ button {
   justify-content: center;
 }
 
-.profile--dp button {
-}
-
-.edit--form {
-}
-
 /* .profile--dp {
   position: relative;
 }
@@ -559,7 +545,6 @@ button {
   padding: 10px;
   margin-right: 2rem;
   border-radius: 10px;
-  margin-bottom: ;
 }
 
 .search--list {
@@ -581,8 +566,8 @@ button {
 .profile--btns {
   display: flex;
   gap: 1rem;
-  justifycontent: flex-start;
-  alignitems: center;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .profile--btns button {

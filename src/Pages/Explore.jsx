@@ -8,31 +8,25 @@ function Explore() {
   const {
     firstName,
     lastName,
-    email,
+
     encodedToken,
     username,
-    userID,
+
     bookmarkPosts,
     setBookmarkPosts,
     likedPosts,
-    dislikedPosts,
+
     setLikedPosts,
-    setDislikedPosts,
+
     allUsers,
     setAllUsers,
     followedUsers,
-    setFollowedUsers,
-    isPostboxOpen,
-    setIsPostBoxOpen,
-    profileImg,
-    setProfileImg,
-    setIsLogin,
+
     loggedInUserDetails,
-    setLoggedInUserDetails,
+
     posts,
     setPosts,
   } = useContext(LoginProvider);
-  const [content, setContent] = useState("");
 
   const [editedPost, setEditedPost] = useState("");
   const [editedImgContent, setEditedImgContent] = useState("");
@@ -45,7 +39,7 @@ function Explore() {
   console.log(allUsers, "ALL USERS");
   console.log(posts, "POSTSS");
   const handleEdit = (id) => {
-    const post = posts.find((e) => e._id == id);
+    const post = posts.find((e) => e._id === id);
 
     setEditedPost(post.content);
     setEditedImgContent(post.imgContent);
@@ -84,36 +78,36 @@ function Explore() {
   };
 
   console.log(imgContent, "IMAGE CONTENt");
-  const handlePost = async () => {
-    if (!content) return;
-    try {
-      console.log(encodedToken, "ENCODED TOKEN");
-      const response = await fetch("/api/posts", {
-        method: "POST", // or 'PUT'
-        headers: {
-          "Content-Type": "application/json",
-          authorization: encodedToken,
-        },
-        body: JSON.stringify({
-          postData: {
-            content: content,
-            imgContent: imgContent,
-            image: profileImg,
-            firstName: firstName,
-            lastName: lastName,
-          },
-        }),
-      });
+  // const handlePost = async () => {
+  //   if (!content) return;
+  //   try {
+  //     console.log(encodedToken, "ENCODED TOKEN");
+  //     const response = await fetch("/api/posts", {
+  //       method: "POST", // or 'PUT'
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         authorization: encodedToken,
+  //       },
+  //       body: JSON.stringify({
+  //         postData: {
+  //           content: content,
+  //           imgContent: imgContent,
+  //           image: profileImg,
+  //           firstName: firstName,
+  //           lastName: lastName,
+  //         },
+  //       }),
+  //     });
 
-      const result = await response.json();
-      console.log("Success:", result);
-      setPosts(result.posts);
-      setContent("");
-      setIsPostBoxOpen(false);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  //     const result = await response.json();
+  //     console.log("Success:", result);
+  //     setPosts(result.posts);
+  //     setContent("");
+  //     setIsPostBoxOpen(false);
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
 
   const getPosts = async () => {
     try {
@@ -287,10 +281,10 @@ function Explore() {
   console.log(editboxPreviewImg, "EDIT prev");
   console.log(imgContent, "IMG");
 
-  const handlePrevImgCloseClick = () => {
-    setPreview(null);
-    setImgContent(null);
-  };
+  // const handlePrevImgCloseClick = () => {
+  //   setPreview(null);
+  //   setImgContent(null);
+  // };
 
   console.log(posts, "POSTSSSSSSSSS");
   return (

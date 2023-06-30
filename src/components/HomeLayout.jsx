@@ -21,12 +21,8 @@ function HomeLayout() {
     profileImg,
 
     setIsLogin,
-    posts,
+
     loggedInUserDetails,
-    searchText,
-    setSearchText,
-    updatedFollowings,
-    setUpdatedFollowings,
   } = useContext(LoginProvider);
 
   const handleLogoutClick = () => {
