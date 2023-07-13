@@ -45,6 +45,7 @@ export function LoginContext({ children }) {
           username,
           setUsername,
           userID,
+          setUserID,
           bookmarkPosts,
           setBookmarkPosts,
           likedPosts,

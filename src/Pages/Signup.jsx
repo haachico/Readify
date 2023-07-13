@@ -112,7 +112,10 @@ function Signup() {
         <div>
           <h4>{message}</h4>
           <span>Already have an account? </span>
-          <Link to="/" style={{ color: "white", textDecoration: "underline" }}>
+          <Link
+            to="/login"
+            style={{ color: "white", textDecoration: "underline" }}
+          >
             Log In!
           </Link>
         </div>

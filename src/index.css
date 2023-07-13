@@ -7,7 +7,11 @@ body {
 }
 
 .App {
-  font-family: "Poppins", sans-serif;
+  font-family: "Poppins";
+}
+
+body {
+  font-family: "Poppins";
 }
 
 a {
@@ -95,7 +99,7 @@ a {
   align-items: center;
   padding: 1rem;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   height: 3rem;
 
   position: sticky;

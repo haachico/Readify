@@ -598,6 +598,8 @@ function Profile() {
             </div>
           </div>
         }
+
+        {/* EDIT  SECTION*/}
         {selectedUser.username === username ? (
           <div>
             <button

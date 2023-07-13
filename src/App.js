@@ -13,25 +13,32 @@ import BookmarkPosts from "./Pages/BookmarkPosts";
 import HomeLayout from "./components/HomeLayout";
 import Trending from "./Pages/Trending";
 import Profile from "./Pages/Profile";
+import RequiresAuth from "./components/RequiresAuth";
 
 function App() {
-  const { isLogin, isPostboxOpen } = useContext(LoginProvider);
   return (
-    <div className={`App  ${isPostboxOpen ? "blur" : ""}`}>
+    <div>
       <Routes>
-        <Route path="/" element={<Landing />} />
+        <Route path="/login" element={<Landing />} />
         <Route path="/signup" element={<Signup />} />
-        {isLogin && (
-          <Route path="/" element={<Layout />}>
-            <Route path="/" element={<HomeLayout />}>
-              <Route index element={<Home />} />
-              <Route path="/trending" element={<Trending />} />
-              <Route path="/explore" element={<Explore />} />
-              <Route path="/bookmark" element={<BookmarkPosts />} />
-              <Route path="/profile/:profileName" element={<Profile />} />
-            </Route>
+
+        <Route
+          path="/"
+          element={
+            <RequiresAuth>
+              <Layout />
+            </RequiresAuth>
+          }
+        >
+          <Route path="/" element={<HomeLayout />}>
+            <Route index element={<Home />} />
+            <Route path="/trending" element={<Trending />} />
+            <Route path="/explore" element={<Explore />} />
+            <Route path="/bookmark" element={<BookmarkPosts />} />
+            <Route path="/profile/:profileName" element={<Profile />} />
           </Route>
-        )}
+        </Route>
+
         <Route path="/mockman" element={<Mockman />} />
       </Routes>
     </div>

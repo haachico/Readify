@@ -2,7 +2,7 @@ import readify from "../logo.png";
 
 import React, { useState } from "react";
 import { useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { LoginProvider } from "..";
 
@@ -25,6 +25,8 @@ function Landing() {
     about,
     link,
   } = useContext(LoginProvider);
+
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     try {
@@ -56,6 +58,7 @@ function Landing() {
         setIsLogin(true);
         setEncodedToken(result.encodedToken);
         setUserID(result.id);
+        navigate("/");
       }
     } catch (error) {
       console.error("Error:", error);

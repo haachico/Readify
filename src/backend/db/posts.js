@@ -188,7 +188,7 @@ export const posts = [
     content: "Ocean Vuong's writing is so beautiful and poetic. Oh, my heart.",
     imgContent:
       "https://m.media-amazon.com/images/I/91om-N7Ry3L._AC_UF1000,1000_QL80_.jpg",
-    username: "isha123",
+    username: "ishajangle",
     firstName: "Isha",
     lastName: "Jangle",
     email: "",
