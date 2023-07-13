@@ -362,8 +362,9 @@ button {
   position: absolute;
   /* background-color: red; */
   /* display: inline-block; */
-  left: 0rem;
+  left: 8rem;
   bottom: 3rem;
+  z-index: 9999;
 }
 
 .editTextArea {
