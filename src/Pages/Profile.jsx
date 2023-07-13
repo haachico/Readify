@@ -1,11 +1,11 @@
 import React from "react";
 import { useContext, useState, useEffect } from "react";
 import { useParams } from "react-router";
-import { Link } from "react-router-dom";
 import FadeLoader from "react-spinners/FadeLoader";
 
 import { LoginProvider } from "..";
 import Post from "../components/Post";
+import UserProfile from "../components/UserProfile";
 
 function Profile() {
   const [isEditFormOpen, setIsEditFormOpen] = useState(false);
@@ -14,7 +14,6 @@ function Profile() {
 
   const {
     encodedToken,
-    username,
     allUsers,
     setAllUsers,
     followedUsers,
@@ -145,8 +144,6 @@ function Profile() {
   const { profileName } = useParams();
 
   const selectedUser = allUsers?.find((user) => user.username === profileName);
-
-  console.log(selectedUser, "Selected user");
 
   const handleSaveEditForm = async (id) => {
     console.log("SUBMITEDDDD");
@@ -284,278 +281,31 @@ function Profile() {
         />
       ) : (
         <div>
-          <div className="profile--div">
-            <div className="profile--dp">
-              <img
-                src={selectedUser?.image}
-                alt=""
-                style={{ width: "8rem", height: "8rem", borderRadius: "50%" }}
-              />
-
-              {selectedUser.username !== username ? (
-                followedUsers
-                  .map((e) => e.followUser.username === selectedUser.username)
-                  .includes(true) ? (
-                  <button
-                    onClick={() => handleUnfollowClick(selectedUser._id)}
-                    className="profileUnfollow--btn"
-                  >
-                    Following
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => handleFollowClick(selectedUser._id)}
-                    className="profileFollow--btn"
-                  >
-                    Follow
-                  </button>
-                )
-              ) : (
-                ""
-              )}
-            </div>
-            {
-              <div>
-                <h2 style={{ margin: "0px" }}>
-                  {selectedUser?.firstName} {selectedUser?.lastName}
-                </h2>
-                <p>@{selectedUser?.username}</p>
-                <p>About : {selectedUser.about}</p>
-                <p>
-                  Link :{" "}
-                  <a
-                    href={link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ color: "rgba(0,184,255)" }}
-                  >
-                    {selectedUser.link}
-                  </a>
-                </p>
-
-                <div className="profile--btns">
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <p style={{ margin: "2px" }}>
-                      {selectedUser.following.length}
-                    </p>
-                    <button
-                      style={{ margin: "2px" }}
-                      onClick={() => setIsFollowingsBoxOpen(true)}
-                    >
-                      Following
-                    </button>
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <p style={{ margin: "2px" }}>
-                      {selectedUser.followers.length}
-                    </p>
-                    <button
-                      style={{ margin: "2px" }}
-                      onClick={() => setIsFollowersBoxOpen(true)}
-                    >
-                      Followers
-                    </button>
-                  </div>
-                </div>
-                <div>
-                  {isFollowersBoxOpen && (
-                    <div className="followers--box">
-                      <button
-                        onClick={() => setIsFollowersBoxOpen(false)}
-                        className="followersBox--close"
-                      >
-                        x
-                      </button>
-                      {selectedUser?.followers?.map((user) => (
-                        <div>
-                          <div className="follower--box">
-                            <Link to={`/profile/${user.username}`}>
-                              {" "}
-                              <img
-                                src={user.image}
-                                alt={user.username}
-                                style={{
-                                  width: "2rem",
-                                  height: "2rem",
-                                  borderRadius: "50%",
-                                }}
-                              />
-                            </Link>
-                            <Link to={`/profile/${user.username}`}>
-                              {" "}
-                              <div
-                                style={{
-                                  display: "flex",
-                                  flexDirection: "column",
-                                  alignItems: "flex-start",
-                                }}
-                              >
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    gap: "5px",
-                                    justifyContent: "flex-start",
-                                    alignItems: "flex-end",
-                                  }}
-                                >
-                                  <p style={{ marginBottom: "0px" }}>
-                                    {user.firstName}
-                                  </p>
-                                  <p style={{ marginBottom: "0px" }}>
-                                    {user.lastName}
-                                  </p>
-                                </div>
-                                <p
-                                  style={{ fontSize: "10px", marginTop: "2px" }}
-                                >
-                                  @{user.username}
-                                </p>
-                              </div>
-                            </Link>
-                          </div>
-                        </div>
-                      ))}{" "}
-                    </div>
-                  )}
-                  {isFollowingsBoxOpen && (
-                    <div className="followings--box">
-                      <button
-                        onClick={() => setIsFollowingsBoxOpen(false)}
-                        className="followingsBox--close"
-                      >
-                        x
-                      </button>
-                      {selectedUser?.following?.map((user) => (
-                        <div>
-                          <div className="following--box">
-                            <Link to={`/profile/${user.username}`}>
-                              {" "}
-                              <img
-                                src={user.image}
-                                alt={user.username}
-                                style={{
-                                  width: "2rem",
-                                  height: "2rem",
-                                  borderRadius: "50%",
-                                }}
-                              />
-                            </Link>
-                            <Link to={`/profile/${user.username}`}>
-                              {" "}
-                              <div
-                                style={{
-                                  display: "flex",
-                                  flexDirection: "column",
-                                  alignItems: "flex-start",
-                                }}
-                              >
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    gap: "5px",
-                                    justifyContent: "flex-start",
-                                    alignItems: "flex-end",
-                                  }}
-                                >
-                                  <p style={{ marginBottom: "0px" }}>
-                                    {user.firstName}
-                                  </p>
-                                  <p style={{ marginBottom: "0px" }}>
-                                    {user.lastName}
-                                  </p>
-                                </div>
-                                <p
-                                  style={{ fontSize: "10px", marginTop: "2px" }}
-                                >
-                                  @{user.username}
-                                </p>
-                              </div>
-                            </Link>
-                          </div>
-                        </div>
-                      ))}{" "}
-                    </div>
-                  )}
-                </div>
-              </div>
-            }
-
-            {/* EDIT  SECTION*/}
-            {selectedUser.username === username ? (
-              <div>
-                <button
-                  onClick={() => setIsEditFormOpen(true)}
-                  className="editProfile--btn"
-                >
-                  Edit profile
-                </button>
-              </div>
-            ) : (
-              ""
-            )}
-
-            {isEditFormOpen && (
-              <form className="edit--form" onSubmit={(e) => e.preventDefault()}>
-                {selectedUser.username === username ? (
-                  <>
-                    <label htmlFor="dp" className="profile--camera">
-                      Select :{" "}
-                      <span>
-                        <i class="fa-solid fa-camera"></i>
-                      </span>
-                    </label>
-                    <input
-                      id="dp"
-                      type="file"
-                      accept="image/*"
-                      className="img--select"
-                      onChange={(e) =>
-                        setProfileImg(URL.createObjectURL(e.target.files[0]))
-                      } // Set the selected image file to the state
-                    />
-                  </>
-                ) : (
-                  ""
-                )}
-                <label>
-                  About :
-                  <input
-                    type="text"
-                    value={about}
-                    onChange={(e) => setAbout(e.target.value)}
-                  />
-                </label>
-                <label>
-                  Link :
-                  <input
-                    type="text"
-                    value={link}
-                    onChange={(e) => setLink(e.target.value)}
-                  />
-                </label>
-                <button
-                  onClick={() => handleSaveEditForm(postUpdateProfileId)}
-                  className="btn"
-                >
-                  Save
-                </button>
-              </form>
-            )}
-          </div>
+          <UserProfile
+            postId={selectedUser._id}
+            firstName={selectedUser.firstName}
+            lastName={selectedUser.lastName}
+            image={selectedUser.image}
+            userName={selectedUser.username}
+            about={about}
+            setAbout={setAbout}
+            bioLink={selectedUser.link}
+            setLink={setLink}
+            followings={selectedUser.following}
+            followers={selectedUser.followers}
+            postUpdateProfileId={postUpdateProfileId}
+            handleFollowClick={handleFollowClick}
+            handleUnfollowClick={handleUnfollowClick}
+            handleSaveEditForm={handleSaveEditForm}
+            isFollowersBoxOpen={isFollowersBoxOpen}
+            setIsFollowersBoxOpen={setIsFollowersBoxOpen}
+            isFollowingsBoxOpen={isFollowingsBoxOpen}
+            setIsFollowingsBoxOpen={setIsFollowingsBoxOpen}
+            isEditBoxOpen={isEditBoxOpen}
+            setIsEditBoxOpen={setIsEditBoxOpen}
+            profileImg={profileImg}
+            setProfileImg={setProfileImg}
+          />
           <div className="posts--div">
             {sortedPosts.length > 0 ? (
               sortedPosts.map((e) =>
