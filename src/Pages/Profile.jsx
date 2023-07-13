@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import FadeLoader from "react-spinners/FadeLoader";
 
 import { LoginProvider } from "..";
+import Post from "../components/Post";
 
 function Profile() {
   const [isEditFormOpen, setIsEditFormOpen] = useState(false);
@@ -14,8 +15,6 @@ function Profile() {
   const {
     encodedToken,
     username,
-    bookmarkPosts,
-    likedPosts,
     allUsers,
     setAllUsers,
     followedUsers,
@@ -28,12 +27,6 @@ function Profile() {
     setAbout,
     link,
     setLink,
-    handleBookmark,
-    handleRemoveBookmark,
-    handleLike,
-    handleDislike,
-    handleDelete,
-    handleComment,
   } = useContext(LoginProvider);
 
   const [editedPost, setEditedPost] = useState("");
@@ -127,17 +120,6 @@ function Profile() {
     getPosts();
     getUsers();
   }, []);
-
-  const getDate = (timestamp) => {
-    const date = new Date(timestamp);
-    const options = {
-      weekday: "short",
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-    };
-    return date.toLocaleDateString("en-US", options).replace(/,/g, "");
-  };
 
   useEffect(() => {
     if (!imgContent) {
@@ -285,11 +267,6 @@ function Profile() {
 
     return dateB - dateA;
   });
-
-  console.log(allUsers, "NEW ALL USERS");
-  console.log(followedUsers, "FOLLOWED USERSSSSS");
-
-  console.log(posts, "PROFILE POSTS");
 
   const postUpdateProfileId = posts.find(
     (e) => e.username === selectedUser.username
@@ -583,193 +560,27 @@ function Profile() {
             {sortedPosts.length > 0 ? (
               sortedPosts.map((e) =>
                 e && e?.username === profileName ? (
-                  <div className="post">
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "flex-start",
-                        gap: "1rem",
-                      }}
-                    >
-                      <Link to={`/profile/${e?.username}`}>
-                        <img
-                          src={e?.image}
-                          alt={e?.username}
-                          style={{
-                            width: "2rem",
-                            height: "2rem",
-                            borderRadius: "50%",
-                          }}
-                        />
-                      </Link>
-
-                      <div style={{ width: "100%" }}>
-                        <div
-                          style={{
-                            display: "flex",
-                            gap: "5px",
-                            justifyContent: "flex-start",
-                            alignItems: "flex-end",
-                          }}
-                        >
-                          {" "}
-                          <h4 style={{ marginBottom: "0px" }}>
-                            <Link
-                              to={`/profile/${e?.username}`}
-                              style={{ height: "" }}
-                            >
-                              {e?.firstName}
-                            </Link>
-                          </h4>{" "}
-                          <h4 style={{ marginBottom: "0px" }}>
-                            <Link to={`/profile/${e?.username}`}>
-                              {e?.lastName}
-                            </Link>
-                          </h4>
-                          <span>•</span>
-                          <p
-                            style={{
-                              marginBottom: "2px",
-                              marginTop: "0px",
-                              fontSize: "12px",
-                            }}
-                          >
-                            {getDate(e?.createdAt)}
-                          </p>
-                          {e?.username === username && (
-                            <span
-                              style={{ marginLeft: "auto", cursor: "pointer" }}
-                            >
-                              <i
-                                class="fa-solid fa-pen-to-square"
-                                onClick={() => handleEdit(e?._id)}
-                              ></i>
-                            </span>
-                          )}
-                        </div>
-                        <div style={{ marginTop: "-5px" }}>
-                          <p style={{ fontSize: "12px", marginTop: "5px" }}>
-                            @{e?.username}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    {e?._id === editedPostID && isEditBoxOpen && (
-                      <div className="editBox--div">
-                        <textarea
-                          rows={4}
-                          column={40}
-                          type="text"
-                          value={editedPost}
-                          onChange={(e) => setEditedPost(e.target.value)}
-                          style={{ width: "18rem", height: "6rem" }}
-                          className="editTextArea"
-                        />
-                        {editboxPreviewImg && (
-                          <div className="editbox-previewImg--div">
-                            <i
-                              class="fa-sharp fa-regular fa-circle-xmark"
-                              id="editbox-close--icon"
-                              onClick={() => setEditPreviewImg(null)}
-                            ></i>
-                            <img
-                              src={editboxPreviewImg}
-                              alt=""
-                              style={{ width: "4rem", height: "4rem" }}
-                              className="editbox-preview--img"
-                            />
-                          </div>
-                        )}
-                        <label
-                          htmlFor="editbox-file-input"
-                          className="editbox-img--select--label"
-                        >
-                          <i
-                            class="fa-solid fa-image"
-                            id="editbox-image-icon"
-                          ></i>{" "}
-                        </label>
-                        <input
-                          id="editbox-file-input"
-                          type="file"
-                          accept="image/*"
-                          className="editbox-img--select"
-                          onChange={(e) =>
-                            setEditedImgContent(
-                              URL.createObjectURL(e.target.files[0])
-                            )
-                          } // Set the selected image file to the state
-                        />
-                        <button
-                          onClick={() => handleUpdate(e?._id)}
-                          className="editbox-update--btn"
-                        >
-                          Update
-                        </button>
-                        <button
-                          className="editbox-close-btn"
-                          onClick={() => setIsEditBoxOpen(false)}
-                        >
-                          x
-                        </button>
-                      </div>
-                    )}
-                    <div style={{ margin: "2rem 0" }}>
-                      <p>{e?.content}</p>
-                    </div>
-                    {e?.imgContent && (
-                      <img
-                        src={e?.imgContent}
-                        alt=""
-                        style={{ width: "100%", height: "25rem" }}
-                      />
-                    )}
-
-                    <div className="post--btns">
-                      <div>
-                        {likedPosts
-                          .map((post) => post?._id === e?._id)
-                          .includes(true) ? (
-                          <span onClick={() => handleDislike(e?._id)}>
-                            <i class="fa-solid fa-heart"></i>
-                          </span>
-                        ) : (
-                          <span onClick={() => handleLike(e?._id)}>
-                            <i class="fa-regular fa-heart"></i>
-                          </span>
-                        )}{" "}
-                        {e?.likes?.likeCount}
-                      </div>
-                      <span onClick={handleComment}>
-                        <i class="fa-regular fa-comment"></i>
-                      </span>
-
-                      {bookmarkPosts
-                        .map(
-                          (post) =>
-                            post.content === e?.content ||
-                            post.imgContent === e?.imgContent
-                        )
-                        .includes(true) ? (
-                        <span onClick={() => handleRemoveBookmark(e?._id)}>
-                          {" "}
-                          <i class="fa-solid fa-bookmark"></i>
-                        </span>
-                      ) : (
-                        <span onClick={() => handleBookmark(e?._id)}>
-                          <i class="fa-regular fa-bookmark"></i>
-                        </span>
-                      )}
-                      {e?.username === username && (
-                        <span onClick={() => handleDelete(e?._id)}>
-                          <i class="fa-solid fa-trash-can"></i>
-                        </span>
-                      )}
-                    </div>
-                    <hr className="break--line" />
-                  </div>
+                  <Post
+                    postId={e._id}
+                    postUsername={e.username}
+                    image={e.image}
+                    firstName={e.firstName}
+                    lastName={e.lastName}
+                    content={e.content}
+                    imgContent={e.imgContent}
+                    likesCount={e.likes.likeCount}
+                    createdAt={e.createdAt}
+                    editedPostID={editedPostID}
+                    isEditBoxOpen={isEditBoxOpen}
+                    setIsEditBoxOpen={setIsEditBoxOpen}
+                    editedPost={editedPost}
+                    setEditedPost={setEditedPost}
+                    editboxPreviewImg={editboxPreviewImg}
+                    setEditPreviewImg={setEditPreviewImg}
+                    setEditedImgContent={setEditedImgContent}
+                    handleEdit={handleEdit}
+                    handleUpdate={handleUpdate}
+                  />
                 ) : null
               )
             ) : (

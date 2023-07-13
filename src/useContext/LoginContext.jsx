@@ -19,7 +19,6 @@ export function LoginContext({ children }) {
   const [dislikePosts, setDislikePosts] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
   const [followedUsers, setFollowedUsers] = useState([]);
-  const [isPostboxOpen, setIsPostBoxOpen] = useState(false);
   const [posts, setPosts] = useState([]);
   const [loggedInUserDetails, setLoggedInUserDetails] = useState({});
   const [profileImg, setProfileImg] = useState(
@@ -173,8 +172,6 @@ export function LoginContext({ children }) {
           setAllUsers,
           followedUsers,
           setFollowedUsers,
-          isPostboxOpen,
-          setIsPostBoxOpen,
           profileImg,
           setProfileImg,
           posts,

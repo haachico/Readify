@@ -1,26 +1,19 @@
 import React, { useEffect } from "react";
 import { useContext, useState } from "react";
-import { Link } from "react-router-dom";
 import FadeLoader from "react-spinners/FadeLoader";
 
 import { LoginProvider } from "..";
+import Post from "../components/Post";
 
 function BookmarkPost() {
   const {
     encodedToken,
-    username,
     bookmarkPosts,
-    setBookmarkPosts,
-    likedPosts,
-
-    setLikedPosts,
-
     setAllUsers,
     followedUsers,
     loggedInUserDetails,
     posts,
     setPosts,
-    handleComment,
   } = useContext(LoginProvider);
 
   const [editedPost, setEditedPost] = useState("");
@@ -115,96 +108,6 @@ function BookmarkPost() {
     getUsers();
   }, []);
 
-  const handleLike = async (id) => {
-    try {
-      const response = await fetch(`/api/posts/like/${id}`, {
-        method: "POST", // or 'PUT'
-        headers: {
-          "Content-Type": "application/json",
-          authorization: encodedToken,
-        },
-      });
-
-      const result = await response.json();
-      setPosts(result.posts);
-      setLikedPosts([...likedPosts, posts.find((e) => e._id === id)]);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handleDislike = async (id) => {
-    try {
-      const response = await fetch(`/api/posts/dislike/${id}`, {
-        method: "POST", // or 'PUT'
-        headers: {
-          "Content-Type": "application/json",
-          authorization: encodedToken,
-        },
-      });
-
-      const result = await response.json();
-      console.log(result);
-      setPosts(result.posts);
-      setLikedPosts(likedPosts.filter((e) => e._id !== id));
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handleDelete = async (id) => {
-    try {
-      const response = await fetch(`/api/posts/${id}`, {
-        method: "DELETE", // or 'PUT'
-        headers: {
-          "Content-Type": "application/json",
-          authorization: encodedToken,
-        },
-      });
-
-      const result = await response.json();
-      console.log(result);
-      setPosts(result.posts);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handleBookmark = async (id) => {
-    try {
-      const response = await fetch(`/api/users/bookmark/${id}`, {
-        method: "POST", // or 'PUT'
-        headers: {
-          "Content-Type": "application/json",
-          authorization: encodedToken,
-        },
-      });
-
-      const result = await response.json();
-      console.log(result);
-      setBookmarkPosts(result.bookmarks);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handleRemoveBookmark = async (id) => {
-    try {
-      const response = await fetch(`/api/users/remove-bookmark/${id}`, {
-        method: "POST", // or 'PUT'
-        headers: {
-          "Content-Type": "application/json",
-          authorization: encodedToken,
-        },
-      });
-
-      const result = await response.json();
-      console.log(result, "REMOVE BOOKMARK RESULT");
-      setBookmarkPosts(result.bookmarks);
-    } catch (err) {
-      console.error(err);
-    }
-  };
   const sortedPosts = posts
     .filter((post) =>
       bookmarkPosts.some((bookmark) => bookmark._id === post._id)
@@ -217,17 +120,6 @@ function BookmarkPost() {
     });
 
   console.log(sortedPosts, " SORTED POST");
-
-  const getDate = (timestamp) => {
-    const date = new Date(timestamp);
-    const options = {
-      weekday: "short",
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-    };
-    return date.toLocaleDateString("en-US", options).replace(/,/g, "");
-  };
 
   console.log(bookmarkPosts, "BOOKMARK POSTS");
 
@@ -268,193 +160,27 @@ function BookmarkPost() {
           {bookmarkPosts.length > 0 ? (
             <div>
               {sortedPosts.map((post) => (
-                <div className="post">
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "flex-start",
-                      gap: "1rem",
-                    }}
-                  >
-                    <Link to={`/profile/${post.username}`}>
-                      <img
-                        src={post.image}
-                        alt={post.username}
-                        style={{
-                          width: "2rem",
-                          height: "2rem",
-                          borderRadius: "50%",
-                        }}
-                      />
-                    </Link>
-
-                    <div style={{ width: "100%" }}>
-                      <div
-                        style={{
-                          display: "flex",
-                          gap: "5px",
-                          justifyContent: "flex-start",
-                          alignItems: "flex-end",
-                        }}
-                      >
-                        {" "}
-                        <h4 style={{ marginBottom: "0px" }}>
-                          <Link
-                            to={`/profile/${post.username}`}
-                            style={{ height: "" }}
-                          >
-                            {post.firstName}
-                          </Link>
-                        </h4>{" "}
-                        <h4 style={{ marginBottom: "0px" }}>
-                          <Link to={`/profile/${post.username}`}>
-                            {post.lastName}
-                          </Link>
-                        </h4>
-                        <span>•</span>
-                        <p
-                          style={{
-                            marginBottom: "2px",
-                            marginTop: "0px",
-                            fontSize: "12px",
-                          }}
-                        >
-                          {getDate(post.createdAt)}
-                        </p>
-                        {post.username === username && (
-                          <span
-                            style={{ marginLeft: "auto", cursor: "pointer" }}
-                          >
-                            <i
-                              class="fa-solid fa-pen-to-square"
-                              onClick={() => handleEdit(post._id)}
-                            ></i>
-                          </span>
-                        )}
-                      </div>
-                      <div style={{ marginTop: "-5px" }}>
-                        <p style={{ fontSize: "12px", marginTop: "5px" }}>
-                          @{post.username}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {post._id === editedPostID && isEditBoxOpen && (
-                    <div className="editBox--div">
-                      <textarea
-                        rows={4}
-                        column={40}
-                        type="text"
-                        value={editedPost}
-                        onChange={(e) => setEditedPost(e.target.value)}
-                        style={{ width: "18rem", height: "6rem" }}
-                        className="editTextArea"
-                      />
-                      {editboxPreviewImg && (
-                        <div className="editbox-previewImg--div">
-                          <i
-                            class="fa-sharp fa-regular fa-circle-xmark"
-                            id="editbox-close--icon"
-                            onClick={() => setEditPreviewImg(null)}
-                          ></i>
-                          <img
-                            src={editboxPreviewImg}
-                            alt=""
-                            style={{ width: "4rem", height: "4rem" }}
-                            className="editbox-preview--img"
-                          />
-                        </div>
-                      )}
-                      <label
-                        htmlFor="editbox-file-input"
-                        className="editbox-img--select--label"
-                      >
-                        <i
-                          class="fa-solid fa-image"
-                          id="editbox-image-icon"
-                        ></i>{" "}
-                      </label>
-                      <input
-                        id="editbox-file-input"
-                        type="file"
-                        accept="image/*"
-                        className="editbox-img--select"
-                        onChange={(e) =>
-                          setEditedImgContent(
-                            URL.createObjectURL(e.target.files[0])
-                          )
-                        } // Set the selected image file to the state
-                      />
-                      <button
-                        onClick={() => handleUpdate(post._id)}
-                        className="editbox-update--btn"
-                      >
-                        Update
-                      </button>
-                      <button
-                        className="editbox-close-btn"
-                        onClick={() => setIsEditBoxOpen(false)}
-                      >
-                        x
-                      </button>
-                    </div>
-                  )}
-                  <div style={{ margin: "2rem 0" }}>
-                    <p>{post.content}</p>
-                  </div>
-                  {post.imgContent && (
-                    <img
-                      src={post.imgContent}
-                      alt=""
-                      style={{ width: "100%", height: "25rem" }}
-                    />
-                  )}
-
-                  <div className="post--btns">
-                    <div>
-                      {likedPosts
-                        .map((e) => e._id === post._id)
-                        .includes(true) ? (
-                        <span onClick={() => handleDislike(post._id)}>
-                          <i class="fa-solid fa-heart"></i>
-                        </span>
-                      ) : (
-                        <span onClick={() => handleLike(post._id)}>
-                          <i class="fa-regular fa-heart"></i>
-                        </span>
-                      )}{" "}
-                      {post.likes.likeCount}
-                    </div>
-                    <span onClick={handleComment}>
-                      <i class="fa-regular fa-comment"></i>
-                    </span>
-
-                    {bookmarkPosts
-                      .map(
-                        (e) =>
-                          e.content === post.content ||
-                          e.imgContent === post.imgContent
-                      )
-                      .includes(true) ? (
-                      <span onClick={() => handleRemoveBookmark(post._id)}>
-                        {" "}
-                        <i class="fa-solid fa-bookmark"></i>
-                      </span>
-                    ) : (
-                      <span onClick={() => handleBookmark(post._id)}>
-                        <i class="fa-regular fa-bookmark"></i>
-                      </span>
-                    )}
-                    {post.username === username && (
-                      <span onClick={() => handleDelete(post._id)}>
-                        <i class="fa-solid fa-trash-can"></i>
-                      </span>
-                    )}
-                  </div>
-                  <hr className="break--line" />
-                </div>
+                <Post
+                  postId={post._id}
+                  postUsername={post.username}
+                  image={post.image}
+                  firstName={post.firstName}
+                  lastName={post.lastName}
+                  content={post.content}
+                  imgContent={post.imgContent}
+                  likesCount={post.likes.likeCount}
+                  createdAt={post.createdAt}
+                  editedPostID={editedPostID}
+                  isEditBoxOpen={isEditBoxOpen}
+                  setIsEditBoxOpen={setIsEditBoxOpen}
+                  editedPost={editedPost}
+                  setEditedPost={setEditedPost}
+                  editboxPreviewImg={editboxPreviewImg}
+                  setEditPreviewImg={setEditPreviewImg}
+                  setEditedImgContent={setEditedImgContent}
+                  handleEdit={handleEdit}
+                  handleUpdate={handleUpdate}
+                />
               ))}
             </div>
           ) : (
