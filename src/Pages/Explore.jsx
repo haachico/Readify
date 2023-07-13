@@ -24,6 +24,11 @@ function Explore() {
 
     posts,
     setPosts,
+    handleBookmark,
+    handleRemoveBookmark,
+    handleLike,
+    handleDislike,
+    handleDelete,
   } = useContext(LoginProvider);
 
   const [editedPost, setEditedPost] = useState("");
@@ -117,97 +122,6 @@ function Explore() {
     getPosts();
     getUsers();
   }, []);
-
-  const handleLike = async (id) => {
-    try {
-      const response = await fetch(`/api/posts/like/${id}`, {
-        method: "POST", // or 'PUT'
-        headers: {
-          "Content-Type": "application/json",
-          authorization: encodedToken,
-        },
-      });
-
-      const result = await response.json();
-      setPosts(result.posts);
-      setLikedPosts([...likedPosts, posts.find((e) => e._id === id)]);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handleDislike = async (id) => {
-    try {
-      const response = await fetch(`/api/posts/dislike/${id}`, {
-        method: "POST", // or 'PUT'
-        headers: {
-          "Content-Type": "application/json",
-          authorization: encodedToken,
-        },
-      });
-
-      const result = await response.json();
-      console.log(result);
-      setPosts(result.posts);
-      setLikedPosts(likedPosts.filter((e) => e._id !== id));
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handleDelete = async (id) => {
-    try {
-      const response = await fetch(`/api/posts/${id}`, {
-        method: "DELETE", // or 'PUT'
-        headers: {
-          "Content-Type": "application/json",
-          authorization: encodedToken,
-        },
-      });
-
-      const result = await response.json();
-      console.log(result);
-      setPosts(result.posts);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handleBookmark = async (id) => {
-    try {
-      const response = await fetch(`/api/users/bookmark/${id}`, {
-        method: "POST", // or 'PUT'
-        headers: {
-          "Content-Type": "application/json",
-          authorization: encodedToken,
-        },
-      });
-
-      const result = await response.json();
-      console.log(result);
-      setBookmarkPosts(result.bookmarks);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handleRemoveBookmark = async (id) => {
-    try {
-      const response = await fetch(`/api/users/remove-bookmark/${id}`, {
-        method: "POST", // or 'PUT'
-        headers: {
-          "Content-Type": "application/json",
-          authorization: encodedToken,
-        },
-      });
-
-      const result = await response.json();
-      console.log(result, "REMOVE BOOKMARK RESULT");
-      setBookmarkPosts(result.bookmarks);
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
   const sortedPosts = posts.sort((a, b) => {
     const dateA = new Date(a.createdAt);
