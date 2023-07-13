@@ -23,7 +23,7 @@ function Trending() {
     handleLike,
     handleDislike,
     handleDelete,
-
+    handleComment,
     // setIsPostBoxOpen,
     // profileImg,
   } = useContext(LoginProvider);
@@ -337,7 +337,10 @@ function Trending() {
                     )}{" "}
                     {post.likes.likeCount}
                   </div>
-                  <i class="fa-regular fa-comment"></i>
+                  <span onClick={handleComment}>
+                    {" "}
+                    <i class="fa-regular fa-comment"></i>
+                  </span>
 
                   {bookmarkPosts
                     .map(

@@ -7,24 +7,20 @@ import { LoginProvider } from "..";
 
 function BookmarkPost() {
   const {
-    firstName,
-    lastName,
-    email,
     encodedToken,
     username,
-
     bookmarkPosts,
     setBookmarkPosts,
     likedPosts,
 
     setLikedPosts,
 
-    allUsers,
     setAllUsers,
     followedUsers,
     loggedInUserDetails,
     posts,
     setPosts,
+    handleComment,
   } = useContext(LoginProvider);
 
   const [editedPost, setEditedPost] = useState("");
@@ -431,7 +427,9 @@ function BookmarkPost() {
                       )}{" "}
                       {post.likes.likeCount}
                     </div>
-                    <i class="fa-regular fa-comment"></i>
+                    <span onClick={handleComment}>
+                      <i class="fa-regular fa-comment"></i>
+                    </span>
 
                     {bookmarkPosts
                       .map(

@@ -33,6 +33,7 @@ function Profile() {
     handleLike,
     handleDislike,
     handleDelete,
+    handleComment,
   } = useContext(LoginProvider);
 
   const [editedPost, setEditedPost] = useState("");
@@ -741,7 +742,9 @@ function Profile() {
                         )}{" "}
                         {e?.likes?.likeCount}
                       </div>
-                      <i class="fa-regular fa-comment"></i>
+                      <span onClick={handleComment}>
+                        <i class="fa-regular fa-comment"></i>
+                      </span>
 
                       {bookmarkPosts
                         .map(

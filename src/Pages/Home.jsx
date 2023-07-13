@@ -29,6 +29,7 @@ function Home() {
     handleLike,
     handleDislike,
     handleDelete,
+    handleComment,
   } = useContext(LoginProvider);
   const [content, setContent] = useState("");
 
@@ -540,7 +541,9 @@ function Home() {
                           )}{" "}
                           {post.likes.likeCount}
                         </div>
-                        <i class="fa-regular fa-comment"></i>
+                        <span onClick={handleComment}>
+                          <i class="fa-regular fa-comment"></i>
+                        </span>
 
                         {bookmarkPosts
                           .map(

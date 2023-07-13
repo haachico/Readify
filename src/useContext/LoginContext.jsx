@@ -139,6 +139,12 @@ export function LoginContext({ children }) {
     }
   };
 
+  const handleComment = () => {
+    toast.success("Feature coming soon!", {
+      position: toast.POSITION.TOP_RIGHT,
+    });
+  };
+
   return (
     <div>
       <LoginProvider.Provider
@@ -186,6 +192,7 @@ export function LoginContext({ children }) {
           handleDelete,
           handleLike,
           handleDislike,
+          handleComment,
         }}
       >
         {children}
