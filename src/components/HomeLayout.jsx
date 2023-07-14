@@ -59,12 +59,6 @@ function HomeLayout() {
     }
   };
 
-  // const filteredUser = [...allUsers].filter((e) =>
-  //   e.username.toLowerCase().includes(searchText.toLowerCase())
-  // );
-
-  console.log(username, "USERNAME");
-
   return (
     <div className="main--body">
       <div className="sidebar--div">

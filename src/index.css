@@ -125,6 +125,7 @@ a {
   justify-content: center;
   align-items: center;
   gap: 1rem;
+  position: relative;
 }
 
 .header--profile {
@@ -552,11 +553,12 @@ button {
   border-radius: 10px;
 }
 
-.search--list {
+.header .header--nav .search--list {
   background-color: #223547;
-  padding: 5px 10px;
-  height: 100%;
-  width: 15rem;
+  position: absolute;
+  top: 3rem;
+  width: 90%;
+  padding: 5px;
 }
 
 .sort--btns {

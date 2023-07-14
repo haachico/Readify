@@ -12,8 +12,7 @@ function Explore() {
   const [editedPost, setEditedPost] = useState("");
   const [editedImgContent, setEditedImgContent] = useState("");
   const [editedPostID, setEditedPostID] = useState("");
-  const [imgContent, setImgContent] = useState(null);
-  const [preview, setPreview] = useState(null);
+
   const [isEditBoxOpen, setIsEditBoxOpen] = useState(false);
   const [editboxPreviewImg, setEditPreviewImg] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -106,20 +105,6 @@ function Explore() {
   });
 
   console.log(sortedPosts, " SORTED POST");
-
-  useEffect(() => {
-    if (!imgContent) {
-      setPreview(undefined);
-
-      return;
-    }
-
-    // const objectUrl = URL.createObjectURL(imgContent);
-    setPreview(imgContent);
-
-    // free memory when ever this component is unmounted
-    // return () => URL.revokeObjectURL(objectUrl);
-  }, [imgContent]);
 
   useEffect(() => {
     if (!editedImgContent) {

@@ -31,18 +31,9 @@ function Profile() {
   const [editedPost, setEditedPost] = useState("");
   const [editedImgContent, setEditedImgContent] = useState("");
   const [editedPostID, setEditedPostID] = useState("");
-  const [imgContent, setImgContent] = useState(null);
-  const [preview, setPreview] = useState(null);
   const [isEditBoxOpen, setIsEditBoxOpen] = useState(false);
   const [editboxPreviewImg, setEditPreviewImg] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-  }, []);
 
   const handleEdit = (id) => {
     const post = posts.find((e) => e?._id == id);
@@ -72,8 +63,6 @@ function Profile() {
 
       const result = await response.json();
 
-      console.log(result, "UPDATE EDIT POST RESULT");
-
       setPosts(result.posts);
       setEditedPostID("");
       setIsEditBoxOpen(false);
@@ -83,56 +72,12 @@ function Profile() {
     }
   };
 
-  const getPosts = async () => {
-    try {
-      const response = await fetch("/api/posts", {
-        method: "GET", // or 'PUT'
-        headers: {
-          "Content-Type": "application/json",
-          authorization: encodedToken,
-        },
-      });
-
-      const result = await response.json();
-
-      setPosts(result.posts);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const getUsers = async () => {
-    try {
-      const response = await fetch("/api/users", {
-        method: "GET", // or 'PUT'
-      });
-
-      const result = await response.json();
-
-      setAllUsers(result.users);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   useEffect(() => {
-    getPosts();
-    getUsers();
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
   }, []);
-
-  useEffect(() => {
-    if (!imgContent) {
-      setPreview(undefined);
-
-      return;
-    }
-
-    // const objectUrl = URL.createObjectURL(imgContent);
-    setPreview(imgContent);
-
-    // free memory when ever this component is unmounted
-    // return () => URL.revokeObjectURL(objectUrl);
-  }, [imgContent]);
 
   useEffect(() => {
     if (!editedImgContent) {
@@ -166,7 +111,6 @@ function Profile() {
 
       const result = await response.json();
 
-      console.log(result, " USER RESPONSE RESULT");
       setAllUsers(
         allUsers.map((user) =>
           user.username === result.user.username ? result.user : user
@@ -236,7 +180,6 @@ function Profile() {
 
       //ALL USERS NOT GETTING UPDATED //////////
       const result = await response.json();
-      console.log(result, "UNFOLLOW RESULT");
 
       setFollowedUsers(
         followedUsers.filter(
@@ -251,7 +194,6 @@ function Profile() {
           : e
       );
 
-      console.log(updatedAllUsers, "UPDATED ALL USERS");
       setAllUsers(updatedAllUsers);
     } catch (err) {
       console.error(err);

@@ -72,17 +72,19 @@ function Landing() {
       <div className="login--form">
         <h1>Log In.</h1>
         <form>
-          <label>Email or Username: </label>
+          <label for="email">Email or Username: </label>
           <input
-            type="text"
+            type="email"
+            id="email"
             value={email}
             placeholder="Enter your email or username"
             onChange={(e) => setEmail(e.target.value)}
           />
 
-          <label>Password : </label>
+          <label for="password">Password : </label>
           <input
             type="password"
+            id="password"
             value={password}
             placeholder="Enter your password"
             onChange={(e) => setPassword(e.target.value)}

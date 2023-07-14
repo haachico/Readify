@@ -25,6 +25,8 @@ function Signup() {
   const [message, setMessage] = useState("");
 
   const handleSignup = async (e) => {
+    if (!email || !password || !firstName || !lastName || !username) return;
+
     try {
       e.preventDefault();
 
@@ -61,49 +63,50 @@ function Signup() {
       <div className="signup--form">
         <h1>Sign up</h1>
         <form>
-          <label>First name : </label>
+          <label for="firstName">First name : </label>
           <input
             type="text"
+            id="firstName"
             value={firstName}
             placeholder="Enter your first name"
             onChange={(e) => setFirstName(e.target.value)}
-            required
           />
 
-          <label>Last name : </label>
+          <label for="lastName">Last name : </label>
           <input
             type="text"
+            id="lastName"
             value={lastName}
             placeholder="Enter your last name"
             onChange={(e) => setLastName(e.target.value)}
-            required
           />
 
-          <label> Username : </label>
+          <label for="username"> Username : </label>
           <input
             type="text"
+            id="username"
             value={username}
             placeholder="Enter your username"
             onChange={(e) => setUsername(e.target.value)}
-            required
           />
 
-          <label>Email : </label>
+          <label for="email">Email : </label>
           <input
             type="email"
-            name="email"
+            id="email"
+            pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$"
             placeholder="Enter your email"
-            required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            required
           />
 
-          <label>Password : </label>
+          <label for="password">Password : </label>
           <input
             type="password"
+            id="password"
             value={password}
             placeholder="Enter a valid password"
-            required
             onChange={(e) => setPassword(e.target.value)}
           />
 

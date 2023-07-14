@@ -185,19 +185,6 @@ function Home() {
   console.log(allUsers, "ALL USERS IN HOME");
 
   console.log(pressedButton, "PRESSED BUTTOn");
-  useEffect(() => {
-    if (!imgContent) {
-      setPreview(undefined);
-
-      return;
-    }
-
-    // const objectUrl = URL.createObjectURL(imgContent);
-    setPreview(imgContent);
-
-    // free memory when ever this component is unmounted
-    // return () => URL.revokeObjectURL(objectUrl);
-  }, [imgContent]);
 
   useEffect(() => {
     if (!editedImgContent) {
