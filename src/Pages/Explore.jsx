@@ -104,8 +104,6 @@ function Explore() {
     return dateB - dateA;
   });
 
-  console.log(sortedPosts, " SORTED POST");
-
   useEffect(() => {
     if (!editedImgContent) {
       setEditPreviewImg(undefined);

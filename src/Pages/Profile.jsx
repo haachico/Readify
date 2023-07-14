@@ -247,6 +247,8 @@ function Profile() {
             setIsEditBoxOpen={setIsEditBoxOpen}
             profileImg={profileImg}
             setProfileImg={setProfileImg}
+            isEditFormOpen={isEditFormOpen}
+            setIsEditFormOpen={setIsEditFormOpen}
           />
           <div className="posts--div">
             {sortedPosts.length > 0 ? (

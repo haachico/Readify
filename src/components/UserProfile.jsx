@@ -29,6 +29,8 @@ function UserProfile({
   setProfileImg,
 }) {
   const { link, username, followedUsers } = useContext(LoginProvider);
+
+  console.log(isEditFormOpen, "IS EDIT FORM OPEN");
   return (
     <div>
       <div className="profile--div">

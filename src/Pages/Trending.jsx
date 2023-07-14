@@ -116,11 +116,7 @@ function Trending() {
       return;
     }
 
-    // const objectUrl = URL.createObjectURL(imgContent);
     setPreview(imgContent);
-
-    // free memory when ever this component is unmounted
-    // return () => URL.revokeObjectURL(objectUrl);
   }, [imgContent]);
 
   useEffect(() => {
