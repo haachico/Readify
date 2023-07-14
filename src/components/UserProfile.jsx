@@ -31,6 +31,7 @@ function UserProfile({
   const { link, username, followedUsers } = useContext(LoginProvider);
 
   console.log(isEditFormOpen, "IS EDIT FORM OPEN");
+  console.log(followedUsers, "FOLLOWED USERS");
   return (
     <div>
       <div className="profile--div">
@@ -43,7 +44,7 @@ function UserProfile({
 
           {userName !== username ? (
             followedUsers
-              .map((e) => e.followUser.username === username)
+              .map((e) => e.followUser.username === userName)
               .includes(true) ? (
               <button
                 onClick={() => handleUnfollowClick(postId)}
