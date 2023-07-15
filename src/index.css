@@ -711,3 +711,9 @@ button {
   border: 0.5px solid;
   cursor: pointer;
 }
+
+.dp--uoload {
+  position: absolute;
+  background-color: red;
+  bottom: 2rem;
+}

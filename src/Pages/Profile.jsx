@@ -229,7 +229,7 @@ function Profile() {
             lastName={selectedUser.lastName}
             image={selectedUser.image}
             userName={selectedUser.username}
-            about={about}
+            about={selectedUser.about}
             setAbout={setAbout}
             bioLink={selectedUser.link}
             setLink={setLink}

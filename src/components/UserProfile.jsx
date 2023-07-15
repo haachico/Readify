@@ -31,8 +31,6 @@ function UserProfile({
 }) {
   const { link, username, followedUsers } = useContext(LoginProvider);
 
-  console.log(isEditFormOpen, "IS EDIT FORM OPEN");
-  console.log(followedUsers, "FOLLOWED USERS");
   return (
     <div>
       <div className="profile--div">
@@ -70,7 +68,7 @@ function UserProfile({
             <h2 style={{ margin: "0px" }}>
               {firstName} {lastName}
             </h2>
-            <p>@{username}</p>
+            <p>@{userName}</p>
             <p>About : {about}</p>
             <p>
               Link :{" "}
@@ -267,11 +265,10 @@ function UserProfile({
                           width: "3rem",
                           height: "3rem",
                           borderRadius: "50%",
-                          cursor: "pointer",
                         }}
                       />
                     ) : (
-                      <i class="fa-solid fa-camera"></i>
+                      ""
                     )}
                   </span>
                 </label>
