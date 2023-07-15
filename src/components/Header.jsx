@@ -7,8 +7,6 @@ import { LoginProvider } from "..";
 function Header() {
   const [searchText, setSearchText] = useState("");
   const { allUsers, setAllUsers } = useContext(LoginProvider);
-  // const { setIsLogin, firstName, username, profileImg } =
-  //   useContext(LoginProvider);
 
   const filteredUser = [...allUsers].filter((e) =>
     e.username.toLowerCase().includes(searchText.toLowerCase())
@@ -16,7 +14,6 @@ function Header() {
 
   return (
     <div className="header">
-      {/* <img src={Logo} alt="logo" className="header--logo" /> */}
       <h1 style={{ marginLeft: "2rem" }}>
         <Link to="/">Readify</Link>
       </h1>

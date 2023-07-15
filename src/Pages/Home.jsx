@@ -3,6 +3,7 @@ import { useContext, useState } from "react";
 import FadeLoader from "react-spinners/FadeLoader";
 import PostBox from "../components/PostBox";
 import Post from "../components/Post";
+import SortBtns from "../components/SortBtns";
 
 import { LoginProvider } from "..";
 
@@ -211,39 +212,7 @@ function Home() {
         />
       ) : (
         <>
-          <div className="sort--btns">
-            <button
-              onClick={() => handleSort("LATEST")}
-              // className={pressedButton === "LATEST" ? "highlight" : ""}
-              style={{
-                backgroundColor: pressedButton === "LATEST" ? "#cbd5e1" : "",
-                color: pressedButton === "LATEST" ? "black" : "",
-              }}
-            >
-              Latest
-            </button>
-            <button
-              onClick={() => handleSort("OLDEST")}
-              // className={pressedButton === "LATEST" ? "highlight" : ""}
-              style={{
-                backgroundColor: pressedButton === "OLDEST" ? "#cbd5e1" : "",
-                color: pressedButton === "OLDEST" ? "black" : "",
-              }}
-            >
-              Oldest
-            </button>
-            <button
-              onClick={() => handleSort("TRENDING")}
-              // className={pressedButton === "TRENDING" ? "highlight" : ""}
-              style={{
-                backgroundColor: pressedButton === "TRENDING" ? "#cbd5e1" : "",
-                color: pressedButton === "TRENDING" ? "black" : "",
-              }}
-            >
-              Trending
-            </button>
-          </div>
-
+          <SortBtns pressedButton={pressedButton} handleSort={handleSort} />
           <div className="posts--div">
             <div
               className="post--div"
