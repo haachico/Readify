@@ -36,7 +36,7 @@ function Profile() {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleEdit = (id) => {
-    const post = posts.find((e) => e?._id == id);
+    const post = posts?.find((e) => e?._id == id);
 
     setEditedPost(post.content);
     setEditedImgContent(post.imgContent);
@@ -112,7 +112,7 @@ function Profile() {
       const result = await response.json();
 
       setAllUsers(
-        allUsers.map((user) =>
+        allUsers?.map((user) =>
           user.username === result.user.username ? result.user : user
         )
       );
@@ -154,7 +154,7 @@ function Profile() {
       console.log(result, "follow fn called result");
       setFollowedUsers([...followedUsers, result]);
 
-      const updatedAllUsers = allUsers.map((e) =>
+      const updatedAllUsers = allUsers?.map((e) =>
         e.username === result.followUser.username
           ? result.followUser
           : e.username === result.user.username
@@ -186,7 +186,7 @@ function Profile() {
           (e) => e.followUser.username !== result.followUser.username
         )
       );
-      const updatedAllUsers = allUsers.map((e) =>
+      const updatedAllUsers = allUsers?.map((e) =>
         e.username === result.followUser.username
           ? result.followUser
           : e.username === result.user.username
@@ -207,8 +207,8 @@ function Profile() {
     return dateB - dateA;
   });
 
-  const postUpdateProfileId = posts.find(
-    (e) => e.username === selectedUser.username
+  const postUpdateProfileId = posts?.find(
+    (e) => e.username == selectedUser.username
   )?._id;
 
   return (
@@ -251,7 +251,7 @@ function Profile() {
             setIsEditFormOpen={setIsEditFormOpen}
           />
           <div className="posts--div">
-            {sortedPosts.map((e) =>
+            {sortedPosts?.map((e) =>
               e?.username === profileName ? (
                 <Post
                   postId={e?._id}

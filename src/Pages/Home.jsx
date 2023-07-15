@@ -42,7 +42,7 @@ function Home() {
   }, []);
 
   const handleEdit = (id) => {
-    const post = posts.find((e) => e._id === id);
+    const post = posts?.find((e) => e._id == id);
 
     setEditedPost(post.content);
     setEditedImgContent(post.imgContent);
@@ -165,21 +165,21 @@ function Home() {
 
   const postsData =
     sortOption === "LATEST"
-      ? [...posts].sort((a, b) => {
+      ? posts?.sort((a, b) => {
           const dateA = new Date(a.createdAt);
           const dateB = new Date(b.createdAt);
 
           return dateB - dateA;
         })
       : sortOption === "OLDEST"
-      ? [...posts].sort((a, b) => {
+      ? posts?.sort((a, b) => {
           const dateA = new Date(a.createdAt);
           const dateB = new Date(b.createdAt);
 
           return dateA - dateB;
         })
       : sortOption === "TRENDING"
-      ? [...posts].sort((a, b) => b.likes.likeCount - a.likes.likeCount)
+      ? posts?.sort((a, b) => b.likes.likeCount - a.likes.likeCount)
       : "";
 
   // console.log(sortedPosts, " SORTED POST");
@@ -198,6 +198,8 @@ function Home() {
     setPreview(null);
     setImgContent(null);
   };
+
+  console.log(posts, "POSTSS");
 
   return (
     <div>
@@ -241,11 +243,11 @@ function Home() {
               />
             )}
             <div>
-              {postsData.map(
+              {postsData?.map(
                 (post) =>
                   // Those we have followed, that is those in the followedUsers array, we check if any of the usernames in the folllowedUser array contains the username of the post OR if the post's username is equal to loggedin user's username then only show the post. In short, we ensuring that only the posts of those we FOLLOW as welll as the logged in user's posts should appear.
                   (followedUsers
-                    .map((e) => e.followUser?.username)
+                    ?.map((e) => e.followUser?.username)
                     .includes(post.username) ||
                     post.username === username) && (
                     <Post
