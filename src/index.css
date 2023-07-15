@@ -712,8 +712,18 @@ button {
   cursor: pointer;
 }
 
-.dp--uoload {
+.preview--dp {
+  position: relative;
+}
+
+.preview--dp img {
+  cursor: pointer;
+}
+
+.upload--arrow {
   position: absolute;
-  background-color: red;
-  bottom: 2rem;
+  right: 1rem;
+  top: 1.5rem;
+  color: black;
+  cursor: pointer;
 }

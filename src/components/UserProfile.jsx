@@ -257,16 +257,22 @@ function UserProfile({
                   Upload :{" "}
                   <span>
                     {profileImg ? (
-                      <img
-                        src={profileImg}
-                        alt="profileImg"
-                        style={{
-                          marginLeft: "2px",
-                          width: "3rem",
-                          height: "3rem",
-                          borderRadius: "50%",
-                        }}
-                      />
+                      <div className="preview--dp">
+                        <img
+                          src={profileImg}
+                          alt="profileImg"
+                          style={{
+                            marginLeft: "2px",
+                            width: "3rem",
+                            height: "3rem",
+                            borderRadius: "50%",
+                          }}
+                        />
+                        <span className="upload--arrow">
+                          {" "}
+                          <i class="fa-solid fa-circle-chevron-up"></i>
+                        </span>
+                      </div>
                     ) : (
                       ""
                     )}
