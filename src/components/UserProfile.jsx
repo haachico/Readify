@@ -26,6 +26,7 @@ function UserProfile({
   setIsFollowingsBoxOpen,
   isEditFormOpen,
   setIsEditFormOpen,
+  profileImg,
   setProfileImg,
 }) {
   const { link, username, followedUsers } = useContext(LoginProvider);
@@ -255,9 +256,23 @@ function UserProfile({
             {userName === username ? (
               <>
                 <label htmlFor="dp" className="profile--camera">
-                  Select :{" "}
+                  Upload :{" "}
                   <span>
-                    <i class="fa-solid fa-camera"></i>
+                    {profileImg ? (
+                      <img
+                        src={profileImg}
+                        alt="profileImg"
+                        style={{
+                          marginLeft: "2px",
+                          width: "3rem",
+                          height: "3rem",
+                          borderRadius: "50%",
+                          cursor: "pointer",
+                        }}
+                      />
+                    ) : (
+                      <i class="fa-solid fa-camera"></i>
+                    )}
                   </span>
                 </label>
                 <input
