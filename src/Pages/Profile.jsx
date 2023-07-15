@@ -209,7 +209,7 @@ function Profile() {
 
   const postUpdateProfileId = posts.find(
     (e) => e.username === selectedUser.username
-  )._id;
+  )?._id;
 
   return (
     <div>
@@ -251,34 +251,30 @@ function Profile() {
             setIsEditFormOpen={setIsEditFormOpen}
           />
           <div className="posts--div">
-            {sortedPosts.length > 0 ? (
-              sortedPosts.map((e) =>
-                e && e?.username === profileName ? (
-                  <Post
-                    postId={e._id}
-                    postUsername={e.username}
-                    image={e.image}
-                    firstName={e.firstName}
-                    lastName={e.lastName}
-                    content={e.content}
-                    imgContent={e.imgContent}
-                    likesCount={e.likes.likeCount}
-                    createdAt={e.createdAt}
-                    editedPostID={editedPostID}
-                    isEditBoxOpen={isEditBoxOpen}
-                    setIsEditBoxOpen={setIsEditBoxOpen}
-                    editedPost={editedPost}
-                    setEditedPost={setEditedPost}
-                    editboxPreviewImg={editboxPreviewImg}
-                    setEditPreviewImg={setEditPreviewImg}
-                    setEditedImgContent={setEditedImgContent}
-                    handleEdit={handleEdit}
-                    handleUpdate={handleUpdate}
-                  />
-                ) : null
-              )
-            ) : (
-              <h3>No post yet</h3>
+            {sortedPosts.map((e) =>
+              e?.username === profileName ? (
+                <Post
+                  postId={e?._id}
+                  postUsername={e?.username}
+                  image={e?.image}
+                  firstName={e?.firstName}
+                  lastName={e?.lastName}
+                  content={e?.content}
+                  imgContent={e?.imgContent}
+                  likesCount={e?.likes.likeCount}
+                  createdAt={e?.createdAt}
+                  editedPostID={editedPostID}
+                  isEditBoxOpen={isEditBoxOpen}
+                  setIsEditBoxOpen={setIsEditBoxOpen}
+                  editedPost={editedPost}
+                  setEditedPost={setEditedPost}
+                  editboxPreviewImg={editboxPreviewImg}
+                  setEditPreviewImg={setEditPreviewImg}
+                  setEditedImgContent={setEditedImgContent}
+                  handleEdit={handleEdit}
+                  handleUpdate={handleUpdate}
+                />
+              ) : null
             )}
           </div>
         </div>

@@ -1,9 +1,9 @@
 import "./index";
 import Mockman from "mockman-js";
 import { Routes, Route } from "react-router-dom";
-import { useContext } from "react";
+// import { useContext } from "react";
 
-import { LoginProvider } from "./index";
+// import { LoginProvider } from "./index";
 import Landing from "./Pages/Landing";
 import Signup from "./Pages/Signup";
 import Layout from "./components/Layout";
@@ -14,6 +14,7 @@ import HomeLayout from "./components/HomeLayout";
 import Trending from "./Pages/Trending";
 import Profile from "./Pages/Profile";
 import RequiresAuth from "./components/RequiresAuth";
+import ErrorPage from "./Pages/ErrorPage";
 
 function App() {
   return (
@@ -38,7 +39,7 @@ function App() {
             <Route path="/profile/:profileName" element={<Profile />} />
           </Route>
         </Route>
-
+        <Route path="*" element={<ErrorPage />} />
         <Route path="/mockman" element={<Mockman />} />
       </Routes>
     </div>
