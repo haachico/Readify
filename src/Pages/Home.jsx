@@ -13,7 +13,6 @@ function Home() {
     lastName,
     encodedToken,
     username,
-    allUsers,
     setAllUsers,
     followedUsers,
     profileImg,
@@ -22,11 +21,11 @@ function Home() {
   } = useContext(LoginProvider);
 
   const [content, setContent] = useState("");
+  const [imgContent, setImgContent] = useState(null);
   const [isPostboxOpen, setIsPostBoxOpen] = useState(false);
   const [editedPost, setEditedPost] = useState("");
   const [editedImgContent, setEditedImgContent] = useState("");
   const [editedPostID, setEditedPostID] = useState("");
-  const [imgContent, setImgContent] = useState(null);
   const [preview, setPreview] = useState(null);
   const [isEditBoxOpen, setIsEditBoxOpen] = useState(false);
   const [editboxPreviewImg, setEditPreviewImg] = useState(null);
@@ -34,6 +33,7 @@ function Home() {
   const [sortOption, setSortOption] = useState("LATEST");
   const [isLoading, setIsLoading] = useState(false);
 
+  // loading for 1sec for loader when page loads
   useEffect(() => {
     setIsLoading(true);
     setTimeout(() => {
@@ -145,22 +145,19 @@ function Home() {
   }, []);
 
   // below in return while mapping if you see, we set posts. as default
-  const handleSort = (option) => {
+  const handleSort = (optionName) => {
     // let sortedData = [...posts];
-    if (option === "LATEST") {
-      setSortOption(option);
-      setPressedButton(option);
-    } else if (option === "OLDEST") {
-      setSortOption(option);
-      setPressedButton(option);
-    } else if (option === "TRENDING") {
+    if (optionName === "LATEST") {
+      setSortOption(optionName);
+      setPressedButton(optionName);
+    } else if (optionName === "OLDEST") {
+      setSortOption(optionName);
+      setPressedButton(optionName);
+    } else if (optionName === "TRENDING") {
       // sortedData.sort((a, b) => b.likes.likeCount - a.likes.likeCount);
-      setSortOption(option);
-      setPressedButton(option);
+      setSortOption(optionName);
+      setPressedButton(optionName);
     }
-
-    // setSortOption(option);
-    // setPosts(sortedData);
   };
 
   const postsData =
@@ -182,10 +179,14 @@ function Home() {
       ? posts?.sort((a, b) => b.likes.likeCount - a.likes.likeCount)
       : "";
 
-  // console.log(sortedPosts, " SORTED POST");
-  console.log(allUsers, "ALL USERS IN HOME");
+  console.log(imgContent, "IMG CONTENT");
 
-  console.log(pressedButton, "PRESSED BUTTOn");
+  useEffect(() => {
+    if (!imgContent) {
+      setPreview(undefined);
+    }
+    setPreview(imgContent);
+  }, [imgContent]);
 
   useEffect(() => {
     if (!editedImgContent) {
