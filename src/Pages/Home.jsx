@@ -102,6 +102,7 @@ function Home() {
       setPosts(result.posts);
       setContent("");
       setIsPostBoxOpen(false);
+      setPreview(null);
     } catch (err) {
       console.error(err);
     }

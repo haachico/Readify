@@ -38,7 +38,7 @@ function PostBox({
         </button>
         <img src={profileImg} className="postbox--profile" alt="" />
         <div className="select--image">
-          {imgContent && preview && (
+          {preview && (
             <div className="previewImg--div">
               <i
                 class="fa-sharp fa-regular fa-circle-xmark"
