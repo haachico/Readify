@@ -6,6 +6,8 @@ import FadeLoader from "react-spinners/FadeLoader";
 import { LoginProvider } from "..";
 import Post from "../components/Post";
 import UserProfile from "../components/UserProfile";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Profile() {
   const [isEditFormOpen, setIsEditFormOpen] = useState(false);
@@ -92,6 +94,7 @@ function Profile() {
 
   const handleSaveEditForm = async (id) => {
     console.log("SUBMITEDDDD");
+    setIsLoading(true);
 
     try {
       const response = await fetch(`/api/users/edit`, {
@@ -135,6 +138,10 @@ function Profile() {
       // setIsEditBoxOpen(false);
 
       setIsEditFormOpen(false);
+      toast.success("Profile photo updated!", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      setIsLoading(false);
     } catch (err) {
       console.error(err);
     }
@@ -229,7 +236,7 @@ function Profile() {
             lastName={selectedUser.lastName}
             image={selectedUser.image}
             userName={selectedUser.username}
-            about={selectedUser.about}
+            aboutUser={selectedUser.about}
             setAbout={setAbout}
             bioLink={selectedUser.link}
             setLink={setLink}
@@ -279,6 +286,7 @@ function Profile() {
           </div>
         </div>
       )}
+      <ToastContainer />
     </div>
   );
 }

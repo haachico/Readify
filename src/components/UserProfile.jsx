@@ -11,7 +11,7 @@ function UserProfile({
   lastName,
   image,
   userName,
-  about,
+  aboutUser,
   setAbout,
   bioLink,
   setLink,
@@ -30,7 +30,7 @@ function UserProfile({
   profileImg,
   setProfileImg,
 }) {
-  const { link, username, followedUsers } = useContext(LoginProvider);
+  const { link, about, username, followedUsers } = useContext(LoginProvider);
 
   return (
     <div>
@@ -69,10 +69,15 @@ function UserProfile({
             <h2 style={{ margin: "0px" }}>
               {firstName} {lastName}
             </h2>
-            <p>@{userName}</p>
-            <p>About : {about}</p>
             <p>
-              Link :{" "}
+              <strong>Username : </strong> @{userName}
+            </p>
+            <p>
+              {" "}
+              <strong>About : </strong> {aboutUser}
+            </p>
+            <p>
+              <strong>Link : </strong>{" "}
               <a
                 href={link}
                 target="_blank"
