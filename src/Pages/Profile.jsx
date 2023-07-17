@@ -138,7 +138,7 @@ function Profile() {
       // setIsEditBoxOpen(false);
 
       setIsEditFormOpen(false);
-      toast.success("Profile photo updated!", {
+      toast.success("Profile updated!", {
         position: toast.POSITION.TOP_RIGHT,
       });
       setIsLoading(false);
