@@ -3,6 +3,7 @@ import React from "react";
 import { useContext } from "react";
 import { LoginProvider } from "../useContext/LoginContext";
 import { Link } from "react-router-dom";
+import AvatarSelection from "./AvatarSelection";
 
 function UserProfile({
   postId,
@@ -252,7 +253,7 @@ function UserProfile({
         {isEditFormOpen && (
           <form className="edit--form" onSubmit={(e) => e.preventDefault()}>
             {userName === username ? (
-              <>
+              <div className="profileImg--div">
                 <label htmlFor="dp" className="profile--camera">
                   Upload :{" "}
                   <span>
@@ -287,7 +288,9 @@ function UserProfile({
                     setProfileImg(URL.createObjectURL(e.target.files[0]))
                   } // Set the selected image file to the state
                 />
-              </>
+
+                <AvatarSelection setProfileImg={setProfileImg} />
+              </div>
             ) : (
               ""
             )}

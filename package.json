@@ -15,6 +15,8 @@
     "miragejs": "^0.1.47",
     "mockman-js": "^1.1.5",
     "react": "^18.2.0",
+    "react-avatar-edit": "^1.2.0",
+    "react-avatar-generator": "^1.0.3",
     "react-dom": "^18.2.0",
     "react-router": "^6.13.0",
     "react-router-dom": "^6.13.0",

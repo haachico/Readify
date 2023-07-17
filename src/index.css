@@ -727,3 +727,17 @@ button {
   color: black;
   cursor: pointer;
 }
+
+.avatar {
+  width: 3rem;
+  height: 3rem;
+  margin: 10px;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.profileImg--div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
