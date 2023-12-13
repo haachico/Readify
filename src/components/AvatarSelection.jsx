@@ -11,7 +11,7 @@ const AvatarSelection = ({ setProfileImg }) => {
     <div style={{ display: "flex" }}>
       {avatarOptions.map((avatar) => (
         <div onClick={() => setProfileImg(avatar)}>
-          <img src={avatar} alt="" className="avatar" />
+          <img src={avatar} alt="avatar" className="avatar" />
         </div>
       ))}
     </div>

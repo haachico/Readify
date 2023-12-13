@@ -4,8 +4,6 @@ import { LoginProvider } from "../useContext/LoginContext";
 
 function RequiresAuth({ children }) {
   const { isLogin } = useContext(LoginProvider);
-
-  console.log(isLogin, "IS LOGIn");
   return isLogin ? children : <Navigate to="/login" />;
 }
 

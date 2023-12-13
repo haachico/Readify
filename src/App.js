@@ -33,10 +33,10 @@ function App() {
         >
           <Route path="/" element={<HomeLayout />}>
             <Route index element={<Home />} />
-            <Route path="/trending" element={<Trending />} />
-            <Route path="/explore" element={<Explore />} />
-            <Route path="/bookmark" element={<BookmarkPosts />} />
-            <Route path="/profile/:profileName" element={<Profile />} />
+            <Route path="trending" element={<Trending />} />
+            <Route path="explore" element={<Explore />} />
+            <Route path="bookmark" element={<BookmarkPosts />} />
+            <Route path="profile/:profileName" element={<Profile />} />
           </Route>
         </Route>
         <Route path="*" element={<ErrorPage />} />

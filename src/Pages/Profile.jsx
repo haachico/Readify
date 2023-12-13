@@ -66,7 +66,7 @@ function Profile() {
       const result = await response.json();
 
       setPosts(result.posts);
-      setEditedPostID("");
+      // setEditedPostID("");
       setIsEditBoxOpen(false);
       // setEditedPost("");
     } catch (err) {
@@ -114,12 +114,14 @@ function Profile() {
 
       const result = await response.json();
 
+      //updating only the user in allUsers array whose profile we updated, keeping other users intact
       setAllUsers(
         allUsers?.map((user) =>
           user.username === result.user.username ? result.user : user
         )
       );
 
+      // Because we also have to update the profile image in posts
       const postResponse = await fetch(`/api/posts/edit/${id}`, {
         method: "POST", // or 'PUT'
         headers: {
@@ -135,7 +137,6 @@ function Profile() {
       const postResult = await postResponse.json();
       setPosts(postResult.posts);
       setEditedPostID("");
-      // setIsEditBoxOpen(false);
 
       setIsEditFormOpen(false);
       toast.success("Profile updated!", {
@@ -158,7 +159,7 @@ function Profile() {
       });
 
       const result = await response.json();
-      console.log(result, "follow fn called result");
+
       setFollowedUsers([...followedUsers, result]);
 
       const updatedAllUsers = allUsers?.map((e) =>
@@ -185,7 +186,6 @@ function Profile() {
         },
       });
 
-      //ALL USERS NOT GETTING UPDATED //////////
       const result = await response.json();
 
       setFollowedUsers(
