@@ -128,7 +128,8 @@ export const posts = [
     firstName: "Rajesh",
     lastName: "Gaikwad",
     email: "",
-    image: "https://yizhichoi.com/wp-content/uploads/2019/12/3d-avatar-1.jpg",
+    image:
+      "https://img.freepik.com/free-photo/serious-clever-young-male-teacher-with-trendy-haircut-carries-red-book-loos-hesitant_273609-18572.jpg",
     followers: [],
     following: [],
     likes: {
