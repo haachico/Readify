@@ -3,6 +3,7 @@ import { useContext } from "react";
 import { Link } from "react-router-dom";
 
 import { LoginProvider } from "../useContext/LoginContext";
+import { API_BASE_URL } from "../utils/api";
 
 function SuggestedUsers() {
   const {
@@ -12,37 +13,33 @@ function SuggestedUsers() {
     username,
     followedUsers,
     setFollowedUsers,
+    userID,
   } = useContext(LoginProvider);
 
   const handleFollow = async (id) => {
     try {
-      const response = await fetch(`/api/users/follow/${id}`, {
-        method: "POST", // or 'PUT'
+      const response = await fetch(`${API_BASE_URL}/api/users/follow`, {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
           authorization: encodedToken,
         },
+        body: JSON.stringify({ followingId: id }),
       });
-
       const result = await response.json();
       console.log(result, "followers result");
-      setFollowedUsers([...followedUsers, result]);
-      // setUpdatedFollowings(result);
-
-      const updatedAllUsers = allUsers.map((e) =>
-        e.username === result.followUser.username
-          ? result.followUser
-          : e.username === result.user.username
-          ? result.user
-          : e
-      );
-
-      console.log(updatedAllUsers, "UPDATED ALL USERS");
-      setAllUsers(updatedAllUsers);
+      
+      // Update followedUsers in context so the card disappears
+      const user = allUsers.find(u => u.id === id);
+      if (user) {
+        setFollowedUsers([...followedUsers, { followUser: user }]);
+      }
     } catch (err) {
       console.error(err);
     }
   };
+
+  
   return (
     <div className="suggestedUsers--div">
       {/* SUGGESTED USERS---DIV */}
@@ -51,17 +48,15 @@ function SuggestedUsers() {
         {allUsers
           .filter((e) => e.username !== username)
           .map((user) => (
-            <div>
-              {/* if the followed user username (in followedUsersArray) is equal to LOGGED IN user username then show nothing, else  show the user */}
-              {followedUsers
-                .map((e) => e.followUser.username)
-                .includes(user.username) ? (
+            <div key={user.id}>
+              {/* if the followed user ID is in followedUsers array, hide; else show */}
+              {followedUsers.includes(user.id) ? (
                 ""
               ) : (
                 <div className="user">
                   <Link to={`/profile/${user.username}`}>
                     {" "}
-                    <img src={user.image} alt={user.username} />
+                    <img src={user.profileImage} alt={user.username} />
                   </Link>
                   <Link to={`/profile/${user.username}`}>
                     {" "}
@@ -90,7 +85,7 @@ function SuggestedUsers() {
                   </Link>
 
                   <button
-                    onClick={() => handleFollow(user._id)}
+                    onClick={() => handleFollow(user.id)}
                     className="btn"
                   >
                     Follow

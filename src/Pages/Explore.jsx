@@ -4,6 +4,7 @@ import FadeLoader from "react-spinners/FadeLoader";
 
 import { LoginProvider } from "..";
 import Post from "../components/Post";
+import { API_BASE_URL, authAPI } from "../utils/api";
 
 function Explore() {
   const { encodedToken, setAllUsers, posts, setPosts } =
@@ -62,7 +63,7 @@ function Explore() {
 
   const getPosts = async () => {
     try {
-      const response = await fetch("/api/posts", {
+      const response = await fetch(`${API_BASE_URL}/api/posts`, {
         method: "GET", // or 'PUT'
         headers: {
           "Content-Type": "application/json",
@@ -80,7 +81,7 @@ function Explore() {
 
   const getUsers = async () => {
     try {
-      const response = await fetch("/api/users", {
+      const response = await fetch(`${API_BASE_URL}/api/users`, {
         method: "GET", // or 'PUT'
       });
 
@@ -125,10 +126,9 @@ function Explore() {
       ) : (
         <div className="posts--div">
           <div>
-            {sortedPosts.map((post) => (
-              // Those we have followed, that is those in the followedUsers array, we check if any of the usernames in the folllowedUser array contains the username of the post OR if the post's username is equal to loggedin user's username then only show the post. In short, we ensuring that only the posts of those we FOLLOW as welll as the logged in user's posts should appear.
-
+               {posts?.map((post) => (
               <Post
+                key={post._id}
                 postId={post._id}
                 postUsername={post.username}
                 image={post.image}
@@ -137,6 +137,7 @@ function Explore() {
                 content={post.content}
                 imgContent={post.imgContent}
                 likesCount={post.likes.likeCount}
+                likedBy={post.likes.likedBy}
                 createdAt={post.createdAt}
                 editedPostID={editedPostID}
                 isEditBoxOpen={isEditBoxOpen}
@@ -148,6 +149,8 @@ function Explore() {
                 setEditedImgContent={setEditedImgContent}
                 handleEdit={handleEdit}
                 handleUpdate={handleUpdate}
+                isBookmarked={post.isBookmarked}
+                // onBookmarkChange={refreshFeed}
               />
             ))}
           </div>

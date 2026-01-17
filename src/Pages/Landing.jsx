@@ -5,6 +5,7 @@ import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { LoginProvider } from "..";
+import { authAPI } from "../utils/api";
 
 function Landing() {
   const [email, setEmail] = useState("");
@@ -12,18 +13,18 @@ function Landing() {
   const [errMsg, setErrMsg] = useState("");
   const {
     setIsLogin,
-
     setEncodedToken,
-
     setUserID,
-    username,
-    firstName,
-    lastName,
+    setUsername,
+    setFirstName,
+    setLastName,
+    // setEmail,
+    setProfileImg,
+    setAbout,
+    setLink,
+    setFollowedUsers,
     loggedInUserDetails,
     setLoggedInUserDetails,
-    profileImg,
-    about,
-    link,
   } = useContext(LoginProvider);
 
   const navigate = useNavigate();
@@ -32,36 +33,43 @@ function Landing() {
     try {
       e.preventDefault();
 
-      const response = await fetch("/api/auth/login", {
-        method: "POST", // or 'PUT'
+      const response = await fetch(authAPI.login, {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          username: username,
-          password: password,
           email: email,
-          firstName: firstName,
-          lastName: lastName,
-          image: profileImg,
-          about: about,
-          link: link,
+          password: password,
         }),
       });
 
       const result = await response.json();
-      console.log("Success:", result);
-      setLoggedInUserDetails(result.foundUser);
-      if (result.errors) {
-        setErrMsg("User not found!");
-      } else {
-        setIsLogin(true);
+      console.log("Login response:", result);
+
+      if (result.foundUser) {
+        // Store the full user object
+        setLoggedInUserDetails(result.foundUser);
+        // Also update individual context states
+        setFirstName(result.foundUser.firstName);
+        setLastName(result.foundUser.lastName);
+        setEmail(result.foundUser.email);
+        setUsername(result.foundUser.username);
+        setUserID(result.foundUser.id);
+        setProfileImg(result.foundUser.profileImage || "https://img.freepik.com/free-icon/user_318-159711.jpg");
+        setAbout(result.foundUser.about || "");
+        setLink(result.foundUser.link || "");
+        setFollowedUsers(result.foundUser.followings || []);
+        // Set token and login
         setEncodedToken(result.encodedToken);
-        setUserID(result.id);
+        setIsLogin(true);
         navigate("/");
+      } else {
+        setErrMsg(result.message || "User not found!");
       }
     } catch (error) {
       console.error("Error:", error);
+      setErrMsg("Error during login!");
     }
   };
 

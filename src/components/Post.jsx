@@ -23,9 +23,13 @@ function Post({
   setEditPreviewImg,
   setEditedImgContent,
   handleUpdate,
+  isBookmarked,
+  onBookmarkChange,
+  likedBy
 }) {
   const {
     username,
+    userID,
     likedPosts,
     bookmarkPosts,
     handleLike,
@@ -33,7 +37,7 @@ function Post({
     handleBookmark,
     handleRemoveBookmark,
     handleDelete,
-    handleComment,
+    handleComment
   } = useContext(LoginProvider);
 
   const getDate = (timestamp) => {
@@ -46,6 +50,10 @@ function Post({
     };
     return date.toLocaleDateString("en-US", options).replace(/,/g, "");
   };
+
+  console.log("likedBy:", likedBy, "userID:", userID);
+
+  let isLiked = likedBy?.includes(userID) || false;
   return (
     <div className="post">
       <div
@@ -184,12 +192,22 @@ function Post({
       )}
       <div className="post--btns">
         <div>
-          {likedPosts.map((e) => e._id === postId).includes(true) ? (
-            <span onClick={() => handleDislike(postId)}>
+          {isLiked ? (
+            <span onClick={() =>{ handleDislike(postId)
+
+            setTimeout(() => {
+                if( onBookmarkChange) onBookmarkChange();
+              }, 500);
+            }}>
               <i class="fa-solid fa-heart"></i>
             </span>
           ) : (
-            <span onClick={() => handleLike(postId)}>
+            <span onClick={() => {handleLike(postId)
+
+              setTimeout(() => {
+                if( onBookmarkChange) onBookmarkChange();
+              }, 500);
+            }}>
               <i class="fa-regular fa-heart"></i>
             </span>
           )}{" "}
@@ -199,20 +217,31 @@ function Post({
           <i class="fa-regular fa-comment"></i>
         </span>
 
-        {bookmarkPosts
-          .map((e) => e.content === content || e.imgContent === imgContent)
-          .includes(true) ? (
-          <span onClick={() => handleRemoveBookmark(postId)}>
+        {isBookmarked ? (
+          <span onClick={() => {
+            handleRemoveBookmark(postId);
+            if (onBookmarkChange) onBookmarkChange();
+          }}>
             {" "}
             <i class="fa-solid fa-bookmark"></i>
           </span>
         ) : (
-          <span onClick={() => handleBookmark(postId)}>
+          <span onClick={() => {
+            handleBookmark(postId);
+            if (onBookmarkChange) onBookmarkChange();
+          }}>
             <i class="fa-regular fa-bookmark"></i>
           </span>
         )}
         {postUsername === username && (
-          <span onClick={() => handleDelete(postId)}>
+          <span onClick={() => {
+            handleDelete(postId)
+            if( onBookmarkChange) onBookmarkChange();
+          
+          }
+            
+            
+            }>
             <i class="fa-solid fa-trash-can"></i>
           </span>
         )}

@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import AvatarSelection from "./AvatarSelection";
 
 function UserProfile({
-  postId,
+  userId,
   firstName,
   lastName,
   image,
@@ -43,18 +43,16 @@ function UserProfile({
           />
 
           {userName !== username ? (
-            followedUsers
-              .map((e) => e.followUser.username === userName)
-              .includes(true) ? (
+            followedUsers.includes(userId) ? (
               <button
-                onClick={() => handleUnfollowClick(postId)}
+                onClick={() => handleUnfollowClick(userId)}
                 className="profileUnfollow--btn"
               >
                 Following
               </button>
             ) : (
               <button
-                onClick={() => handleFollowClick(postId)}
+                onClick={() => handleFollowClick(userId)}
                 className="profileFollow--btn"
               >
                 Follow
@@ -97,7 +95,7 @@ function UserProfile({
                   alignItems: "center",
                 }}
               >
-                <p style={{ margin: "2px" }}>{followings.length}</p>
+                <p style={{ margin: "2px" }}>{followings || 0}</p>
                 <button
                   style={{ margin: "2px" }}
                   onClick={() => setIsFollowingsBoxOpen(true)}
@@ -113,7 +111,7 @@ function UserProfile({
                   alignItems: "center",
                 }}
               >
-                <p style={{ margin: "2px" }}>{followers.length}</p>
+                <p style={{ margin: "2px" }}>{followers || 0}</p>
                 <button
                   style={{ margin: "2px" }}
                   onClick={() => setIsFollowersBoxOpen(true)}
@@ -242,7 +240,7 @@ function UserProfile({
         }
 
         {/* EDIT  SECTION*/}
-        {userName === username ? (
+        {userName === username && (
           <div>
             <button
               onClick={() => setIsEditFormOpen(true)}
@@ -251,8 +249,6 @@ function UserProfile({
               Edit profile
             </button>
           </div>
-        ) : (
-          ""
         )}
 
         {isEditFormOpen && (

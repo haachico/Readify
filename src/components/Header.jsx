@@ -3,14 +3,29 @@ import { Link } from "react-router-dom";
 import SearchComponent from "./SearchComponent";
 
 import { LoginProvider } from "..";
+import { API_BASE_URL } from "../utils/api";
 
 function Header() {
   const [searchText, setSearchText] = useState("");
+  const [filteredUser, setFilteredUser] = useState([]);
   const { allUsers, setAllUsers } = useContext(LoginProvider);
 
-  const filteredUser = [...allUsers].filter((e) =>
-    e.username.toLowerCase().includes(searchText.toLowerCase())
-  );
+  const handleSearch = async (value) => {
+    setSearchText(value);
+    
+    if (!value.trim()) {
+      setFilteredUser([]);
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/users/search?query=${value}`);
+      const { users } = await response.json();
+      setFilteredUser(users);
+    } catch (err) {
+      console.error('Search error:', err);
+    }
+  };
 
   return (
     <div className="header">
@@ -20,7 +35,7 @@ function Header() {
       <div className="header--nav">
         <SearchComponent
           searchText={searchText}
-          setSearchText={setSearchText}
+          setSearchText={handleSearch}
         />
 
         {searchText && (
@@ -41,7 +56,7 @@ function Header() {
                 >
                   {" "}
                   <img
-                    src={user.image}
+                    src={user.profileImage}
                     alt={user.username}
                     style={{
                       width: "2rem",

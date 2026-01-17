@@ -4,11 +4,12 @@ import FadeLoader from "react-spinners/FadeLoader";
 
 import { LoginProvider } from "..";
 import Post from "../components/Post";
+import { API_BASE_URL } from "../utils/api";
 
 function BookmarkPost() {
   const {
     encodedToken,
-    bookmarkPosts,
+    // bookmarkPosts,
     setAllUsers,
     followedUsers,
     loggedInUserDetails,
@@ -24,6 +25,7 @@ function BookmarkPost() {
   const [isEditBoxOpen, setIsEditBoxOpen] = useState(false);
   const [editboxPreviewImg, setEditPreviewImg] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [bookmarkPosts, setBookmarkPosts] = useState([]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -73,7 +75,7 @@ function BookmarkPost() {
 
   const getPosts = async () => {
     try {
-      const response = await fetch("/api/posts", {
+      const response = await fetch(`${API_BASE_URL}/api/posts/bookmarks`, {
         method: "GET", // or 'PUT'
         headers: {
           "Content-Type": "application/json",
@@ -83,7 +85,7 @@ function BookmarkPost() {
 
       const result = await response.json();
 
-      setPosts(result.posts);
+      setBookmarkPosts(result.posts);
     } catch (err) {
       console.error(err);
     }
@@ -108,20 +110,20 @@ function BookmarkPost() {
     getUsers();
   }, []);
 
-  const sortedPosts = posts
-    .filter((post) =>
-      bookmarkPosts.some((bookmark) => bookmark._id === post._id)
-    )
-    .sort((a, b) => {
-      const dateA = new Date(a.createdAt);
-      const dateB = new Date(b.createdAt);
+  // const sortedPosts = posts
+  //   .filter((post) =>
+  //     bookmarkPosts.some((bookmark) => bookmark._id === post._id)
+  //   )
+  //   .sort((a, b) => {
+  //     const dateA = new Date(a.createdAt);
+  //     const dateB = new Date(b.createdAt);
 
-      return dateB - dateA;
-    });
+  //     return dateB - dateA;
+  //   });
 
-  console.log(sortedPosts, " SORTED POST");
+  // console.log(sortedPosts, " SORTED POST");
 
-  console.log(bookmarkPosts, "BOOKMARK POSTS");
+  // console.log(bookmarkPosts, "BOOKMARK POSTS");
 
   useEffect(() => {
     if (!imgContent) {
@@ -159,7 +161,7 @@ function BookmarkPost() {
         <div className="posts--div">
           {bookmarkPosts.length > 0 ? (
             <div>
-              {sortedPosts.map((post) => (
+              {bookmarkPosts.map((post) => (
                 <Post
                   postId={post._id}
                   postUsername={post.username}

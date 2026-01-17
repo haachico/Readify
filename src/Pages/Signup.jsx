@@ -5,33 +5,24 @@ import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { LoginProvider } from "..";
 import appImg from "../logo.png";
+import { authAPI } from "../utils/api";
 
 function Signup() {
-  const {
-    firstName,
-    setFirstName,
-    lastName,
-    setLastName,
-    email,
-    setEmail,
-    username,
-    setUsername,
-    profileImg,
-    about,
-    link,
-  } = useContext(LoginProvider);
-
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
 
   const handleSignup = async (e) => {
+    e.preventDefault();
+    
     if (!email || !password || !firstName || !lastName || !username) return;
 
     try {
-      e.preventDefault();
-
-      const response = await fetch("/api/auth/signup", {
-        method: "POST", // or 'PUT'
+      const response = await fetch(authAPI.signup, {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
@@ -41,18 +32,30 @@ function Signup() {
           firstName: firstName,
           lastName: lastName,
           username: username,
-          image: profileImg,
-          about: about,
-          link: link,
         }),
       });
 
-      console.log(username, "USERNAME");
       const result = await response.json();
-      console.log("Success:", result);
-      if (!response.errors) setMessage("You are signed up! Please log in!");
+
+      if (response.ok) {
+        // After signup, fetch the user's profile data
+        const profileResponse = await fetch(`http://localhost:5000/api/users/${result.createdUser.username}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: result.encodedToken,
+          },
+        });
+        
+        const profileData = await profileResponse.json();
+        console.log("User profile data:", profileData);
+        setMessage("You are signed up! Please log in!");
+      } else {
+        setMessage(result.error || "Signup failed!");
+      }
     } catch (error) {
       console.error("Error:", error);
+      setMessage("Error during signup!");
     }
   };
   return (

@@ -6,6 +6,7 @@ import Post from "../components/Post";
 import SortBtns from "../components/SortBtns";
 
 import { LoginProvider } from "..";
+import { API_BASE_URL } from "../utils/api";
 
 function Home() {
   const {
@@ -43,74 +44,16 @@ function Home() {
 
   const handleEdit = (id) => {
     const post = posts?.find((e) => e._id == id);
-
+    
     setEditedPost(post.content);
     setEditedImgContent(post.imgContent);
     setEditedPostID(post._id);
     setIsEditBoxOpen(true);
   };
-
-  const handleUpdate = async (id) => {
-    // /api/posts/edit/:postId
-    try {
-      const response = await fetch(`/api/posts/edit/${id}`, {
-        method: "POST", // or 'PUT'
-        headers: {
-          "Content-Type": "application/json",
-          authorization: encodedToken,
-        },
-        body: JSON.stringify({
-          postData: {
-            content: editedPost,
-            imgContent: editedImgContent,
-          },
-        }),
-      });
-      const result = await response.json();
-      setPosts(result.posts);
-      setEditedPostID("");
-      setIsEditBoxOpen(false);
-
-      // setEditedPost("");
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handlePost = async () => {
-    if (!content) return;
-    try {
-      console.log(encodedToken, "ENCODED TOKEN");
-      const response = await fetch("/api/posts", {
-        method: "POST", // or 'PUT'
-        headers: {
-          "Content-Type": "application/json",
-          authorization: encodedToken,
-        },
-        body: JSON.stringify({
-          postData: {
-            content: content,
-            imgContent: imgContent,
-            image: profileImg,
-            firstName: firstName,
-            lastName: lastName,
-          },
-        }),
-      });
-
-      const result = await response.json();
-      setPosts(result.posts);
-      setContent("");
-      setIsPostBoxOpen(false);
-      setPreview(null);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
+  
   const getPosts = async () => {
     try {
-      const response = await fetch("/api/posts", {
+      const response = await fetch(`${API_BASE_URL}/api/posts/feed`, {
         method: "GET", // or 'PUT'
         headers: {
           "Content-Type": "application/json",
@@ -125,10 +68,81 @@ function Home() {
       console.error(err);
     }
   };
+  const refreshFeed = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/posts/feed`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: encodedToken,
+        },
+      });
+      const result = await response.json();
+      setPosts(result.posts);
+    } catch (err) {
+      console.error(err);
+    }
+  };  const handleUpdate = async (id) => {
+    // /api/posts/edit/:postId
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/posts/edit/${id}`, {
+        method: "POST", // or 'PUT'
+        headers: {
+          "Content-Type": "application/json",
+          authorization: encodedToken,
+        },
+        body: JSON.stringify({
+            content: editedPost,
+            imgContent: editedImgContent,
+        }),
+      });
+      const result = await response.json();
+      setPosts(result.posts);
+      setEditedPostID("");
+      setIsEditBoxOpen(false);
+      getPosts()
+      // setEditedPost("");
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  
+  const handlePost = async () => {
+    if (!content) return;
+    try {
+      console.log(encodedToken, "ENCODED TOKEN");
+      const response = await fetch(`${API_BASE_URL}/api/posts`, {
+        method: "POST", // or 'PUT'
+        headers: {
+          "Content-Type": "application/json",
+          authorization: encodedToken,
+        },
+        body: JSON.stringify({
+            content: content,
+            imgContent: imgContent,
+            // image: profileImg,
+            // firstName: firstName,
+            // lastName: lastName,
+        }),
+      });
+
+      const result = await response.json();
+      // setPosts(result.posts);
+      setContent("");
+      setIsPostBoxOpen(false);
+      setPreview(null);
+      getPosts()
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  console.log(posts, "POSTSS");
+
 
   const getUsers = async () => {
     try {
-      const response = await fetch("/api/users", {
+      const response = await fetch(`${API_BASE_URL}/api/users`, {
         method: "GET", // or 'PUT'
       });
 
@@ -146,39 +160,37 @@ function Home() {
   }, []);
 
   // below in return while mapping if you see, we set posts. as default
-  const handleSort = (optionName) => {
+  const handleSort = async (optionName) => {
     // let sortedData = [...posts];
     if (optionName === "LATEST") {
-      setSortOption(optionName);
+      // setSortOption(optionName);
       setPressedButton(optionName);
     } else if (optionName === "OLDEST") {
-      setSortOption(optionName);
+      // setSortOption(optionName);
       setPressedButton(optionName);
     } else if (optionName === "TRENDING") {
       // sortedData.sort((a, b) => b.likes.likeCount - a.likes.likeCount);
-      setSortOption(optionName);
+      // setSortOption(optionName);
       setPressedButton(optionName);
     }
+
+    try {
+      // Convert to lowercase for backend: LATEST -> latest
+      const sortParam = optionName.toLowerCase();
+      const response = await fetch(`${API_BASE_URL}/api/posts/feed?sort=${sortParam}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: encodedToken,
+        },
+      });
+      const result = await response.json();
+      setPosts(result.posts);
+    }
+    catch (err) {
+      console.error(err);
+    }
   };
-
-  const postsData =
-    sortOption === "LATEST"
-      ? posts?.sort((a, b) => {
-          const dateA = new Date(a.createdAt);
-          const dateB = new Date(b.createdAt);
-
-          return dateB - dateA;
-        })
-      : sortOption === "OLDEST"
-      ? posts?.sort((a, b) => {
-          const dateA = new Date(a.createdAt);
-          const dateB = new Date(b.createdAt);
-
-          return dateA - dateB;
-        })
-      : sortOption === "TRENDING"
-      ? posts?.sort((a, b) => b.likes.likeCount - a.likes.likeCount)
-      : "";
 
   console.log(imgContent, "IMG CONTENT");
 
@@ -245,36 +257,34 @@ function Home() {
               />
             )}
             <div>
-              {postsData?.map(
-                (post) =>
-                  // Those we have followed, that is those in the followedUsers array, we check if any of the usernames in the folllowedUser array contains the username of the post OR if the post's username is equal to loggedin user's username then only show the post. In short, we ensuring that only the posts of those we FOLLOW as welll as the logged in user's posts should appear.
-                  (followedUsers
-                    ?.map((e) => e.followUser?.username)
-                    .includes(post.username) ||
-                    post.username === username) && (
-                    <Post
-                      postId={post._id}
-                      postUsername={post.username}
-                      image={post.image}
-                      firstName={post.firstName}
-                      lastName={post.lastName}
-                      content={post.content}
-                      imgContent={post.imgContent}
-                      likesCount={post.likes.likeCount}
-                      createdAt={post.createdAt}
-                      editedPostID={editedPostID}
-                      isEditBoxOpen={isEditBoxOpen}
-                      setIsEditBoxOpen={setIsEditBoxOpen}
-                      editedPost={editedPost}
-                      setEditedPost={setEditedPost}
-                      editboxPreviewImg={editboxPreviewImg}
-                      setEditPreviewImg={setEditPreviewImg}
-                      setEditedImgContent={setEditedImgContent}
-                      handleEdit={handleEdit}
-                      handleUpdate={handleUpdate}
-                    />
-                  )
-              )}
+             {posts?.map((post) => (
+              <Post
+                key={post._id}
+                postId={post._id}
+                postUsername={post.username}
+                image={post.image}
+                firstName={post.firstName}
+                lastName={post.lastName}
+                content={post.content}
+                imgContent={post.imgContent}
+                likesCount={post.likes.likeCount}
+                likedBy={post.likes.likedBy}
+                createdAt={post.createdAt}
+                editedPostID={editedPostID}
+                isEditBoxOpen={isEditBoxOpen}
+                setIsEditBoxOpen={setIsEditBoxOpen}
+                editedPost={editedPost}
+                setEditedPost={setEditedPost}
+                editboxPreviewImg={editboxPreviewImg}
+                setEditPreviewImg={setEditPreviewImg}
+                setEditedImgContent={setEditedImgContent}
+                handleEdit={handleEdit}
+                handleUpdate={handleUpdate}
+                isBookmarked={post.isBookmarked}
+                onBookmarkChange={refreshFeed}
+              />
+            ))}
+
             </div>
           </div>
         </>

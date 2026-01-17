@@ -3,7 +3,12 @@ import { Navigate } from "react-router";
 import { LoginProvider } from "../useContext/LoginContext";
 
 function RequiresAuth({ children }) {
-  const { isLogin } = useContext(LoginProvider);
+  const { isLogin, isLoading } = useContext(LoginProvider);
+  
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  
   return isLogin ? children : <Navigate to="/login" />;
 }
 

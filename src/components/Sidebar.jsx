@@ -50,10 +50,9 @@ export default function Sidebar() {
       <div className="header--profile">
         <img
           src={profileImg}
-          alt={loggedInUserDetails.firstName}
+          alt="User avatar"
           className="header--profilePhoto"
         />
-        {/* )} */}
         <div>
           <Link to={`/profile/${username}`}>
             <h4 style={{ margin: "2px" }}>{firstName}</h4>

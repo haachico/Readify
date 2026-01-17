@@ -4,6 +4,7 @@ import FadeLoader from "react-spinners/FadeLoader";
 
 import { LoginProvider } from "..";
 import Post from "../components/Post";
+import { API_BASE_URL } from "../utils/api";
 
 function Trending() {
   const { encodedToken, setAllUsers, followedUsers } =
@@ -68,7 +69,7 @@ function Trending() {
 
   const getPosts = async () => {
     try {
-      const response = await fetch("/api/posts", {
+      const response = await fetch(`${API_BASE_URL}/api/posts/trending`, {
         method: "GET", // or 'PUT'
         headers: {
           "Content-Type": "application/json",
@@ -86,7 +87,7 @@ function Trending() {
 
   const getUsers = async () => {
     try {
-      const response = await fetch("/api/users", {
+      const response = await fetch(`${API_BASE_URL}/api/users`, {
         method: "GET", // or 'PUT'
       });
 
@@ -103,11 +104,7 @@ function Trending() {
     getUsers();
   }, []);
 
-  const sortedPosts = posts.sort(
-    (a, b) => b.likes.likeCount - a.likes.likeCount
-  );
 
-  console.log(sortedPosts, " SORTED POST");
 
   useEffect(() => {
     if (!imgContent) {
@@ -140,7 +137,7 @@ function Trending() {
       ) : (
         <div className="posts--div">
           <div>
-            {sortedPosts.map((post) => (
+            {posts.map((post) => (
               <Post
                 postId={post._id}
                 postUsername={post.username}
@@ -150,6 +147,7 @@ function Trending() {
                 content={post.content}
                 imgContent={post.imgContent}
                 likesCount={post.likes.likeCount}
+                   likedBy={post.likes.likedBy}
                 createdAt={post.createdAt}
                 editedPostID={editedPostID}
                 isEditBoxOpen={isEditBoxOpen}
