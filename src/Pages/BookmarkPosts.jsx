@@ -50,7 +50,7 @@ function BookmarkPost() {
   const handleUpdate = async (id) => {
     // /api/posts/edit/:postId
     try {
-      const response = await fetch(`api/posts/edit/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/posts/edit/${id}`, {
         method: "POST", // or 'PUT'
         headers: {
           "Content-Type": "application/json",
@@ -93,7 +93,7 @@ function BookmarkPost() {
 
   const getUsers = async () => {
     try {
-      const response = await fetch("/api/users", {
+      const response = await fetch(`${API_BASE_URL}/api/users`, {
         method: "GET", // or 'PUT'
       });
 

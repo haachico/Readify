@@ -3,15 +3,29 @@ import { Link } from "react-router-dom";
 import { useContext } from "react";
 
 import { LoginProvider } from "../useContext/LoginContext";
+import { API_BASE_URL } from "../utils/api";
 
 export default function Sidebar() {
   const { username, firstName, profileImg, loggedInUserDetails, setIsLogin } =
     useContext(LoginProvider);
 
-  const handleLogoutClick = () => {
-    setIsLogin(false);
-  };
+  const handleLogoutClick = async () => {
+   try {
+    await fetch(`${API_BASE_URL}/api/auth/logout`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    });
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setIsLogin(false);  
+    // Redirect to login
+  } catch (error) {
+    console.error('Logout failed:', error);
+  }
 
+}
   return (
     <div className="sidebar--div">
       <Link to="/">
