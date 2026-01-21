@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { LoginProvider } from "..";
 import appImg from "../logo.png";
-import { authAPI } from "../utils/api";
+import { API_BASE_URL, authAPI } from "../utils/api";
 
 function Signup() {
   const [firstName, setFirstName] = useState("");
@@ -39,7 +39,7 @@ function Signup() {
 
       if (response.ok) {
         // After signup, fetch the user's profile data
-        const profileResponse = await fetch(`http://localhost:5000/api/users/${result.createdUser.username}`, {
+        const profileResponse = await fetch(`${API_BASE_URL}/api/users/${result.createdUser.username}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

@@ -5,7 +5,7 @@ import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { LoginProvider } from "..";
-import { authAPI } from "../utils/api";
+import { API_BASE_URL, authAPI } from "../utils/api";
 
 function Landing() {
   const [email, setEmail] = useState("");
@@ -32,8 +32,9 @@ function Landing() {
   const handleLogin = async (e) => {
     try {
       e.preventDefault();
+      console.log("Form submitted, email:", email, "password:", password);
 
-      const response = await fetch(authAPI.login, {
+      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -68,7 +69,7 @@ function Landing() {
         setErrMsg(result.message || "User not found!");
       }
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Login Error:", error);
       setErrMsg("Error during login!");
     }
   };
@@ -79,7 +80,7 @@ function Landing() {
     <div className="landing--div">
       <div className="login--form">
         <h1>Log In.</h1>
-        <form>
+        <form onSubmit={handleLogin}>
           <label for="email">Email or Username: </label>
           <input
             type="email"
@@ -98,7 +99,7 @@ function Landing() {
             onChange={(e) => setPassword(e.target.value)}
           />
 
-          <button onClick={handleLogin}>Submit</button>
+          <button type="submit">Submit</button>
         </form>
         <h4>{errMsg}</h4>
         <span>Don't have an account? </span>

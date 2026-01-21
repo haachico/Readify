@@ -4,14 +4,14 @@ import "./index.css";
 import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 
-import { makeServer } from "./server";
+// import { makeServer } from "./server";  // Disabled - using real backend now
 
 import { LoginProvider, LoginContext } from "./useContext/LoginContext";
 
 export { LoginProvider };
 
 // Call make Server
-makeServer();
+// makeServer();  // Disabled - using real backend now
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
