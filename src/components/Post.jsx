@@ -2,6 +2,8 @@ import React from "react";
 import { useContext } from "react";
 import { LoginProvider } from "..";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import CommentModal from "./CommentModal";
 
 function Post({
   postUsername,
@@ -37,9 +39,16 @@ function Post({
     handleBookmark,
     handleRemoveBookmark,
     handleDelete,
-    handleComment
+    // handleComment
   } = useContext(LoginProvider);
 
+const [isCommentModalOpen, setCommentModalOpen] = useState(false);
+const [comments, setComments] = useState([]); // You will fetch these from API
+
+
+  const handleComment = () => {
+    setCommentModalOpen(true);
+  }
   const getDate = (timestamp) => {
     const date = new Date(timestamp);
     const options = {
@@ -246,6 +255,21 @@ function Post({
           </span>
         )}
       </div>
+      <CommentModal
+        open={isCommentModalOpen}
+        onClose={() => setCommentModalOpen(false)}
+        post={{
+          postId: postId,
+          username: postUsername,
+          content,
+          imgContent,
+        }}
+        comments={comments}
+        // onAddComment={e => {
+        //   e.preventDefault();
+        //   // handle add comment logic here
+        // }}
+/>
     </div>
   );
 }
