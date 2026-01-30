@@ -49,22 +49,95 @@
 .comment-item {
   margin-bottom: 0.75rem;
   padding-left: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  align-items: flex-start;
+  background: #232946;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
 }
 
-.comment-replies {
-  margin-left: 1.5rem;
+.comment-main-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.05rem;
+  color: #fff;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.comment-content-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.comment-delete-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 0.5rem;
+  display: flex;
+  align-items: center;
+}
+.comment-delete-btn svg {
+  color: #ff4d4f;
+  transition: color 0.2s;
+}
+.comment-delete-btn svg:hover {
+  color: #ff7875;
+}
+
+.reply-btn {
+  color: #00b8ff;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+  padding: 2px 8px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+.reply-btn:hover {
+  background: #232946;
+  color: #fff;
+}
+
+.reply-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
   margin-top: 0.5rem;
-  border-left: 2px solid #2d3a5a;
-  padding-left: 0.75rem;
+  width: 100%;
 }
-
-.comment-reply {
-  margin-bottom: 0.5rem;
+.reply-form input[type="text"] {
+  flex: 1;
+  padding: 0.4rem;
+  border-radius: 4px;
+  border: 1px solid #2d3a5a;
+  background: #181c2f;
+  color: #fff;
+}
+.reply-form button {
+  background: #00b8ff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.4rem 1rem;
+  cursor: pointer;
+  font-weight: bold;
+  align-self: flex-end;
 }
 
 .add-comment-form {
   display: flex;
+  flex-direction: column;
   gap: 0.5rem;
+  margin-top: 1rem;
 }
 
 .add-comment-form input[type="text"] {
@@ -72,8 +145,9 @@
   padding: 0.5rem;
   border-radius: 4px;
   border: 1px solid #2d3a5a;
-  background: #232946;
+  background: #181c2f;
   color: #fff;
+  font-size: 1rem;
 }
 
 .add-comment-form button {
@@ -81,9 +155,24 @@
   color: #fff;
   border: none;
   border-radius: 4px;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 1.5rem;
   cursor: pointer;
   font-weight: bold;
+  font-size: 1rem;
+  align-self: flex-end;
+  transition: background 0.2s;
+}
+.add-comment-form button:hover {
+  background: #0099cc;
+}
+
+.comment-item svg {
+  vertical-align: middle;
+  color: #ff4d4f;
+  transition: color 0.2s;
+}
+.comment-item svg:hover {
+  color: #ff7875;
 }
 
 .no-comments {

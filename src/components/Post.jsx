@@ -224,6 +224,7 @@ const [comments, setComments] = useState([]); // You will fetch these from API
         </div>
         <span onClick={handleComment}>
           <i class="fa-regular fa-comment"></i>
+          {comments.length}
         </span>
 
         {isBookmarked ? (
@@ -263,8 +264,10 @@ const [comments, setComments] = useState([]); // You will fetch these from API
           username: postUsername,
           content,
           imgContent,
+          profileImage: image
         }}
         comments={comments}
+        setComments={setComments}
         // onAddComment={e => {
         //   e.preventDefault();
         //   // handle add comment logic here
