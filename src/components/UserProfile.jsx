@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { useContext } from "react";
 import { LoginProvider } from "../useContext/LoginContext";
@@ -15,8 +15,9 @@ function UserProfile({
   setAbout,
   bioLink,
   setLink,
-  followings,
   followers,
+  followings,
+
   postUpdateProfileId,
   handleFollowClick,
   handleUnfollowClick,
@@ -31,6 +32,58 @@ function UserProfile({
   setProfileImg,
 }) {
   const { link, about, username, followedUsers } = useContext(LoginProvider);
+
+const [followersList, setFollowersList] = useState([]);
+const [followingsList, setFollowingsList] = useState([]);
+
+
+  const getFollowers =async()=>{
+
+    try {
+   const repsonse = await fetch(`http://localhost:5000/api/users/getFollowers/${userId}`,{
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      authorization: localStorage.getItem("token"),
+    },
+   });
+
+    const data = await repsonse.json();
+    setFollowersList(data);
+    
+    }
+    catch(error){
+      console.error('Error fetching followers:', error);
+    }
+  }
+
+  console.log('Followings List:', followingsList);
+  console.log('Followers List:', followersList);
+  const getFollowings =async()=>{
+
+    try {
+   const repsonse = await fetch(`http://localhost:5000/api/users/getFollowing/${userId}`,{
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      authorization: localStorage.getItem("token"),
+    },
+   });
+
+    const data = await repsonse.json();
+    setFollowingsList(data);
+    
+    }
+    catch(error){
+      console.error('Error fetching followers:', error);
+    }
+  }
+  
+
+  useEffect(()=>{
+    getFollowers();
+    getFollowings()
+  }, [isFollowersBoxOpen, isFollowingsBoxOpen]);
 
   return (
     <div>
@@ -129,13 +182,13 @@ function UserProfile({
                   >
                     x
                   </button>
-                  {followers?.map((user) => (
+                  {followersList?.map((user) => (
                     <div>
                       <div className="follower--box">
-                        <Link to={`/profile/${user.username}`}>
+                        <Link to={`/profile/${user.username}`} onClick={() => setIsFollowersBoxOpen(false)}>
                           {" "}
                           <img
-                            src={user.image}
+                            src={user.profileImage}
                             alt={user.username}
                             style={{
                               width: "2rem",
@@ -144,7 +197,7 @@ function UserProfile({
                             }}
                           />
                         </Link>
-                        <Link to={`/profile/${user.username}`}>
+                        <Link to={`/profile/${user.username}`} onClick={() => setIsFollowersBoxOpen(false)}>
                           {" "}
                           <div
                             style={{
@@ -186,13 +239,13 @@ function UserProfile({
                   >
                     x
                   </button>
-                  {followings?.map((user) => (
+                  {followingsList?.map((user) => (
                     <div>
                       <div className="following--box">
-                        <Link to={`/profile/${user.username}`}>
+                        <Link to={`/profile/${user.username}`} onClick={() => setIsFollowingsBoxOpen(false)}>
                           {" "}
                           <img
-                            src={user.image}
+                            src={user.profileImage}
                             alt={user.username}
                             style={{
                               width: "2rem",
@@ -201,7 +254,7 @@ function UserProfile({
                             }}
                           />
                         </Link>
-                        <Link to={`/profile/${user.username}`}>
+                        <Link to={`/profile/${user.username}`} onClick={() => setIsFollowingsBoxOpen(false)}>
                           {" "}
                           <div
                             style={{

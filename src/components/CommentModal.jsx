@@ -119,7 +119,7 @@ useEffect(() => {
             <div className="no-comments">No comments yet.</div>
           ) : (
             comments.map(comment => (
-             <Comment 
+             <Comment   
               key={comment.id}
               comment={comment}
               handleDeleteComment={handleDeleteComment}

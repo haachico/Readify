@@ -30,10 +30,7 @@ function SuggestedUsers() {
       console.log(result, "followers result");
       
       // Update followedUsers in context so the card disappears
-      const user = allUsers.find(u => u.id === id);
-      if (user) {
-        setFollowedUsers([...followedUsers, { followUser: user }]);
-      }
+      setFollowedUsers([...followedUsers, id]);
     } catch (err) {
       console.error(err);
     }

@@ -32,9 +32,22 @@ const Comment  = ({comment, handleDeleteComment, replyInputOpen, setReplyInputOp
                 {comment.replies && comment.replies.length > 0 && (
                   <div className="comment-replies">
                     {comment.replies.map(reply => (
-                      <div key={reply.id} className="comment-reply">
-                        <strong>{reply.username}</strong>: {reply.content}
-                      </div>
+                      // <div key={reply.id} className="comment-reply">
+                      //   <strong>{reply.username}</strong>: {reply.content}
+                      // </div>
+
+                      <Comment
+                        key={reply.id}
+                        comment={reply}
+                        handleDeleteComment={handleDeleteComment}
+                        replyInputOpen={replyInputOpen}
+                        setReplyInputOpen={setReplyInputOpen}
+                        handleAddReply={handleAddReply}
+                        replyText={replyText}
+                        setReplyText={setReplyText}
+                      
+                      
+                      />
                     ))}
                   </div>
                 )}
