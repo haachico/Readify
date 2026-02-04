@@ -50,44 +50,81 @@ function SuggestedUsers() {
               {followedUsers.includes(user.id) ? (
                 ""
               ) : (
-                <div className="user">
-                  <Link to={`/profile/${user.username}`}>
-                    {" "}
-                    <img src={user.profileImage} alt={user.username} />
-                  </Link>
-                  <Link to={`/profile/${user.username}`}>
-                    {" "}
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "flex-start",
-                      }}
-                    >
-                      <div
-                        style={{
-                          display: "flex",
-                          gap: "5px",
-                          justifyContent: "flex-start",
-                          alignItems: "flex-end",
-                        }}
-                      >
-                        <p style={{ marginBottom: "0px" }}>{user.firstName}</p>
-                        <p style={{ marginBottom: "0px" }}>{user.lastName}</p>
-                      </div>
-                      <p style={{ fontSize: "10px", marginTop: "2px" }}>
-                        @{user.username}
-                      </p>
-                    </div>
-                  </Link>
-
-                  <button
-                    onClick={() => handleFollow(user.id)}
-                    className="btn"
-                  >
-                    Follow
-                  </button>
-                </div>
+                <div className="user" style={{
+  display: "flex",
+  alignItems: "center",
+  gap: "1rem",
+  padding: "1rem",
+  width: "100%",
+  boxSizing: "border-box"
+}}>
+  <Link to={`/profile/${user.username}`} style={{
+    display: "flex",
+    alignItems: "center",
+    gap: "1rem",
+    flex: 1,
+    textDecoration: "none",
+    color: "inherit",
+    minWidth: 0
+  }}>
+    <img 
+      src={user.profileImage} 
+      alt={user.username} 
+      style={{
+        width: "2.5rem",
+        height: "2.5rem",
+        borderRadius: "50%",
+        objectFit: "cover",
+        border: "2px solid #00b8ff",
+        flexShrink: 0
+      }}
+    />
+    <div style={{
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "flex-start",
+      flex: 1,
+      minWidth: 0 
+    }}>
+      <div style={{
+        display: "flex",
+        gap: "5px",
+        justifyContent: "flex-start",
+        alignItems: "flex-end",
+        marginBottom: "0.25rem",
+        width: "100%"
+      }}>
+        <p style={{ margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+          {user.firstName}
+        </p>
+        <p style={{ margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+          {user.lastName}
+        </p>
+      </div>
+      <p style={{ 
+        fontSize: "10px", 
+        margin: 0, 
+        color: "#94a3b8",
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        width: "100%"
+      }}>
+        @{user.username}
+      </p>
+    </div>
+  </Link>
+  <button
+    onClick={() => handleFollow(user.id)}
+    className="btn"
+    style={{
+      flexShrink: 0,
+      whiteSpace: "nowrap"
+    }}
+  >
+    Follow
+  </button>
+</div>
               )}{" "}
             </div>
           ))}

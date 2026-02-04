@@ -284,6 +284,7 @@ function Profile() {
                   content={e?.content}
                   imgContent={e?.imgContent}
                   likesCount={e?.likes.likeCount}
+                  commentsCount={e?.commentCount}
                   createdAt={e?.createdAt}
                   editedPostID={editedPostID}
                   isEditBoxOpen={isEditBoxOpen}

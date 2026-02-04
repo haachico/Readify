@@ -171,6 +171,7 @@ function BookmarkPost() {
                   content={post.content}
                   imgContent={post.imgContent}
                   likesCount={post.likes.likeCount}
+                  commentsCount={post.commentCount}
                   createdAt={post.createdAt}
                   editedPostID={editedPostID}
                   isEditBoxOpen={isEditBoxOpen}

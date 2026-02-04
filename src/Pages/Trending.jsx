@@ -147,6 +147,7 @@ function Trending() {
                 content={post.content}
                 imgContent={post.imgContent}
                 likesCount={post.likes.likeCount}
+                commentsCount={post.commentCount}
                    likedBy={post.likes.likedBy}
                 createdAt={post.createdAt}
                 editedPostID={editedPostID}

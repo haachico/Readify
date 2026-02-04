@@ -15,6 +15,7 @@ import Trending from "./Pages/Trending";
 import Profile from "./Pages/Profile";
 import RequiresAuth from "./components/RequiresAuth";
 import ErrorPage from "./Pages/ErrorPage";
+import PostDetails from "./Pages/PostDetails";
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
             <Route path="explore" element={<Explore />} />
             <Route path="bookmark" element={<BookmarkPosts />} />
             <Route path="profile/:profileName" element={<Profile />} />
+            <Route path="post/:postId" element={<PostDetails />} />
           </Route>
         </Route>
         <Route path="*" element={<ErrorPage />} />

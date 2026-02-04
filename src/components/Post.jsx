@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import React from "react";
 import { useContext } from "react";
 import { LoginProvider } from "..";
@@ -13,6 +14,7 @@ function Post({
   content,
   imgContent,
   likesCount,
+  commentsCount,
   createdAt,
   handleEdit,
   postId,
@@ -42,12 +44,9 @@ function Post({
     // handleComment
   } = useContext(LoginProvider);
 
-const [isCommentModalOpen, setCommentModalOpen] = useState(false);
-const [comments, setComments] = useState([]); // You will fetch these from API
-
-
+const navigate = useNavigate();
   const handleComment = () => {
-    setCommentModalOpen(true);
+    navigate(`/post/${postId}`);
   }
   const getDate = (timestamp) => {
     const date = new Date(timestamp);
@@ -224,7 +223,7 @@ const [comments, setComments] = useState([]); // You will fetch these from API
         </div>
         <span onClick={handleComment}>
           <i class="fa-regular fa-comment"></i>
-          {comments.length}
+          {commentsCount}
         </span>
 
         {isBookmarked ? (
@@ -256,23 +255,7 @@ const [comments, setComments] = useState([]); // You will fetch these from API
           </span>
         )}
       </div>
-      <CommentModal
-        open={isCommentModalOpen}
-        onClose={() => setCommentModalOpen(false)}
-        post={{
-          postId: postId,
-          username: postUsername,
-          content,
-          imgContent,
-          profileImage: image
-        }}
-        comments={comments}
-        setComments={setComments}
-        // onAddComment={e => {
-        //   e.preventDefault();
-        //   // handle add comment logic here
-        // }}
-/>
+      {/* CommentModal removed. Comment functionality moved to PostDetails page. */}
     </div>
   );
 }
