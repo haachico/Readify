@@ -38,6 +38,7 @@ function Header() {
 
 
   const handleReadNotification = async (notification) => {
+
     try {
 
       const res = await fetch(`${API_BASE_URL}/api/notifications/${notification.id}/read`, {
@@ -48,9 +49,12 @@ function Header() {
         }
       });
 
-     if (notification.type === 'like' || notification.type === 'comment') {
+     if (notification.type === 'like' || notification.type === 'comment' || notification.type === 'bookmark') {
     let url = `/post/${notification.postId}`;
     navigate(url);
+
+
+    setShowDropdown(false)
   }
 
 
