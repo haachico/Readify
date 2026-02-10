@@ -1,12 +1,11 @@
-import React, { useEffect } from "react";
-import { useContext, useState } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import FadeLoader from "react-spinners/FadeLoader";
 import PostBox from "../components/PostBox";
 import Post from "../components/Post";
 import SortBtns from "../components/SortBtns";
-
 import { LoginProvider } from "..";
 import { API_BASE_URL } from "../utils/api";
+import { refreshAccessToken } from "../utils/refreshAccessToken"; // Import refresh helper
 
 function Home() {
   const {
@@ -19,6 +18,7 @@ function Home() {
     profileImg,
     posts,
     setPosts,
+    setEncodedToken, // Add this to context
   } = useContext(LoginProvider);
 
   const [content, setContent] = useState("");
@@ -34,123 +34,143 @@ function Home() {
   const [sortOption, setSortOption] = useState("LATEST");
   const [isLoading, setIsLoading] = useState(false);
 
+  // Helper function for authenticated API calls
+  const fetchWithAuth = async (url, options = {}) => {
+    let token = encodedToken || localStorage.getItem('token');
+    
+    const defaultOptions = {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      credentials: 'include',
+      ...options,
+    };
+
+    let response = await fetch(`${API_BASE_URL}${url}`, defaultOptions);
+
+    // Handle token expiration
+    if (response.status === 401) {
+      token = await refreshAccessToken();
+      if (token) {
+        // Update context with new token
+        if (setEncodedToken) setEncodedToken(token);
+        
+        // Retry with new token
+        response = await fetch(`${API_BASE_URL}${url}`, {
+          ...defaultOptions,
+          headers: {
+            ...defaultOptions.headers,
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+      } else {
+        // Refresh failed, redirect to login
+        window.location.href = '/login';
+        return null;
+      }
+    }
+
+    return response;
+  };
+
   // loading for 1sec for loader when page loads
   useEffect(() => {
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
+    const timer = setTimeout(() => setIsLoading(false), 1000);
+    return () => clearTimeout(timer);
   }, []);
 
   const handleEdit = (id) => {
-    const post = posts?.find((e) => e._id == id);
-    
+    const post = posts?.find((e) => e._id === id);
     setEditedPost(post.content);
     setEditedImgContent(post.imgContent);
     setEditedPostID(post._id);
     setIsEditBoxOpen(true);
   };
-  
+
   const getPosts = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/posts/feed`, {
-        method: "GET", // or 'PUT'
-        headers: {
-          "Content-Type": "application/json",
-          authorization: encodedToken,
-        },
-      });
-
-      const result = await response.json();
-
-      setPosts(result.posts);
+      const response = await fetchWithAuth('/api/posts/feed');
+      if (response && response.ok) {
+        const result = await response.json();
+        setPosts(result.posts);
+      }
     } catch (err) {
-      console.error(err);
+      console.error('Error fetching posts:', err);
     }
   };
+
   const refreshFeed = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/posts/feed`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: encodedToken,
-        },
-      });
-      const result = await response.json();
-      setPosts(result.posts);
+      const response = await fetchWithAuth('/api/posts/feed');
+      if (response && response.ok) {
+        const result = await response.json();
+        setPosts(result.posts);
+      }
     } catch (err) {
-      console.error(err);
-    }
-  };  const handleUpdate = async (id) => {
-    // /api/posts/edit/:postId
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/posts/edit/${id}`, {
-        method: "POST", // or 'PUT'
-        headers: {
-          "Content-Type": "application/json",
-          authorization: encodedToken,
-        },
-        body: JSON.stringify({
-            content: editedPost,
-            imgContent: editedImgContent,
-        }),
-      });
-      const result = await response.json();
-      setPosts(result.posts);
-      setEditedPostID("");
-      setIsEditBoxOpen(false);
-      getPosts()
-      // setEditedPost("");
-    } catch (err) {
-      console.error(err);
+      console.error('Error refreshing feed:', err);
     }
   };
-  
+
+  const handleUpdate = async (id) => {
+    try {
+      const response = await fetchWithAuth(`/api/posts/edit/${id}`, {
+        method: "POST",
+        body: JSON.stringify({
+          content: editedPost,
+          imgContent: editedImgContent,
+        }),
+      });
+
+      if (response && response.ok) {
+        const result = await response.json();
+        setPosts(result.posts);
+        setEditedPostID("");
+        setIsEditBoxOpen(false);
+        await getPosts();
+      }
+    } catch (err) {
+      console.error('Error updating post:', err);
+    }
+  };
+
   const handlePost = async () => {
     if (!content) return;
+    
     try {
-      console.log(encodedToken, "ENCODED TOKEN");
-      const response = await fetch(`${API_BASE_URL}/api/posts`, {
-        method: "POST", // or 'PUT'
-        headers: {
-          "Content-Type": "application/json",
-          authorization: encodedToken,
-        },
+      const response = await fetchWithAuth('/api/posts', {
+        method: "POST",
         body: JSON.stringify({
-            content: content,
-            imgContent: imgContent,
-            // image: profileImg,
-            // firstName: firstName,
-            // lastName: lastName,
+          content: content,
+          imgContent: imgContent,
         }),
       });
 
-      const result = await response.json();
-      // setPosts(result.posts);
-      setContent("");
-      setIsPostBoxOpen(false);
-      setPreview(null);
-      getPosts()
+      if (response && response.ok) {
+        const result = await response.json();
+        setContent("");
+        setIsPostBoxOpen(false);
+        setPreview(null);
+        await getPosts();
+      }
     } catch (err) {
-      console.error(err);
+      console.error('Error creating post:', err);
     }
   };
-
-  console.log(posts, "POSTSS");
-
 
   const getUsers = async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/users`, {
-        method: "GET", // or 'PUT'
+        method: "GET",
       });
 
-      const result = await response.json();
-
-      setAllUsers(result.users);
+      if (response.ok) {
+        const result = await response.json();
+        setAllUsers(result.users);
+      }
     } catch (err) {
-      console.error(err);
+      console.error('Error fetching users:', err);
     }
   };
 
@@ -159,52 +179,31 @@ function Home() {
     getUsers();
   }, []);
 
-  // below in return while mapping if you see, we set posts. as default
   const handleSort = async (optionName) => {
-    // let sortedData = [...posts];
-    if (optionName === "LATEST") {
-      // setSortOption(optionName);
-      setPressedButton(optionName);
-    } else if (optionName === "OLDEST") {
-      // setSortOption(optionName);
-      setPressedButton(optionName);
-    } else if (optionName === "TRENDING") {
-      // sortedData.sort((a, b) => b.likes.likeCount - a.likes.likeCount);
-      // setSortOption(optionName);
-      setPressedButton(optionName);
-    }
-
+    setPressedButton(optionName);
+    
     try {
-      // Convert to lowercase for backend: LATEST -> latest
       const sortParam = optionName.toLowerCase();
-      const response = await fetch(`${API_BASE_URL}/api/posts/feed?sort=${sortParam}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: encodedToken,
-        },
-      });
-      const result = await response.json();
-      setPosts(result.posts);
-    }
-    catch (err) {
-      console.error(err);
+      const response = await fetchWithAuth(`/api/posts/feed?sort=${sortParam}`);
+      
+      if (response && response.ok) {
+        const result = await response.json();
+        setPosts(result.posts);
+      }
+    } catch (err) {
+      console.error('Error sorting posts:', err);
     }
   };
 
-  console.log(imgContent, "IMG CONTENT");
-
   useEffect(() => {
     if (!imgContent) {
-      setPreview(undefined);
+      setPreview(null);
+    } else {
+      setPreview(imgContent);
     }
-    setPreview(imgContent);
   }, [imgContent]);
 
   useEffect(() => {
-    if (!editedImgContent) {
-      setEditPreviewImg(undefined);
-    }
     setEditPreviewImg(editedImgContent);
   }, [editedImgContent]);
 
@@ -212,8 +211,6 @@ function Home() {
     setPreview(null);
     setImgContent(null);
   };
-
-  console.log(posts, "POSTSS");
 
   return (
     <div>
@@ -244,7 +241,7 @@ function Home() {
 
             {isPostboxOpen && (
               <PostBox
-                isPostboxOpen={isEditBoxOpen}
+                isPostboxOpen={isPostboxOpen} // Fixed: should be isPostboxOpen, not isEditBoxOpen
                 setIsPostBoxOpen={setIsPostBoxOpen}
                 content={content}
                 setContent={setContent}
@@ -257,35 +254,34 @@ function Home() {
               />
             )}
             <div>
-             {posts?.map((post) => (
-              <Post
-                key={post._id}
-                postId={post._id}
-                postUsername={post.username}
-                image={post.image}
-                firstName={post.firstName}
-                lastName={post.lastName}
-                content={post.content}
-                imgContent={post.imgContent}
-                likesCount={post.likes.likeCount}
-                commentsCount={post.commentCount}
-                likedBy={post.likes.likedBy}
-                createdAt={post.createdAt}
-                editedPostID={editedPostID}
-                isEditBoxOpen={isEditBoxOpen}
-                setIsEditBoxOpen={setIsEditBoxOpen}
-                editedPost={editedPost}
-                setEditedPost={setEditedPost}
-                editboxPreviewImg={editboxPreviewImg}
-                setEditPreviewImg={setEditPreviewImg}
-                setEditedImgContent={setEditedImgContent}
-                handleEdit={handleEdit}
-                handleUpdate={handleUpdate}
-                isBookmarked={post.isBookmarked}
-                onBookmarkChange={refreshFeed}
-              />
-            ))}
-
+              {posts?.map((post) => (
+                <Post
+                  key={post._id}
+                  postId={post._id}
+                  postUsername={post.username}
+                  image={post.image}
+                  firstName={post.firstName}
+                  lastName={post.lastName}
+                  content={post.content}
+                  imgContent={post.imgContent}
+                  likesCount={post.likes.likeCount}
+                  commentsCount={post.commentCount}
+                  likedBy={post.likes.likedBy}
+                  createdAt={post.createdAt}
+                  editedPostID={editedPostID}
+                  isEditBoxOpen={isEditBoxOpen}
+                  setIsEditBoxOpen={setIsEditBoxOpen}
+                  editedPost={editedPost}
+                  setEditedPost={setEditedPost}
+                  editboxPreviewImg={editboxPreviewImg}
+                  setEditPreviewImg={setEditPreviewImg}
+                  setEditedImgContent={setEditedImgContent}
+                  handleEdit={handleEdit}
+                  handleUpdate={handleUpdate}
+                  isBookmarked={post.isBookmarked}
+                  onBookmarkChange={refreshFeed}
+                />
+              ))}
             </div>
           </div>
         </>

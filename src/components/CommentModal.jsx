@@ -1,3 +1,4 @@
+// Helper to refresh access token
 
 import React, { useEffect } from "react";
 import "./CommentModal.css";
@@ -7,29 +8,60 @@ import Comment from "./Comment";
 
 const CommentModal = ({ open, onClose, post, comments , setComments}) => {
   const [commentText, setCommentText] = useState("");
- 
+  
   // State to track which comment's reply input is open and the reply text
   const [replyInputOpen, setReplyInputOpen] = useState(null);
   const [replyText, setReplyText] = useState("");
-
-  const getCommentsByPostId = async () => {
-  try {
-
-    const response = await fetch(`${API_BASE_URL}/api/posts/${post.postId}/comments`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        authorization: localStorage.getItem("token"),
+  
+  const refreshAccessToken = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/auth/refresh-token`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+      const result = await response.json();
+      if (response.ok && result.encodedToken) {
+        localStorage.setItem('token', result.encodedToken);
+        return result.encodedToken;
+      } else {
+        localStorage.removeItem('token');
+        return null;
       }
-    });
-
-    const data = await response.json();
-    setComments(data);
-  }
-  catch (error) {
-    console.error("Error fetching comments:", error);
-  }
-}
+    } catch (error) {
+      localStorage.removeItem('token');
+      return null;
+    }
+  };
+  const getCommentsByPostId = async () => {
+    try {
+      let token = localStorage.getItem("token");
+      let response = await fetch(`${API_BASE_URL}/api/posts/${post.postId}/comments`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: token,
+        },
+        credentials: 'include',
+      });
+      if (response.status === 401) {
+        token = await refreshAccessToken();
+        if (token) {
+          response = await fetch(`${API_BASE_URL}/api/posts/${post.postId}/comments`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              authorization: token,
+            },
+            credentials: 'include',
+          });
+        }
+      }
+      const data = await response.json();
+      setComments(data);
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+    }
+  };
 
 useEffect(() => {
    if(post.postId) getCommentsByPostId();
@@ -38,40 +70,68 @@ useEffect(() => {
   const onAddComment = async (e) => {
     e.preventDefault();
     try {
-
-    const response = await fetch(`${API_BASE_URL}/api/posts/${post.postId}/comments`, { 
-
+      let token = localStorage.getItem("token");
+      let response = await fetch(`${API_BASE_URL}/api/posts/${post.postId}/comments`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          authorization: localStorage.getItem("token"),
+          authorization: token,
         },
         body: JSON.stringify({
-            content: commentText,
-        })
-     }) 
-
-     console.log("Comment added:", response);
-    getCommentsByPostId()
-
-    }
-    catch (error) {
+          content: commentText,
+        }),
+        credentials: 'include',
+      });
+      if (response.status === 401) {
+        token = await refreshAccessToken();
+        if (token) {
+          response = await fetch(`${API_BASE_URL}/api/posts/${post.postId}/comments`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              authorization: token,
+            },
+            body: JSON.stringify({
+              content: commentText,
+            }),
+            credentials: 'include',
+          });
+        }
+      }
+      console.log("Comment added:", response);
+      getCommentsByPostId();
+    } catch (error) {
       console.error("Error adding comment:", error);
     }
+  };
 
-  }
-
-   const handleAddReply = async (e, commentId) => {
+  const handleAddReply = async (e, commentId) => {
     e.preventDefault();
     try {
-      const response = await fetch(`${API_BASE_URL}/api/comments/${commentId}/replies`, {
+      let token = localStorage.getItem("token");
+      let response = await fetch(`${API_BASE_URL}/api/comments/${commentId}/replies`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          authorization: localStorage.getItem("token"),
+          authorization: token,
         },
-        body: JSON.stringify({ content: replyText , postId: post.postId  }),
+        body: JSON.stringify({ content: replyText , postId: post.postId }),
+        credentials: 'include',
       });
+      if (response.status === 401) {
+        token = await refreshAccessToken();
+        if (token) {
+          response = await fetch(`${API_BASE_URL}/api/comments/${commentId}/replies`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              authorization: token,
+            },
+            body: JSON.stringify({ content: replyText , postId: post.postId }),
+            credentials: 'include',
+          });
+        }
+      }
       setReplyText("");
       setReplyInputOpen(null);
       getCommentsByPostId();
@@ -83,24 +143,34 @@ useEffect(() => {
 
   const handleDeleteComment = async (e, commentId) => {
     e.preventDefault();
-
     try {
-
-      const response = await fetch(`${API_BASE_URL}/api/posts/${post.postId}/comments/${commentId}`, {
+      let token = localStorage.getItem("token");
+      let response = await fetch(`${API_BASE_URL}/api/posts/${post.postId}/comments/${commentId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          authorization: localStorage.getItem("token"),
+          authorization: token,
         },
+        credentials: 'include',
       });
-
+      if (response.status === 401) {
+        token = await refreshAccessToken();
+        if (token) {
+          response = await fetch(`${API_BASE_URL}/api/posts/${post.postId}/comments/${commentId}`, {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+              authorization: token,
+            },
+            credentials: 'include',
+          });
+        }
+      }
       getCommentsByPostId();
-
-    }
-    catch (error) {
+    } catch (error) {
       console.error("Error deleting comment:", error);
     }
-  }
+  };
 
     if (!open) return null;
 

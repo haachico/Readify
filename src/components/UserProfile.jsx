@@ -1,3 +1,4 @@
+// Helper to refresh access token
 import React, { useEffect, useState } from "react";
 
 import { useContext } from "react";
@@ -17,7 +18,7 @@ function UserProfile({
   setLink,
   followers,
   followings,
-
+  
   postUpdateProfileId,
   handleFollowClick,
   handleUnfollowClick,
@@ -32,30 +33,60 @@ function UserProfile({
   setProfileImg,
 }) {
   const { link, about, username, followedUsers } = useContext(LoginProvider);
-
-const [followersList, setFollowersList] = useState([]);
-const [followingsList, setFollowingsList] = useState([]);
-
-
-  const getFollowers =async()=>{
-
+  
+  const [followersList, setFollowersList] = useState([]);
+  const [followingsList, setFollowingsList] = useState([]);
+  const refreshAccessToken = async () => {
     try {
-   const repsonse = await fetch(`http://localhost:5000/api/users/getFollowers/${userId}`,{
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      authorization: localStorage.getItem("token"),
-    },
-   });
-
-    const data = await repsonse.json();
-    setFollowersList(data);
-    
+      const response = await fetch(`http://localhost:5000/api/auth/refresh-token`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+      const result = await response.json();
+      if (response.ok && result.encodedToken) {
+        localStorage.setItem('token', result.encodedToken);
+        return result.encodedToken;
+      } else {
+        localStorage.removeItem('token');
+        return null;
+      }
+    } catch (error) {
+      localStorage.removeItem('token');
+      return null;
     }
-    catch(error){
+  };
+  
+  
+  const getFollowers = async () => {
+    try {
+      let token = localStorage.getItem("token");
+      let response = await fetch(`http://localhost:5000/api/users/getFollowers/${userId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          authorization: token,
+        },
+        credentials: 'include',
+      });
+      if (response.status === 401) {
+        token = await refreshAccessToken();
+        if (token) {
+          response = await fetch(`http://localhost:5000/api/users/getFollowers/${userId}`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              authorization: token,
+            },
+            credentials: 'include',
+          });
+        }
+      }
+      const data = await response.json();
+      setFollowersList(data);
+    } catch (error) {
       console.error('Error fetching followers:', error);
     }
-  }
+  };
 
   console.log('Followings List:', followingsList);
   console.log('Followers List:', followersList);

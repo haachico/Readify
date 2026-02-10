@@ -15,14 +15,47 @@ function Header() {
   const [showDropdown, setShowDropdown] = useState(false);
 
   const navigate = useNavigate();
-
+  
+  // Helper to refresh access token
+  const refreshAccessToken = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/auth/refresh-token`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+      const result = await response.json();
+      if (response.ok && result.encodedToken) {
+        localStorage.setItem('token', result.encodedToken);
+        return result.encodedToken;
+      } else {
+        localStorage.removeItem('token');
+        return null;
+      }
+    } catch (error) {
+      localStorage.removeItem('token');
+      return null;
+    }
+  };
   async function fetchNotifications() {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/notifications`, {
+      let token = encodedToken || localStorage.getItem('token');
+      let res = await fetch(`${API_BASE_URL}/api/notifications`, {
         headers: {
-          Authorization: encodedToken ? `Bearer ${encodedToken}` : undefined
-        }
+          Authorization: token ? `Bearer ${token}` : undefined
+        },
+        credentials: 'include',
       });
+      if (res.status === 401) {
+        token = await refreshAccessToken();
+        if (token) {
+          res = await fetch(`${API_BASE_URL}/api/notifications`, {
+            headers: {
+              Authorization: token ? `Bearer ${token}` : undefined
+            },
+            credentials: 'include',
+          });
+        }
+      }
       if (res.ok) {
         const data = await res.json();
         setNotifications(data.notifications || []);
@@ -41,21 +74,34 @@ function Header() {
 
     try {
 
-      const res = await fetch(`${API_BASE_URL}/api/notifications/${notification.id}/read`, {
+      let token = encodedToken || localStorage.getItem('token');
+      let res = await fetch(`${API_BASE_URL}/api/notifications/${notification.id}/read`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: encodedToken ? `Bearer ${encodedToken}` : undefined
-        }
+          Authorization: token ? `Bearer ${token}` : undefined
+        },
+        credentials: 'include',
       });
-
-     if (notification.type === 'like' || notification.type === 'comment' || notification.type === 'bookmark') {
-    let url = `/post/${notification.postId}`;
-    navigate(url);
-
-
-    setShowDropdown(false)
-  }
+      if (res.status === 401) {
+        token = await refreshAccessToken();
+        if (token) {
+          res = await fetch(`${API_BASE_URL}/api/notifications/${notification.id}/read`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: token ? `Bearer ${token}` : undefined
+            },
+            credentials: 'include',
+          });
+        }
+      }
+      if (notification.type === 'like' || notification.type === 'comment' || notification.type === 'bookmark') {
+        let url = `/post/${notification.postId}`;
+        navigate(url);
+        setShowDropdown(false);
+        fetchNotifications();
+      }
 
 
     }
@@ -75,7 +121,24 @@ function Header() {
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/users/search?query=${value}`);
+      let token = encodedToken || localStorage.getItem('token');
+      let response = await fetch(`${API_BASE_URL}/api/users/search?query=${value}`, {
+        headers: {
+          Authorization: token ? `Bearer ${token}` : undefined
+        },
+        credentials: 'include',
+      });
+      if (response.status === 401) {
+        token = await refreshAccessToken();
+        if (token) {
+          response = await fetch(`${API_BASE_URL}/api/users/search?query=${value}`, {
+            headers: {
+              Authorization: token ? `Bearer ${token}` : undefined
+            },
+            credentials: 'include',
+          });
+        }
+      }
       const { users } = await response.json();
       setFilteredUser(users);
     } catch (err) {

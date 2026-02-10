@@ -9,23 +9,56 @@ export default function Sidebar() {
   const { username, firstName, profileImg, loggedInUserDetails, setIsLogin } =
     useContext(LoginProvider);
 
-  const handleLogoutClick = async () => {
-   try {
-    await fetch(`${API_BASE_URL}/api/auth/logout`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
+    // Helper to refresh access token
+    const refreshAccessToken = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/auth/refresh-token`, {
+          method: 'POST',
+          credentials: 'include',
+        });
+        const result = await response.json();
+        if (response.ok && result.encodedToken) {
+          localStorage.setItem('token', result.encodedToken);
+          return result.encodedToken;
+        } else {
+          localStorage.removeItem('token');
+          return null;
+        }
+      } catch (error) {
+        localStorage.removeItem('token');
+        return null;
       }
-    });
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    setIsLogin(false);  
-    // Redirect to login
-  } catch (error) {
-    console.error('Logout failed:', error);
+    };
+  const handleLogoutClick = async () => {
+    try {
+      let token = localStorage.getItem('token');
+      let response = await fetch(`${API_BASE_URL}/api/auth/logout`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        credentials: 'include',
+      });
+      if (response.status === 401) {
+        token = await refreshAccessToken();
+        if (token) {
+          response = await fetch(`${API_BASE_URL}/api/auth/logout`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${token}`
+            },
+            credentials: 'include',
+          });
+        }
+      }
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      setIsLogin(false);
+      // Redirect to login
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
   }
-
-}
   return (
     <div className="sidebar--div">
       <Link to="/">

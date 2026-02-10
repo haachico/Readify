@@ -9,6 +9,8 @@ import UserProfile from "../components/UserProfile";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { API_BASE_URL } from "../utils/api";
+import { refreshAccessToken } from "../utils/refreshAccessToken";
+
 
 function Profile() {
   const [isEditFormOpen, setIsEditFormOpen] = useState(false);
@@ -53,11 +55,12 @@ function Profile() {
   const handleUpdate = async (id) => {
     // /api/posts/edit/:postId
     try {
-      const response = await fetch(`/api/posts/edit/${id}`, {
-        method: "POST", // or 'PUT'
+      let token = encodedToken || localStorage.getItem('token');
+      let response = await fetch(`/api/posts/edit/${id}`, {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
-          authorization: encodedToken,
+          authorization: token,
         },
         body: JSON.stringify({
           postData: {
@@ -65,14 +68,30 @@ function Profile() {
             imgContent: editedImgContent,
           },
         }),
+        credentials: 'include',
       });
-
+      if (response.status === 401) {
+        token = await refreshAccessToken();
+        if (token) {
+          response = await fetch(`/api/posts/edit/${id}`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              authorization: token,
+            },
+            body: JSON.stringify({
+              postData: {
+                content: editedPost,
+                imgContent: editedImgContent,
+              },
+            }),
+            credentials: 'include',
+          });
+        }
+      }
       const result = await response.json();
-
       setPosts(result.posts);
-      // setEditedPostID("");
       setIsEditBoxOpen(false);
-      // setEditedPost("");
     } catch (err) {
       console.error(err);
     }
@@ -95,13 +114,28 @@ function Profile() {
 
   const fetchProfileData = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/users/${profileName}`, {
+      let token = encodedToken || localStorage.getItem('token');
+      let response = await fetch(`${API_BASE_URL}/api/users/${profileName}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          authorization: encodedToken,
+          authorization: token,
         },
+        credentials: 'include',
       });
+      if (response.status === 401) {
+        token = await refreshAccessToken();
+        if (token) {
+          response = await fetch(`${API_BASE_URL}/api/users/${profileName}`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              authorization: token,
+            },
+            credentials: 'include',
+          });
+        }
+      }
       const result = await response.json();
       setSelectedUser(result.user);
     } catch (err) {
@@ -131,6 +165,7 @@ function Profile() {
             about: about,
             link: link,
         }),
+        credentials: 'include',
       });
 
       const result = await response.json();
@@ -181,6 +216,7 @@ function Profile() {
           authorization: encodedToken,
         },
         body: JSON.stringify({ followingId: id }),
+        credentials: 'include',
       });
 
       const result = await response.json();

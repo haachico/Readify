@@ -33,6 +33,7 @@ function Signup() {
           lastName: lastName,
           username: username,
         }),
+        credentials: 'include', // Send cookies for refresh token
       });
 
       const result = await response.json();

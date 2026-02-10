@@ -1,7 +1,9 @@
+
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Comment from "../components/Comment";
 import  { API_BASE_URL } from "../utils/api";
+import { refreshAccessToken } from "../utils/refreshAccessToken";
 
 const PostDetails = () => {
   const { postId } = useParams();
@@ -17,15 +19,29 @@ const PostDetails = () => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}/api/posts/${postId}`, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              authorization: localStorage.getItem("token"),
-            }
+        let token = localStorage.getItem("token");
+        let res = await fetch(`${API_BASE_URL}/api/posts/${postId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: token,
+          },
+          credentials: 'include',
         });
+        if (res.status === 401) {
+          token = await refreshAccessToken();
+          if (token) {
+            res = await fetch(`${API_BASE_URL}/api/posts/${postId}`, {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                authorization: token,
+              },
+              credentials: 'include',
+            });
+          }
+        }
         const data = await res.json();
-        console.log(data, "check")
         setPost(data.post);
       } catch (err) {
         console.error("Error fetching post:", err);
@@ -42,13 +58,28 @@ const PostDetails = () => {
   // Fetch comments for the post
   const getCommentsByPostId = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/posts/${postId}/comments`, {
+      let token = localStorage.getItem("token");
+      let response = await fetch(`${API_BASE_URL}/api/posts/${postId}/comments`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          authorization: localStorage.getItem("token"),
-        }
+          authorization: token,
+        },
+        credentials: 'include',
       });
+      if (response.status === 401) {
+        token = await refreshAccessToken();
+        if (token) {
+          response = await fetch(`${API_BASE_URL}/api/posts/${postId}/comments`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              authorization: token,
+            },
+            credentials: 'include',
+          });
+        }
+      }
       const data = await response.json();
       setComments(data);
     } catch (error) {

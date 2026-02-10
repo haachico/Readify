@@ -1,47 +1,100 @@
-import React, { useEffect } from "react";
-import { useContext, useState } from "react";
+// Explore.jsx - Fixed component
+import React, { useEffect, useContext } from "react";
 import FadeLoader from "react-spinners/FadeLoader";
-
 import { LoginProvider } from "..";
 import Post from "../components/Post";
-import { API_BASE_URL, authAPI } from "../utils/api";
+import { API_BASE_URL } from "../utils/api";
+import { refreshAccessToken } from "../utils/refreshAccessToken"; // Import the helper
 
 function Explore() {
-  const { encodedToken, setAllUsers, posts, setPosts } =
+  const { encodedToken, setAllUsers, posts, setPosts, setEncodedToken } = // Add setEncodedToken
     useContext(LoginProvider);
 
   const [editedPost, setEditedPost] = useState("");
   const [editedImgContent, setEditedImgContent] = useState("");
   const [editedPostID, setEditedPostID] = useState("");
-
   const [isEditBoxOpen, setIsEditBoxOpen] = useState(false);
   const [editboxPreviewImg, setEditPreviewImg] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-  }, []);
-
-  const handleEdit = (id) => {
-    const post = posts.find((e) => e._id === id);
-
-    setEditedPost(post.content);
-    setEditedImgContent(post.imgContent);
-    setEditedPostID(post._id);
-    setIsEditBoxOpen((prevState) => !prevState);
-  };
-
-  const handleUpdate = async (id) => {
-    // /api/posts/edit/:postId
+  // Fetch posts with token refresh logic
+  const getPosts = async () => {
     try {
-      const response = await fetch(`api/posts/edit/${id}`, {
-        method: "POST", // or 'PUT'
+      let token = encodedToken || localStorage.getItem('token');
+      
+      const response = await fetch(`${API_BASE_URL}/api/posts`, {
+        method: "GET",
         headers: {
           "Content-Type": "application/json",
-          authorization: encodedToken,
+          Authorization: `Bearer ${token}`, // Fixed: Use Bearer token
+        },
+        credentials: 'include',
+      });
+
+      // Handle token expiration
+      if (response.status === 401) {
+        token = await refreshAccessToken();
+        if (token) {
+          // Update context with new token
+          if (setEncodedToken) setEncodedToken(token);
+          
+          // Retry request with new token
+          const retryResponse = await fetch(`${API_BASE_URL}/api/posts`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            credentials: 'include',
+          });
+          
+          if (retryResponse.ok) {
+            const result = await retryResponse.json();
+            setPosts(result.posts);
+            return;
+          }
+        } else {
+          // Refresh failed, redirect to login
+          window.location.href = '/login';
+          return;
+        }
+      }
+
+      if (response.ok) {
+        const result = await response.json();
+        setPosts(result.posts);
+      }
+    } catch (err) {
+      console.error('Error fetching posts:', err);
+    }
+  };
+
+  // Get all users (public endpoint, no auth needed)
+  const getUsers = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/users`, {
+        method: "GET",
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        setAllUsers(result.users);
+      }
+    } catch (err) {
+      console.error('Error fetching users:', err);
+    }
+  };
+
+  // Handle edit post with token refresh
+  const handleUpdate = async (id) => {
+    try {
+      let token = encodedToken || localStorage.getItem('token');
+      
+      const response = await fetch(`${API_BASE_URL}/api/posts/edit/${id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           postData: {
@@ -49,68 +102,83 @@ function Explore() {
             imgContent: editedImgContent,
           },
         }),
+        credentials: 'include',
       });
 
-      const result = await response.json();
-      setPosts(result.posts);
-      setEditedPostID("");
-      setIsEditBoxOpen((prevState) => !prevState);
-      // setEditedPost("");
+      // Handle token expiration
+      if (response.status === 401) {
+        token = await refreshAccessToken();
+        if (token) {
+          // Update context with new token
+          if (setEncodedToken) setEncodedToken(token);
+          
+          // Retry request with new token
+          const retryResponse = await fetch(`${API_BASE_URL}/api/posts/edit/${id}`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              postData: {
+                content: editedPost,
+                imgContent: editedImgContent,
+              },
+            }),
+            credentials: 'include',
+          });
+          
+          if (retryResponse.ok) {
+            const result = await retryResponse.json();
+            setPosts(result.posts);
+            setEditedPostID("");
+            setIsEditBoxOpen(false);
+            return;
+          }
+        } else {
+          // Refresh failed
+          window.location.href = '/login';
+          return;
+        }
+      }
+
+      if (response.ok) {
+        const result = await response.json();
+        setPosts(result.posts);
+        setEditedPostID("");
+        setIsEditBoxOpen(false);
+      }
     } catch (err) {
-      console.error(err);
+      console.error('Error updating post:', err);
     }
   };
 
-  const getPosts = async () => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/posts`, {
-        method: "GET", // or 'PUT'
-        headers: {
-          "Content-Type": "application/json",
-          authorization: encodedToken,
-        },
-      });
-
-      const result = await response.json();
-
-      setPosts(result.posts);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const getUsers = async () => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/users`, {
-        method: "GET", // or 'PUT'
-      });
-
-      const result = await response.json();
-
-      setAllUsers(result.users);
-    } catch (err) {
-      console.error(err);
-    }
+  const handleEdit = (id) => {
+    const post = posts.find((e) => e._id === id);
+    setEditedPost(post.content);
+    setEditedImgContent(post.imgContent);
+    setEditedPostID(post._id);
+    setIsEditBoxOpen(true);
   };
 
   useEffect(() => {
+    setIsLoading(true);
     getPosts();
     getUsers();
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+    
+    return () => clearTimeout(timer);
   }, []);
 
-  const sortedPosts = posts.sort((a, b) => {
-    const dateA = new Date(a.createdAt);
-    const dateB = new Date(b.createdAt);
-
-    return dateB - dateA;
-  });
-
   useEffect(() => {
-    if (!editedImgContent) {
-      setEditPreviewImg(undefined);
-    }
     setEditPreviewImg(editedImgContent);
   }, [editedImgContent]);
+
+  const sortedPosts = [...posts].sort((a, b) => {
+    return new Date(b.createdAt) - new Date(a.createdAt);
+  });
 
   return (
     <div>
@@ -126,7 +194,7 @@ function Explore() {
       ) : (
         <div className="posts--div">
           <div>
-               {posts?.map((post) => (
+            {sortedPosts?.map((post) => (
               <Post
                 key={post._id}
                 postId={post._id}
@@ -150,7 +218,6 @@ function Explore() {
                 handleEdit={handleEdit}
                 handleUpdate={handleUpdate}
                 isBookmarked={post.isBookmarked}
-                // onBookmarkChange={refreshFeed}
               />
             ))}
           </div>

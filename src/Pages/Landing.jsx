@@ -43,10 +43,13 @@ function Landing() {
           email: email,
           password: password,
         }),
+        credentials: 'include', // Send cookies for refresh token
       });
 
       const result = await response.json();
       console.log("Login response:", result);
+
+      console.log(result, "result")
 
       if (result.foundUser) {
         // Store the full user object
