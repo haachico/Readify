@@ -1,7 +1,5 @@
 // Helper to refresh access token
-import React, { useEffect, useState } from "react";
-
-import { useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { LoginProvider } from "../useContext/LoginContext";
 import { Link } from "react-router-dom";
 import AvatarSelection from "./AvatarSelection";
@@ -32,29 +30,10 @@ function UserProfile({
   profileImg,
   setProfileImg,
 }) {
-  const { link, about, username, followedUsers } = useContext(LoginProvider);
+  const { link, about, username, followedUsers, refreshAccessToken, handleLogout } = useContext(LoginProvider);
   
   const [followersList, setFollowersList] = useState([]);
   const [followingsList, setFollowingsList] = useState([]);
-  const refreshAccessToken = async () => {
-    try {
-      const response = await fetch(`http://localhost:5000/api/auth/refresh-token`, {
-        method: 'POST',
-        credentials: 'include',
-      });
-      const result = await response.json();
-      if (response.ok && result.encodedToken) {
-        localStorage.setItem('token', result.encodedToken);
-        return result.encodedToken;
-      } else {
-        localStorage.removeItem('token');
-        return null;
-      }
-    } catch (error) {
-      localStorage.removeItem('token');
-      return null;
-    }
-  };
   
   
   const getFollowers = async () => {
@@ -79,6 +58,9 @@ function UserProfile({
             },
             credentials: 'include',
           });
+        } else {
+          handleLogout && handleLogout();
+          return;
         }
       }
       const data = await response.json();

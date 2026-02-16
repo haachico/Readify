@@ -1,10 +1,11 @@
 // Helper to refresh access token
 
-import React, { useEffect } from "react";
+
+import React, { useEffect, useContext, useState } from "react";
 import "./CommentModal.css";
-import { useState } from "react";
 import { API_BASE_URL } from "../utils/api";
 import Comment from "./Comment";
+import { LoginProvider } from "../useContext/LoginContext";
 
 const CommentModal = ({ open, onClose, post, comments , setComments}) => {
   const [commentText, setCommentText] = useState("");
@@ -13,25 +14,7 @@ const CommentModal = ({ open, onClose, post, comments , setComments}) => {
   const [replyInputOpen, setReplyInputOpen] = useState(null);
   const [replyText, setReplyText] = useState("");
   
-  const refreshAccessToken = async () => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/auth/refresh-token`, {
-        method: 'POST',
-        credentials: 'include',
-      });
-      const result = await response.json();
-      if (response.ok && result.encodedToken) {
-        localStorage.setItem('token', result.encodedToken);
-        return result.encodedToken;
-      } else {
-        localStorage.removeItem('token');
-        return null;
-      }
-    } catch (error) {
-      localStorage.removeItem('token');
-      return null;
-    }
-  };
+  const { refreshAccessToken, handleLogout } = useContext(LoginProvider);
   const getCommentsByPostId = async () => {
     try {
       let token = localStorage.getItem("token");
@@ -54,6 +37,9 @@ const CommentModal = ({ open, onClose, post, comments , setComments}) => {
             },
             credentials: 'include',
           });
+        } else {
+          handleLogout && handleLogout();
+          return;
         }
       }
       const data = await response.json();
@@ -96,6 +82,9 @@ useEffect(() => {
             }),
             credentials: 'include',
           });
+        } else {
+          handleLogout && handleLogout();
+          return;
         }
       }
       console.log("Comment added:", response);
@@ -130,6 +119,9 @@ useEffect(() => {
             body: JSON.stringify({ content: replyText , postId: post.postId }),
             credentials: 'include',
           });
+        } else {
+          handleLogout && handleLogout();
+          return;
         }
       }
       setReplyText("");
@@ -164,6 +156,9 @@ useEffect(() => {
             },
             credentials: 'include',
           });
+        } else {
+          handleLogout && handleLogout();
+          return;
         }
       }
       getCommentsByPostId();

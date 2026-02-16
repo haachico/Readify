@@ -6,29 +6,15 @@ import { LoginProvider } from "../useContext/LoginContext";
 import { API_BASE_URL } from "../utils/api";
 
 export default function Sidebar() {
-  const { username, firstName, profileImg, loggedInUserDetails, setIsLogin } =
-    useContext(LoginProvider);
+  const {
+    username,
+    firstName,
+    profileImg,
+    loggedInUserDetails,
+    refreshAccessToken,
+    handleLogout
+  } = useContext(LoginProvider);
 
-    // Helper to refresh access token
-    const refreshAccessToken = async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/api/auth/refresh-token`, {
-          method: 'POST',
-          credentials: 'include',
-        });
-        const result = await response.json();
-        if (response.ok && result.encodedToken) {
-          localStorage.setItem('token', result.encodedToken);
-          return result.encodedToken;
-        } else {
-          localStorage.removeItem('token');
-          return null;
-        }
-      } catch (error) {
-        localStorage.removeItem('token');
-        return null;
-      }
-    };
   const handleLogoutClick = async () => {
     try {
       let token = localStorage.getItem('token');
@@ -49,14 +35,18 @@ export default function Sidebar() {
             },
             credentials: 'include',
           });
+        } else {
+          handleLogout && handleLogout();
+          return;
         }
       }
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      setIsLogin(false);
+      handleLogout && handleLogout();
       // Redirect to login
     } catch (error) {
       console.error('Logout failed:', error);
+      handleLogout && handleLogout();
     }
   }
   return (

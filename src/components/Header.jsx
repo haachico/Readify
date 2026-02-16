@@ -2,40 +2,25 @@ import React, { useState, useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import SearchComponent from "./SearchComponent";
 
-import { LoginProvider } from "..";
+import { LoginProvider } from "../useContext/LoginContext";
 import { API_BASE_URL } from "../utils/api";
 
 function Header() {
   const [searchText, setSearchText] = useState("");
   const [filteredUser, setFilteredUser] = useState([]);
-  const { allUsers, setAllUsers, encodedToken } = useContext(LoginProvider) || {};
+  const {
+    allUsers,
+    setAllUsers,
+    encodedToken,
+    refreshAccessToken,
+    handleLogout
+  } = useContext(LoginProvider) || {};
 
   // Notifications state
   const [notifications, setNotifications] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
 
   const navigate = useNavigate();
-  
-  // Helper to refresh access token
-  const refreshAccessToken = async () => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/auth/refresh-token`, {
-        method: 'POST',
-        credentials: 'include',
-      });
-      const result = await response.json();
-      if (response.ok && result.encodedToken) {
-        localStorage.setItem('token', result.encodedToken);
-        return result.encodedToken;
-      } else {
-        localStorage.removeItem('token');
-        return null;
-      }
-    } catch (error) {
-      localStorage.removeItem('token');
-      return null;
-    }
-  };
   async function fetchNotifications() {
     try {
       let token = encodedToken || localStorage.getItem('token');
@@ -54,6 +39,9 @@ function Header() {
             },
             credentials: 'include',
           });
+        } else {
+          handleLogout && handleLogout();
+          return;
         }
       }
       if (res.ok) {
@@ -62,6 +50,7 @@ function Header() {
       }
     } catch (err) {
       console.error('Notification fetch error:', err);
+      handleLogout && handleLogout();
     }
   }
   useEffect(() => {
@@ -71,9 +60,7 @@ function Header() {
 
 
   const handleReadNotification = async (notification) => {
-
     try {
-
       let token = encodedToken || localStorage.getItem('token');
       let res = await fetch(`${API_BASE_URL}/api/notifications/${notification.id}/read`, {
         method: 'POST',
@@ -94,6 +81,9 @@ function Header() {
             },
             credentials: 'include',
           });
+        } else {
+          handleLogout && handleLogout();
+          return;
         }
       }
       if (notification.type === 'like' || notification.type === 'comment' || notification.type === 'bookmark') {
@@ -102,11 +92,9 @@ function Header() {
         setShowDropdown(false);
         fetchNotifications();
       }
-
-
-    }
-    catch (err) {
+    } catch (err) {
       console.error('Error marking notifications as read:', err);
+      handleLogout && handleLogout();
     }
   }
 
@@ -114,12 +102,10 @@ function Header() {
 
   const handleSearch = async (value) => {
     setSearchText(value);
-    
     if (!value.trim()) {
       setFilteredUser([]);
       return;
     }
-
     try {
       let token = encodedToken || localStorage.getItem('token');
       let response = await fetch(`${API_BASE_URL}/api/users/search?query=${value}`, {
@@ -137,12 +123,16 @@ function Header() {
             },
             credentials: 'include',
           });
+        } else {
+          handleLogout && handleLogout();
+          return;
         }
       }
       const { users } = await response.json();
       setFilteredUser(users);
     } catch (err) {
       console.error('Search error:', err);
+      handleLogout && handleLogout();
     }
   };
 

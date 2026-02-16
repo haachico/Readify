@@ -1,3 +1,5 @@
+import { API_BASE_URL } from "./api";
+
 // refreshToken.js - Create this as a separate utility file
 export const refreshAccessToken = async () => {
   try {
@@ -7,10 +9,10 @@ export const refreshAccessToken = async () => {
     });
     const result = await response.json();
     
-    if (response.ok && result.encodedToken) {
+    if (response.ok && result.accessToken) {
       // Also store in context if you're using it
-      localStorage.setItem('token', result.encodedToken);
-      return result.encodedToken;
+      localStorage.setItem('token', result.accessToken);
+      return result.accessToken;
     } else {
       localStorage.removeItem('token');
       return null;

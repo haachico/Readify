@@ -4,6 +4,7 @@ import { createContext } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { API_BASE_URL, authAPI } from "../utils/api";
+import { refreshAccessToken as refreshAccessTokenUtil } from "../utils/refreshAccessToken";
 
 export const LoginProvider = createContext();
 
@@ -16,31 +17,26 @@ export function LoginContext({ children }) {
   const [encodedToken, setEncodedToken] = useState("");
   // Add a state for tracking token refresh
   const [refreshingToken, setRefreshingToken] = useState(false);
-    // Helper to refresh access token
-    const refreshAccessToken = async () => {
-      setRefreshingToken(true);
-      try {
-        const response = await fetch(`${API_BASE_URL}/api/auth/refresh-token`, {
-          method: 'POST',
-          credentials: 'include', // Send cookies
-        });
-        const result = await response.json();
-        if (response.ok && result.encodedToken) {
-          setEncodedToken(result.encodedToken);
-          localStorage.setItem('token', result.encodedToken);
-          setRefreshingToken(false);
-          return result.encodedToken;
-        } else {
-          setRefreshingToken(false);
-          handleLogout();
-          return null;
-        }
-      } catch (error) {
+  // Use the utility version for refreshAccessToken
+  const refreshAccessToken = async () => {
+    setRefreshingToken(true);
+    try {
+      const token = await refreshAccessTokenUtil();
+      if (token) {
+        setEncodedToken(token);
+        setRefreshingToken(false);
+        return token;
+      } else {
         setRefreshingToken(false);
         handleLogout();
         return null;
       }
-    };
+    } catch (error) {
+      setRefreshingToken(false);
+      handleLogout();
+      return null;
+    }
+  };
   const [username, setUsername] = useState("");
   const [userID, setUserID] = useState("");
   const [bookmarkPosts, setBookmarkPosts] = useState([]);
@@ -254,7 +250,6 @@ export function LoginContext({ children }) {
     });
   };
 
-  const handleLogout = () => {
     // Clear localStorage
     localStorage.removeItem('token');
     localStorage.removeItem('user');
@@ -324,7 +319,7 @@ export function LoginContext({ children }) {
           handleLike,
           handleDislike,
           handleComment,
-          handleLogout,
+          refreshAccessToken,
         }}
       >
         {children}

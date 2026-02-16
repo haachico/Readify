@@ -1,5 +1,5 @@
 // Explore.jsx - Fixed component
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import FadeLoader from "react-spinners/FadeLoader";
 import { LoginProvider } from "..";
 import Post from "../components/Post";
@@ -30,6 +30,9 @@ function Explore() {
         },
         credentials: 'include',
       });
+
+
+      console.log(response, await response.json(), "we are checking from Explore");
 
       // Handle token expiration
       if (response.status === 401) {

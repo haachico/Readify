@@ -49,6 +49,7 @@ function Home() {
 
     let response = await fetch(`${API_BASE_URL}${url}`, defaultOptions);
 
+    console.log(response, "we are checking from Home")
     // Handle token expiration
     if (response.status === 401) {
       token = await refreshAccessToken();
@@ -94,6 +95,7 @@ function Home() {
       const response = await fetchWithAuth('/api/posts/feed');
       if (response && response.ok) {
         const result = await response.json();
+        console.log(result, "result")
         setPosts(result.posts);
       }
     } catch (err) {
