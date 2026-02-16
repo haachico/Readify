@@ -250,6 +250,7 @@ export function LoginContext({ children }) {
     });
   };
 
+  const handleLogout = () => {
     // Clear localStorage
     localStorage.removeItem('token');
     localStorage.removeItem('user');
@@ -319,6 +320,7 @@ export function LoginContext({ children }) {
           handleLike,
           handleDislike,
           handleComment,
+          handleLogout,
           refreshAccessToken,
         }}
       >
