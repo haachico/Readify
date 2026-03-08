@@ -6,6 +6,7 @@ import { useContext } from "react";
 import { LoginProvider } from "..";
 import appImg from "../logo.png";
 import { API_BASE_URL, authAPI } from "../utils/api";
+import { FaUser } from 'react-icons/fa';
 
 function Signup() {
   const [firstName, setFirstName] = useState("");
@@ -66,8 +67,9 @@ function Signup() {
       </div>
       <div className="signup--form">
         <h1>Sign up</h1>
+        <FaUser size={50} style={{ marginBottom: "20px", color: "#333" }} />
         <form>
-          <label for="firstName">First name : </label>
+          <label for="firstName">First name   <FaUser size={50} style={{ marginBottom: "20px", color: "#333" }} />: </label>
           <input
             type="text"
             id="firstName"
