@@ -6,11 +6,13 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { LoginProvider } from "..";
 import { API_BASE_URL, authAPI } from "../utils/api";
+import ForgotPasswordModal from "../components/ForgetPassword";
 
 function Landing() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errMsg, setErrMsg] = useState("");
+  const [showForgotModal, setShowForgotModal] = useState(false);
   const {
     setIsLogin,
     setEncodedToken,
@@ -114,10 +116,28 @@ function Landing() {
             Sign up!
           </Link>
         </span>
+
+         <div style={{ marginTop: '10px', textAlign: 'center' }}>
+      <button 
+        type="button"
+        onClick={() => setShowForgotModal(true)}
+        style={{ background: 'none', border: 'none', color: '#007bff', cursor: 'pointer' }}
+      >
+        Forgot Password?
+      </button>
+    </div>
       </div>
       <div className="login--logoImg">
         <img src={readify} alt="" />
       </div>
+
+   
+
+    {showForgotModal && (
+      <ForgotPasswordModal 
+        onClose={() => setShowForgotModal(false)}
+      />
+    )}
     </div>
   );
 }
