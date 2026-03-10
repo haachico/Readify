@@ -16,6 +16,7 @@ import Profile from "./Pages/Profile";
 import RequiresAuth from "./components/RequiresAuth";
 import ErrorPage from "./Pages/ErrorPage";
 import PostDetails from "./Pages/PostDetails";
+import ResetPassword from "./Pages/ResetPassword";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="/login" element={<Landing />} />
         <Route path="/signup" element={<Signup />} />
 
+        <Route path="reset-password" element={<ResetPassword />} />
         <Route
           path="/"
           element={
