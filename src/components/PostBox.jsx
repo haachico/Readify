@@ -9,7 +9,7 @@ function PostBox({
   preview,
   profileImg,
   imgContent,
-  setImgContent,
+  handleImageSelect,
   handlePost,
   handlePrevImgCloseClick,
 }) {
@@ -57,7 +57,7 @@ function PostBox({
             accept="image/*"
             className="img--select"
             onChange={(e) =>
-              setImgContent(URL.createObjectURL(e.target.files[0]))
+             handleImageSelect(e.target.files[0])
             }
           />
           <button onClick={handlePost} className="post--btn">

@@ -33,6 +33,7 @@ function Home() {
   const [pressedButton, setPressedButton] = useState(null);
   const [sortOption, setSortOption] = useState("LATEST");
   const [isLoading, setIsLoading] = useState(false);
+  
 
   // Helper function for authenticated API calls
   const fetchWithAuth = async (url, options = {}) => {
@@ -40,12 +41,17 @@ function Home() {
     
     const defaultOptions = {
       headers: {
-        'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
       },
       credentials: 'include',
       ...options,
     };
+
+    // Only set Content-Type to JSON if body is NOT FormData
+    // If body is FormData, let browser set it automatically with boundary
+    if (options.body && !(options.body instanceof FormData)) {
+      defaultOptions.headers['Content-Type'] = 'application/json';
+    }
 
     let response = await fetch(`${API_BASE_URL}${url}`, defaultOptions);
 
@@ -117,12 +123,15 @@ function Home() {
 
   const handleUpdate = async (id) => {
     try {
+
+      const formData = new FormData();
+      formData.append('content', editedPost);
+      if (editedImgContent) {
+        formData.append('image', editedImgContent);
+      }
       const response = await fetchWithAuth(`/api/posts/edit/${id}`, {
         method: "POST",
-        body: JSON.stringify({
-          content: editedPost,
-          imgContent: editedImgContent,
-        }),
+        body: formData,
       });
 
       if (response && response.ok) {
@@ -139,14 +148,17 @@ function Home() {
 
   const handlePost = async () => {
     if (!content) return;
+
+    const formData = new FormData();
+    formData.append('content', content);
+    if (imgContent) {
+      formData.append('image', imgContent);
+    }
     
     try {
       const response = await fetchWithAuth('/api/posts', {
         method: "POST",
-        body: JSON.stringify({
-          content: content,
-          imgContent: imgContent,
-        }),
+        body: formData,
       });
 
       if (response && response.ok) {
@@ -198,14 +210,6 @@ function Home() {
   };
 
   useEffect(() => {
-    if (!imgContent) {
-      setPreview(null);
-    } else {
-      setPreview(imgContent);
-    }
-  }, [imgContent]);
-
-  useEffect(() => {
     setEditPreviewImg(editedImgContent);
   }, [editedImgContent]);
 
@@ -213,6 +217,15 @@ function Home() {
     setPreview(null);
     setImgContent(null);
   };
+
+  const handleImageSelect = (file) => {
+    if(file){
+      setImgContent(file);
+      
+      const previewURL = URL.createObjectURL(file);
+      setPreview(previewURL);
+    }
+  }
 
   return (
     <div>
@@ -248,7 +261,7 @@ function Home() {
                 content={content}
                 setContent={setContent}
                 imgContent={imgContent}
-                setImgContent={setImgContent}
+                handleImageSelect={handleImageSelect}
                 firstName={firstName}
                 handlePost={handlePost}
                 preview={preview}
