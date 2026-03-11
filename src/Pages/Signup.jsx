@@ -69,52 +69,62 @@ function Signup() {
         <h1>Sign up</h1>
         <FaUser size={50} style={{ marginBottom: "20px", color: "#333" }} />
         <form>
-          <label for="firstName">First name   <FaUser size={50} style={{ marginBottom: "20px", color: "#333" }} />: </label>
-          <input
-            type="text"
-            id="firstName"
-            value={firstName}
-            placeholder="Enter your first name"
-            onChange={(e) => setFirstName(e.target.value)}
-          />
+          <div className="form-field">
+            <label htmlFor="firstName">First name: </label>
+            <input
+              type="text"
+              id="firstName"
+              value={firstName}
+              placeholder="Enter your first name"
+              onChange={(e) => setFirstName(e.target.value)}
+            />
+          </div>
 
-          <label for="lastName">Last name : </label>
-          <input
-            type="text"
-            id="lastName"
-            value={lastName}
-            placeholder="Enter your last name"
-            onChange={(e) => setLastName(e.target.value)}
-          />
+          <div className="form-field">
+            <label htmlFor="lastName">Last name : </label>
+            <input
+              type="text"
+              id="lastName"
+              value={lastName}
+              placeholder="Enter your last name"
+              onChange={(e) => setLastName(e.target.value)}
+            />
+          </div>
 
-          <label for="username"> Username : </label>
-          <input
-            type="text"
-            id="username"
-            value={username}
-            placeholder="Enter your username"
-            onChange={(e) => setUsername(e.target.value)}
-          />
+          <div className="form-field">
+            <label htmlFor="username"> Username : </label>
+            <input
+              type="text"
+              id="username"
+              value={username}
+              placeholder="Enter your username"
+              onChange={(e) => setUsername(e.target.value)}
+            />
+          </div>
 
-          <label for="email">Email : </label>
-          <input
-            type="email"
-            id="email"
-            pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$"
-            placeholder="Enter your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+          <div className="form-field">
+            <label htmlFor="email">Email : </label>
+            <input
+              type="email"
+              id="email"
+              pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
 
-          <label for="password">Password : </label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            placeholder="Enter a valid password"
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <div className="form-field">
+            <label htmlFor="password">Password : </label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              placeholder="Enter a valid password"
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
 
           <button onClick={handleSignup}>Sign up</button>
         </form>

@@ -47,7 +47,7 @@ export default function ForgotPasswordModal({ onClose }) {
         {!submitted ? (
           <form onSubmit={handleSubmit}>
             <div className="form-group">
-              <label>Enter your email:</label>
+              <label style={{color: "#ffffff"}} >Enter your email:</label>
               <input
                 type="email"
                 value={email}

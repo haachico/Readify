@@ -76,6 +76,14 @@ a:hover {
   max-width: 450px;
 }
 
+.form-field {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+}
+
 .login--form form label,
 .signup--form form label {
   font-weight: 600;
@@ -85,7 +93,8 @@ a:hover {
 
 .login--form form input,
 .signup--form form input {
-  width: 25rem;
+  width: 100%;
+  max-width: 25rem;
   padding: 12px 16px;
   margin-top: 5px;
   margin-bottom: 1.5rem;
@@ -107,6 +116,7 @@ a:hover {
 .login--form button,
 .signup--form button {
   width: 100%;
+  max-width: 25rem;
   padding: 12px;
   margin-top: 1rem;
   border-radius: 10px;
