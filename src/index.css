@@ -590,7 +590,7 @@ button {
   flex-direction: column;
   justify-content: flex-start;
   align-items: stretch;
-  gap: 1rem;
+  gap: 0.5rem;
   position: fixed;
   top: 50%;
   left: 50%;
@@ -603,7 +603,7 @@ button {
   padding: 1.5rem;
   z-index: 1000;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
-  max-height: 80vh;
+  max-height: 85vh;
   overflow-y: auto;
 }
 
@@ -726,58 +726,43 @@ button {
   justify-content: center;
   align-items: center;
   width: 100%;
-  margin: 1rem 0;
-  background-color: #0f172a;
+  margin: 0.5rem 0;
+  background-color: rgba(15, 23, 42, 0.5);
   border-radius: 8px;
   border: 1px solid #334155;
-  padding: 0.5rem;
-  min-height: 100px;
+  padding: 0.75rem;
+  min-height: auto;
+  max-height: 250px;
+  box-sizing: border-box;
 }
 
 .preview--img {
-  max-width: 100%;
-  max-height: 300px;
-  border-radius: 8px;
-  border: 1px solid #334155;
+  max-width: 95%;
+  max-height: 220px;
+  border-radius: 6px;
+  border: 1px solid #475569;
   transition: all 0.3s ease;
+  object-fit: contain;
 }
 
 #close--icon {
   position: absolute;
-  top: -8px;
-  right: -8px;
+  top: 5px;
+  right: 5px;
   color: #ff6b6b;
   font-weight: 600;
   cursor: pointer;
-  background-color: #0f172a;
+  background-color: rgba(15, 23, 42, 0.8);
   border-radius: 50%;
-  padding: 2px 6px;
+  padding: 3px 7px;
   transition: all 0.3s ease;
+  font-size: 1rem;
+  z-index: 10;
 }
 
 #close--icon:hover {
   color: #ff4444;
   transform: scale(1.15);
-}
-/* 
-.img--select--label {
-  display: inline-block;
-  padding: 8px 12px;
-  color: black;
-  cursor: pointer;
-  display: block;
-  margin-bottom: 2px;
-  position: absolute;
-  top: 4rem;
-  background-color: red;
-  left: 0.2rem;
-} */
-
-.preview--img {
-  /* position: relative;
-  bottom: 14rem;
-  left: 2rem; */
-  margin-top: 2px;
 }
 
 .select--image {
@@ -787,20 +772,6 @@ button {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-}
-
-.previewImg--div {
-  position: relative;
-  z-index: 1;
-}
-
-#close--icon {
-  position: absolute;
-  color: red;
-  font-weight: 600;
-  right: 0px;
-  top: 0px;
-  cursor: pointer;
 }
 
 .editBox--div {
