@@ -175,12 +175,18 @@ export function LoginContext({ children }) {
           });
         }
       }
-      const result = await response.json();
-      toast.success("You deleted a post!", {
-        position: toast.POSITION.TOP_RIGHT,
-      });
+      if (response.ok) {
+        // Immediately remove the post from state
+        setPosts(posts.filter(post => post._id !== id));
+        toast.success("You deleted a post!", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      }
     } catch (err) {
       console.error(err);
+      toast.error("Failed to delete post", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
     }
   };
 

@@ -266,6 +266,7 @@ function Home() {
                 handlePost={handlePost}
                 preview={preview}
                 handlePrevImgCloseClick={handlePrevImgCloseClick}
+                profileImg={profileImg}
               />
             )}
             <div>

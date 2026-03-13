@@ -93,7 +93,7 @@ export default function Sidebar() {
         <div>
           <Link to={`/profile/${username}`}>
             <h4 style={{ margin: "2px" }}>{firstName}</h4>
-            <p style={{ fontSize: "0.8rem", margin: "2px" }}>@{username}</p>
+            {/* <p style={{ fontSize: "0.8rem", margin: "2px" }}>@{username}</p> */}
           </Link>
         </div>
       </div>

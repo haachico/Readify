@@ -103,7 +103,7 @@ function UserProfile({
       <div className="profile--div">
         <div className="profile--dp">
           <img
-            src={image}
+            src={image || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"}
             alt=""
             style={{ width: "8rem", height: "8rem", borderRadius: "50%" }}
           />
