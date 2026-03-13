@@ -26,6 +26,7 @@ function Post({
   editboxPreviewImg,
   setEditPreviewImg,
   setEditedImgContent,
+  setEditedImgFile,
   handleUpdate,
   isBookmarked,
   onBookmarkChange,
@@ -74,7 +75,7 @@ const navigate = useNavigate();
       >
         <Link to={`/profile/${postUsername}`}>
           <img
-            src={image}
+            src={image || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"}
             alt={postUsername}
             style={{
               width: "2rem",
@@ -135,57 +136,68 @@ const navigate = useNavigate();
       </div>
       {postId === editedPostID && isEditBoxOpen && (
         <div className="editBox--div">
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+            <h3 style={{ margin: 0, color: "#00b8ff" }}>Edit Post</h3>
+            <button
+              className="editbox-close-btn"
+              onClick={() => setIsEditBoxOpen(false)}
+            >
+              ✕
+            </button>
+          </div>
           <textarea
             rows={4}
             column={40}
             type="text"
             value={editedPost}
             onChange={(e) => setEditedPost(e.target.value)}
-            style={{ width: "18rem", height: "6rem" }}
             className="editTextArea"
+            placeholder="Update your post..."
           />
           {editboxPreviewImg && (
             <div className="editbox-previewImg--div">
               <i
-                class="fa-sharp fa-regular fa-circle-xmark"
+                className="fa-sharp fa-regular fa-circle-xmark"
                 id="editbox-close--icon"
                 onClick={() => setEditPreviewImg(null)}
               ></i>
               <img
                 src={editboxPreviewImg}
-                alt=""
-                style={{ width: "4rem", height: "4rem" }}
+                alt="preview"
                 className="editbox-preview--img"
               />
             </div>
           )}
-          <label
-            htmlFor="editbox-file-input"
-            className="editbox-img--select--label"
-          >
-            <i class="fa-solid fa-image" id="editbox-image-icon"></i>{" "}
-          </label>
-          <input
-            id="editbox-file-input"
-            type="file"
-            accept="image/*"
-            className="editbox-img--select"
-            onChange={(e) =>
-              setEditedImgContent(URL.createObjectURL(e.target.files[0]))
-            } // Set the selected image file to the state
-          />
-          <button
-            onClick={() => handleUpdate(postId)}
-            className="editbox-update--btn"
-          >
-            Update
-          </button>
-          <button
-            className="editbox-close-btn"
-            onClick={() => setIsEditBoxOpen(false)}
-          >
-            x
-          </button>
+          <div className="editbox-actions">
+            <label
+              htmlFor="editbox-file-input"
+              className="editbox-img--select--label"
+              title="Upload image"
+            >
+              <i className="fa-solid fa-image" id="editbox-image-icon"></i>
+            </label>
+            <input
+              id="editbox-file-input"
+              type="file"
+              accept="image/*"
+              className="editbox-img--select"
+              onChange={(e) => {
+                const file = e.target.files[0];
+                if (file) {
+                  // Store preview blob URL
+                  setEditPreviewImg(URL.createObjectURL(file));
+                  // Store actual File object for upload
+                  if (setEditedImgFile) setEditedImgFile(file);
+                }
+              }}
+            />
+            <button
+              onClick={() => handleUpdate(postId)}
+              className="editbox-update--btn"
+            >
+              Update
+            </button>
+          </div>
         </div>
       )}
       <div style={{ margin: "2rem 0" }}>

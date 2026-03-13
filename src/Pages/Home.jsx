@@ -26,6 +26,7 @@ function Home() {
   const [isPostboxOpen, setIsPostBoxOpen] = useState(false);
   const [editedPost, setEditedPost] = useState("");
   const [editedImgContent, setEditedImgContent] = useState("");
+  const [editedImgFile, setEditedImgFile] = useState(null);
   const [editedPostID, setEditedPostID] = useState("");
   const [preview, setPreview] = useState(null);
   const [isEditBoxOpen, setIsEditBoxOpen] = useState(false);
@@ -92,6 +93,7 @@ function Home() {
     const post = posts?.find((e) => e._id === id);
     setEditedPost(post.content);
     setEditedImgContent(post.imgContent);
+    setEditedImgFile(null);
     setEditedPostID(post._id);
     setIsEditBoxOpen(true);
   };
@@ -126,8 +128,8 @@ function Home() {
 
       const formData = new FormData();
       formData.append('content', editedPost);
-      if (editedImgContent) {
-        formData.append('image', editedImgContent);
+      if (editedImgFile) {
+        formData.append('image', editedImgFile);
       }
       const response = await fetchWithAuth(`/api/posts/edit/${id}`, {
         method: "POST",
@@ -139,6 +141,7 @@ function Home() {
         setPosts(result.posts);
         setEditedPostID("");
         setIsEditBoxOpen(false);
+        setEditedImgFile(null);
         await getPosts();
       }
     } catch (err) {
@@ -269,7 +272,7 @@ function Home() {
                 profileImg={profileImg}
               />
             )}
-            <div>
+            <div style={{ width: "100%" }}>
               {posts?.map((post) => (
                 <Post
                   key={post._id}
@@ -292,6 +295,7 @@ function Home() {
                   editboxPreviewImg={editboxPreviewImg}
                   setEditPreviewImg={setEditPreviewImg}
                   setEditedImgContent={setEditedImgContent}
+                  setEditedImgFile={setEditedImgFile}
                   handleEdit={handleEdit}
                   handleUpdate={handleUpdate}
                   isBookmarked={post.isBookmarked}
