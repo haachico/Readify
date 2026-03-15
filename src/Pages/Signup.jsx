@@ -1,6 +1,8 @@
 import React from "react";
 import { useState } from "react";
+import { GoogleLogin } from "@react-oauth/google";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { useContext } from "react";
 import { LoginProvider } from "..";
@@ -15,6 +17,43 @@ function Signup() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+  const navigate = useNavigate();
+  const {
+    setIsLogin,
+    setEncodedToken,
+    setUserID,
+    setUsername: setContextUsername,
+    setFirstName: setContextFirstName,
+    setLastName: setContextLastName,
+    setEmail: setContextEmail,
+    setProfileImg,
+    setAbout,
+    setLink,
+    setFollowedUsers,
+    setLoggedInUserDetails,
+  } = useContext(LoginProvider);
+
+  const applyAuthenticatedUser = (result) => {
+    if (!result?.foundUser || !result?.encodedToken) {
+      setMessage("Authentication failed!");
+      return;
+    }
+
+    setLoggedInUserDetails(result.foundUser);
+    setContextFirstName(result.foundUser.firstName || "");
+    setContextLastName(result.foundUser.lastName || "");
+    setContextEmail(result.foundUser.email || "");
+    setContextUsername(result.foundUser.username || "");
+    setUserID(result.foundUser.id || "");
+    setProfileImg(result.foundUser.profileImage || "https://img.freepik.com/free-icon/user_318-159711.jpg");
+    setAbout(result.foundUser.about || "");
+    setLink(result.foundUser.link || "");
+    setFollowedUsers(result.foundUser.followings || []);
+    setEncodedToken(result.encodedToken);
+    setIsLogin(true);
+    navigate("/");
+  };
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -63,6 +102,34 @@ function Signup() {
       setMessage("Error during signup!");
     }
   };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      const response = await fetch(authAPI.google, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          credential: credentialResponse.credential,
+        }),
+        credentials: "include",
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        applyAuthenticatedUser(result);
+        return;
+      }
+
+      setMessage(result.message || "Google signup failed!");
+    } catch (error) {
+      console.error("Google Signup Error:", error);
+      setMessage("Error during Google signup!");
+    }
+  };
+
   return (
     <div className="signup--div">
       <div className="signup--logoImg">
@@ -131,6 +198,15 @@ function Signup() {
 
           <button onClick={handleSignup}>Sign up</button>
         </form>
+        {googleClientId ? (
+          <div style={{ marginTop: "16px", display: "flex", justifyContent: "center" }}>
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={() => setMessage("Google signup was cancelled or failed.")}
+              useOneTap={false}
+            />
+          </div>
+        ) : null}
         <div>
           <h4>{message}</h4>
           <span>Already have an account? </span>

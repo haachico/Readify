@@ -2,6 +2,7 @@ import readify from "../logo.png";
 
 import React, { useState } from "react";
 import { useContext } from "react";
+import { GoogleLogin } from "@react-oauth/google";
 import { Link, useNavigate } from "react-router-dom";
 
 import { LoginProvider } from "..";
@@ -13,6 +14,7 @@ function Landing() {
   const [password, setPassword] = useState("");
   const [errMsg, setErrMsg] = useState("");
   const [showForgotModal, setShowForgotModal] = useState(false);
+  const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
   const {
     setIsLogin,
     setEncodedToken,
@@ -20,7 +22,7 @@ function Landing() {
     setUsername,
     setFirstName,
     setLastName,
-    // setEmail,
+    setEmail: setContextEmail,
     setProfileImg,
     setAbout,
     setLink,
@@ -30,6 +32,27 @@ function Landing() {
   } = useContext(LoginProvider);
 
   const navigate = useNavigate();
+
+  const applyAuthenticatedUser = (result) => {
+    if (!result?.foundUser || !result?.encodedToken) {
+      setErrMsg("Authentication failed.");
+      return;
+    }
+
+    setLoggedInUserDetails(result.foundUser);
+    setFirstName(result.foundUser.firstName || "");
+    setLastName(result.foundUser.lastName || "");
+    setContextEmail(result.foundUser.email || "");
+    setUsername(result.foundUser.username || "");
+    setUserID(result.foundUser.id || "");
+    setProfileImg(result.foundUser.profileImage || "https://img.freepik.com/free-icon/user_318-159711.jpg");
+    setAbout(result.foundUser.about || "");
+    setLink(result.foundUser.link || "");
+    setFollowedUsers(result.foundUser.followings || []);
+    setEncodedToken(result.encodedToken);
+    setIsLogin(true);
+    navigate("/");
+  };
 
   const handleLogin = async (e) => {
     try {
@@ -54,28 +77,40 @@ function Landing() {
       console.log(result, "result")
 
       if (result.foundUser) {
-        // Store the full user object
-        setLoggedInUserDetails(result.foundUser);
-        // Also update individual context states
-        setFirstName(result.foundUser.firstName);
-        setLastName(result.foundUser.lastName);
-        setEmail(result.foundUser.email);
-        setUsername(result.foundUser.username);
-        setUserID(result.foundUser.id);
-        setProfileImg(result.foundUser.profileImage || "https://img.freepik.com/free-icon/user_318-159711.jpg");
-        setAbout(result.foundUser.about || "");
-        setLink(result.foundUser.link || "");
-        setFollowedUsers(result.foundUser.followings || []);
-        // Set token and login
-        setEncodedToken(result.encodedToken);
-        setIsLogin(true);
-        navigate("/");
+        applyAuthenticatedUser(result);
       } else {
         setErrMsg(result.message || "User not found!");
       }
     } catch (error) {
       console.error("Login Error:", error);
       setErrMsg("Error during login!");
+    }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      const response = await fetch(authAPI.google, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          credential: credentialResponse.credential,
+        }),
+        credentials: "include",
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        applyAuthenticatedUser(result);
+        return;
+      }
+
+      setErrMsg(result.message || "Google login failed!");
+    } catch (error) {
+      console.error("Google Login Error:", error);
+      setErrMsg("Error during Google login!");
     }
   };
 
@@ -110,6 +145,15 @@ function Landing() {
 
           <button type="submit">Submit</button>
         </form>
+        {googleClientId ? (
+          <div style={{ marginTop: "16px", display: "flex", justifyContent: "center" }}>
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={() => setErrMsg("Google login was cancelled or failed.")}
+              useOneTap={false}
+            />
+          </div>
+        ) : null}
         <h4>{errMsg}</h4>
         <span>Don't have an account? </span>
         <span>
