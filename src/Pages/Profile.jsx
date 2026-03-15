@@ -16,6 +16,7 @@ function Profile() {
   const [isEditFormOpen, setIsEditFormOpen] = useState(false);
   const [isFollowersBoxOpen, setIsFollowersBoxOpen] = useState(false);
   const [isFollowingsBoxOpen, setIsFollowingsBoxOpen] = useState(false);
+  const [profilePosts, setProfilePosts] = useState([]);
 
   const {
     encodedToken,
@@ -25,8 +26,6 @@ function Profile() {
     setFollowedUsers,
     profileImg,
     setProfileImg,
-    posts,
-    setPosts,
     about,
     setAbout,
     link,
@@ -44,7 +43,7 @@ function Profile() {
   const { profileName } = useParams();
 
   const handleEdit = (id) => {
-    const post = posts?.find((e) => e?._id == id);
+    const post = profilePosts?.find((e) => e?._id == id);
 
     setEditedPost(post.content);
     setEditedImgContent(post.imgContent);
@@ -52,11 +51,44 @@ function Profile() {
     setIsEditBoxOpen(true);
   };
 
+  const fetchProfilePosts = async (userId) => {
+    try {
+      let token = encodedToken || localStorage.getItem('token');
+      let response = await fetch(`${API_BASE_URL}/api/posts/user/${userId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: token,
+        },
+        credentials: 'include',
+      });
+
+      if (response.status === 401) {
+        token = await refreshAccessToken();
+        if (token) {
+          response = await fetch(`${API_BASE_URL}/api/posts/user/${userId}`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              authorization: token,
+            },
+            credentials: 'include',
+          });
+        }
+      }
+
+      const result = await response.json();
+      setProfilePosts(result.posts || []);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const handleUpdate = async (id) => {
     // /api/posts/edit/:postId
     try {
       let token = encodedToken || localStorage.getItem('token');
-      let response = await fetch(`/api/posts/edit/${id}`, {
+      let response = await fetch(`${API_BASE_URL}/api/posts/edit/${id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -73,7 +105,7 @@ function Profile() {
       if (response.status === 401) {
         token = await refreshAccessToken();
         if (token) {
-          response = await fetch(`/api/posts/edit/${id}`, {
+          response = await fetch(`${API_BASE_URL}/api/posts/edit/${id}`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -89,9 +121,11 @@ function Profile() {
           });
         }
       }
-      const result = await response.json();
-      setPosts(result.posts);
+      await response.json();
       setIsEditBoxOpen(false);
+      if (selectedUser?.id) {
+        fetchProfilePosts(selectedUser.id);
+      }
     } catch (err) {
       console.error(err);
     }
@@ -123,6 +157,7 @@ function Profile() {
         },
         credentials: 'include',
       });
+      
       if (response.status === 401) {
         token = await refreshAccessToken();
         if (token) {
@@ -137,7 +172,11 @@ function Profile() {
         }
       }
       const result = await response.json();
+      console.log("Profile data fetched:", result);
       setSelectedUser(result.user);
+      if (result.user?.id) {
+        fetchProfilePosts(result.user.id);
+      }
     } catch (err) {
       console.error(err);
     }
@@ -256,14 +295,7 @@ function Profile() {
     }
   };
 
-  const sortedPosts = posts?.sort((a, b) => {
-    const dateA = new Date(a.createdAt);
-    const dateB = new Date(b.createdAt);
-
-    return dateB - dateA;
-  });
-
-  const postUpdateProfileId = posts?.find(
+  const postUpdateProfileId = profilePosts?.find(
     (e) => e.username == selectedUser?.username
   )?._id;
 
@@ -309,8 +341,8 @@ function Profile() {
           />
           )}
           <div className="posts--div">
-            {sortedPosts?.map((e) =>
-              e?.username === profileName ? (
+            {profilePosts?.map((e) =>
+              (
                 <Post
                   postId={e?._id}
                   postUsername={e?.username}
@@ -333,7 +365,7 @@ function Profile() {
                   handleEdit={handleEdit}
                   handleUpdate={handleUpdate}
                 />
-              ) : null
+              )
             )}
           </div>
         </div>
