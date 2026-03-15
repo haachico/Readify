@@ -71,12 +71,11 @@ function UserProfile({
     }
   };
 
-  console.log('Followings List:', followingsList);
-  console.log('Followers List:', followersList);
+
   const getFollowings =async()=>{
 
     try {
-   const repsonse = await fetch(`http://localhost:5000/api/users/getFollowing/${userId}`,{
+   const repsonse = await fetch(`${API_BASE_URL}/api/users/getFollowing/${userId}`,{
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
