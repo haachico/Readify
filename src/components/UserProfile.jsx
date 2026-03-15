@@ -3,6 +3,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { LoginProvider } from "../useContext/LoginContext";
 import { Link } from "react-router-dom";
 import AvatarSelection from "./AvatarSelection";
+import { API_BASE_URL } from "../utils/api";
 
 function UserProfile({
   userId,
@@ -39,7 +40,7 @@ function UserProfile({
   const getFollowers = async () => {
     try {
       let token = localStorage.getItem("token");
-      let response = await fetch(`http://localhost:5000/api/users/getFollowers/${userId}`, {
+      let response = await fetch(`${API_BASE_URL}/api/users/getFollowers/${userId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -50,7 +51,7 @@ function UserProfile({
       if (response.status === 401) {
         token = await refreshAccessToken();
         if (token) {
-          response = await fetch(`http://localhost:5000/api/users/getFollowers/${userId}`, {
+          response = await fetch(`${API_BASE_URL}/api/users/getFollowers/${userId}`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
