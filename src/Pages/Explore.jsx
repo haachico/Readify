@@ -5,9 +5,10 @@ import { LoginProvider } from "..";
 import Post from "../components/Post";
 import { API_BASE_URL } from "../utils/api";
 import { refreshAccessToken } from "../utils/refreshAccessToken"; // Import the helper
+import { updatePostsAfterLikeToggle } from "../utils/postState";
 
 function Explore() {
-  const { encodedToken, setAllUsers, posts, setPosts, setEncodedToken } = // Add setEncodedToken
+  const { encodedToken, setAllUsers, posts, setPosts, setEncodedToken, userID } = // Add setEncodedToken
     useContext(LoginProvider);
 
   const [editedPost, setEditedPost] = useState("");
@@ -162,6 +163,12 @@ function Explore() {
     setIsEditBoxOpen(true);
   };
 
+  const handleLocalLikeToggle = (postId, shouldLike) => {
+    setPosts((currentPosts) =>
+      updatePostsAfterLikeToggle(currentPosts, postId, userID, shouldLike)
+    );
+  };
+
   useEffect(() => {
     setIsLoading(true);
     getPosts();
@@ -219,6 +226,7 @@ function Explore() {
                 handleEdit={handleEdit}
                 handleUpdate={handleUpdate}
                 isBookmarked={post.isBookmarked}
+                onLikeToggle={handleLocalLikeToggle}
               />
             ))}
           </div>

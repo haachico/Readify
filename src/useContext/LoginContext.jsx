@@ -5,6 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { API_BASE_URL, authAPI } from "../utils/api";
 import { refreshAccessToken as refreshAccessTokenUtil } from "../utils/refreshAccessToken";
+import { updatePostsAfterLikeToggle } from "../utils/postState";
 
 export const LoginProvider = createContext();
 
@@ -119,8 +120,15 @@ export function LoginContext({ children }) {
       toast.success("You liked a post!", {
         position: toast.POSITION.TOP_RIGHT,
       });
+      if (response.ok) {
+        setPosts((currentPosts) =>
+          updatePostsAfterLikeToggle(currentPosts, id, userID, true)
+        );
+      }
+      return response.ok;
     } catch (err) {
       console.error(err);
+      return false;
     }
   };
 
@@ -149,8 +157,15 @@ export function LoginContext({ children }) {
       toast.success("You unliked a post!", {
         position: toast.POSITION.TOP_RIGHT,
       });
+      if (response.ok) {
+        setPosts((currentPosts) =>
+          updatePostsAfterLikeToggle(currentPosts, id, userID, false)
+        );
+      }
+      return response.ok;
     } catch (err) {
       console.error(err);
+      return false;
     }
   };
 

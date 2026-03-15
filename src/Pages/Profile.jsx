@@ -10,6 +10,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { API_BASE_URL } from "../utils/api";
 import { refreshAccessToken } from "../utils/refreshAccessToken";
+import { updatePostsAfterLikeToggle } from "../utils/postState";
 
 
 function Profile() {
@@ -24,6 +25,7 @@ function Profile() {
     setAllUsers,
     followedUsers,
     setFollowedUsers,
+    userID,
     profileImg,
     setProfileImg,
     about,
@@ -41,6 +43,12 @@ function Profile() {
   const [selectedUser, setSelectedUser] = useState(null);
 
   const { profileName } = useParams();
+
+  const handleProfileLikeToggle = (postId, shouldLike) => {
+    setProfilePosts((currentPosts) =>
+      updatePostsAfterLikeToggle(currentPosts, postId, userID, shouldLike)
+    );
+  };
 
   const handleEdit = (id) => {
     const post = profilePosts?.find((e) => e?._id == id);
@@ -344,6 +352,7 @@ function Profile() {
             {profilePosts?.map((e) =>
               (
                 <Post
+                  key={e?._id}
                   postId={e?._id}
                   postUsername={e?.username}
                   image={e?.image}
@@ -352,6 +361,7 @@ function Profile() {
                   content={e?.content}
                   imgContent={e?.imgContent}
                   likesCount={e?.likes.likeCount}
+                  likedBy={e?.likes.likedBy}
                   commentsCount={e?.commentCount}
                   createdAt={e?.createdAt}
                   editedPostID={editedPostID}
@@ -364,6 +374,7 @@ function Profile() {
                   setEditedImgContent={setEditedImgContent}
                   handleEdit={handleEdit}
                   handleUpdate={handleUpdate}
+                  onLikeToggle={handleProfileLikeToggle}
                 />
               )
             )}

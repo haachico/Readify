@@ -5,6 +5,7 @@ import FadeLoader from "react-spinners/FadeLoader";
 import { LoginProvider } from "..";
 import Post from "../components/Post";
 import { API_BASE_URL } from "../utils/api";
+import { updatePostsAfterLikeToggle } from "../utils/postState";
 
 function BookmarkPost() {
   const {
@@ -15,6 +16,7 @@ function BookmarkPost() {
     loggedInUserDetails,
     posts,
     setPosts,
+    userID,
   } = useContext(LoginProvider);
 
   const [editedPost, setEditedPost] = useState("");
@@ -146,6 +148,12 @@ function BookmarkPost() {
     setEditPreviewImg(editedImgContent);
   }, [editedImgContent]);
 
+  const handleLocalLikeToggle = (postId, shouldLike) => {
+    setBookmarkPosts((currentPosts) =>
+      updatePostsAfterLikeToggle(currentPosts, postId, userID, shouldLike)
+    );
+  };
+
   return (
     <div>
       <h2 style={{ textAlign: "center" }}>Bookmarked Posts</h2>
@@ -163,6 +171,7 @@ function BookmarkPost() {
             <div>
               {bookmarkPosts.map((post) => (
                 <Post
+                  key={post._id}
                   postId={post._id}
                   postUsername={post.username}
                   image={post.image}
@@ -171,6 +180,7 @@ function BookmarkPost() {
                   content={post.content}
                   imgContent={post.imgContent}
                   likesCount={post.likes.likeCount}
+                  likedBy={post.likes.likedBy}
                   commentsCount={post.commentCount}
                   createdAt={post.createdAt}
                   editedPostID={editedPostID}
@@ -183,6 +193,7 @@ function BookmarkPost() {
                   setEditedImgContent={setEditedImgContent}
                   handleEdit={handleEdit}
                   handleUpdate={handleUpdate}
+                  onLikeToggle={handleLocalLikeToggle}
                 />
               ))}
             </div>

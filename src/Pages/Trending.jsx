@@ -4,9 +4,10 @@ import { LoginProvider } from "..";
 import Post from "../components/Post";
 import { API_BASE_URL } from "../utils/api";
 import { refreshAccessToken } from "../utils/refreshAccessToken"; 
+import { updatePostsAfterLikeToggle } from "../utils/postState";
 
 function Trending() {
-  const { encodedToken, setAllUsers, followedUsers, setEncodedToken } = // Add setEncodedToken
+  const { encodedToken, setAllUsers, followedUsers, setEncodedToken, userID } = // Add setEncodedToken
     useContext(LoginProvider);
   
   const [posts, setPosts] = useState([]);
@@ -163,6 +164,12 @@ function Trending() {
     setIsEditBoxOpen(true);
   };
 
+  const handleLocalLikeToggle = (postId, shouldLike) => {
+    setPosts((currentPosts) =>
+      updatePostsAfterLikeToggle(currentPosts, postId, userID, shouldLike)
+    );
+  };
+
   useEffect(() => {
     setIsLoading(true);
     getPosts();
@@ -228,6 +235,7 @@ function Trending() {
                 setEditedImgContent={setEditedImgContent}
                 handleEdit={handleEdit}
                 handleUpdate={handleUpdate}
+                onLikeToggle={handleLocalLikeToggle}
               />
             ))}
           </div>
