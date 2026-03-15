@@ -92,7 +92,7 @@ export function LoginContext({ children }) {
       localStorage.setItem('token', encodedToken);
       localStorage.setItem('user', JSON.stringify(userData));
     }
-  }, [isLogin, encodedToken]);
+  }, [isLogin, encodedToken, firstName, lastName, email, username, userID, profileImg, about, link, followedUsers]);
 
   const handleLike = async (id) => {
     try {
