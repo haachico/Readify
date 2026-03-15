@@ -18,9 +18,45 @@ function Header() {
 
   // Notifications state
   const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
   const [showDropdown, setShowDropdown] = useState(false);
 
   const navigate = useNavigate();
+
+  async function fetchUnreadCount() {
+    try {
+      let token = encodedToken || localStorage.getItem('token');
+      let res = await fetch(`${API_BASE_URL}/api/notifications/unread-count`, {
+        headers: {
+          Authorization: token ? `Bearer ${token}` : undefined
+        },
+        credentials: 'include',
+      });
+
+      if (res.status === 401) {
+        token = await refreshAccessToken();
+        if (token) {
+          res = await fetch(`${API_BASE_URL}/api/notifications/unread-count`, {
+            headers: {
+              Authorization: token ? `Bearer ${token}` : undefined
+            },
+            credentials: 'include',
+          });
+        } else {
+          handleLogout && handleLogout();
+          return;
+        }
+      }
+
+      if (res.ok) {
+        const data = await res.json();
+        setUnreadCount(data.unreadCount || 0);
+      }
+    } catch (err) {
+      console.error('Unread count fetch error:', err);
+    }
+  }
+
   async function fetchNotifications() {
     try {
       let token = encodedToken || localStorage.getItem('token');
@@ -54,9 +90,20 @@ function Header() {
     }
   }
   useEffect(() => {
-    // Fetch notifications on mount
-    fetchNotifications();
+    if (!encodedToken && !localStorage.getItem('token')) {
+      setNotifications([]);
+      setUnreadCount(0);
+      return;
+    }
+
+    fetchUnreadCount();
   }, [encodedToken]);
+
+  useEffect(() => {
+    if (showDropdown) {
+      fetchNotifications();
+    }
+  }, [showDropdown]);
 
 
   const handleReadNotification = async (notification) => {
@@ -86,19 +133,26 @@ function Header() {
           return;
         }
       }
+      if (res.ok && !notification.isRead) {
+        setUnreadCount(prevCount => Math.max(prevCount - 1, 0));
+        setNotifications(prevNotifications =>
+          prevNotifications.map(currentNotification =>
+            currentNotification.id === notification.id
+              ? { ...currentNotification, isRead: 1 }
+              : currentNotification
+          )
+        );
+      }
       if (notification.type === 'like' || notification.type === 'comment' || notification.type === 'bookmark') {
         let url = `/post/${notification.postId}`;
         navigate(url);
         setShowDropdown(false);
-        fetchNotifications();
       }
     } catch (err) {
       console.error('Error marking notifications as read:', err);
       handleLogout && handleLogout();
     }
   }
-
-  const unreadCount = notifications.filter(n => !n.isRead).length;
 
   const handleSearch = async (value) => {
     setSearchText(value);
