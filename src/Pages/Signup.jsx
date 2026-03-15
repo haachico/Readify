@@ -6,7 +6,7 @@ import { useContext } from "react";
 import { LoginProvider } from "..";
 import appImg from "../logo.png";
 import { API_BASE_URL, authAPI } from "../utils/api";
-import { FaUser } from 'react-icons/fa';
+import { FaUser } from "react-icons/fa";
 
 function Signup() {
   const [firstName, setFirstName] = useState("");
@@ -18,7 +18,7 @@ function Signup() {
 
   const handleSignup = async (e) => {
     e.preventDefault();
-    
+
     if (!email || !password || !firstName || !lastName || !username) return;
 
     try {
@@ -34,21 +34,24 @@ function Signup() {
           lastName: lastName,
           username: username,
         }),
-        credentials: 'include', // Send cookies for refresh token
+        credentials: "include", // Send cookies for refresh token
       });
 
       const result = await response.json();
 
       if (response.ok) {
         // After signup, fetch the user's profile data
-        const profileResponse = await fetch(`${API_BASE_URL}/api/users/${result.createdUser.username}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: result.encodedToken,
+        const profileResponse = await fetch(
+          `${API_BASE_URL}/api/users/${result.createdUser.username}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              authorization: result.encodedToken,
+            },
           },
-        });
-        
+        );
+
         const profileData = await profileResponse.json();
         console.log("User profile data:", profileData);
         setMessage("You are signed up! Please log in!");
@@ -67,7 +70,7 @@ function Signup() {
       </div>
       <div className="signup--form">
         <h1>Sign up</h1>
-        <FaUser size={50} style={{ marginBottom: "20px", color: "#333" }} />
+        {/* <FaUser size={50} style={{ marginBottom: "20px", color: "#333" }} /> */}
         <form>
           <div className="form-field">
             <label htmlFor="firstName">First name: </label>
