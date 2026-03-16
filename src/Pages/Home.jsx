@@ -230,6 +230,23 @@ function Home() {
     }
   }
 
+  const handleImprovePost = async (text) => {
+  try {
+    const response = await fetchWithAuth('/api/ai/improve-post', {
+      method: 'POST',
+      body: JSON.stringify({ text }),
+    });
+
+    if (response && response.ok) {
+      const result = await response.json();
+      setContent(result.improvedText);
+      return result.improvedText;
+    }
+  } catch (err) {
+    console.error('Error improving post:', err);
+  }
+};
+
   return (
     <div>
       <h2 style={{ textAlign: "center" }}>Home</h2>
@@ -270,6 +287,8 @@ function Home() {
                 preview={preview}
                 handlePrevImgCloseClick={handlePrevImgCloseClick}
                 profileImg={profileImg}
+                  onImprovePost={handleImprovePost}
+
               />
             )}
             <div style={{ width: "100%" }}>

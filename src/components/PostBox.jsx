@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 function PostBox({
   content,
@@ -12,7 +12,26 @@ function PostBox({
   handleImageSelect,
   handlePost,
   handlePrevImgCloseClick,
+  onImprovePost,
 }) {
+  const [isImproving, setIsImproving] = useState(false);
+
+  const handleImproveClick = async () => {
+    if (!content.trim()) {
+      alert("Please write something before improving!");
+      return;
+    }
+    
+    setIsImproving(true);
+    try {
+      await onImprovePost(content);
+    } catch (err) {
+      console.error('Error improving post:', err);
+      alert('Failed to improve post');
+    } finally {
+      setIsImproving(false);
+    }
+  };
   return (
     <div>
       {isPostboxOpen && <div className="postbox--backdrop" onClick={() => setIsPostBoxOpen(false)} />}
@@ -60,6 +79,22 @@ function PostBox({
              handleImageSelect(e.target.files[0])
             }
           />
+          <button 
+            onClick={handleImproveClick} 
+            className="improve--btn"
+            disabled={isImproving}
+            title="Improve post with AI"
+          >
+            {isImproving ? (
+              <>
+                <i className="fa-solid fa-wand-magic-sparkles"></i> Improving...
+              </>
+            ) : (
+              <>
+                <i className="fa-solid fa-wand-magic-sparkles"></i> Improve
+              </>
+            )}
+          </button>
           <button onClick={handlePost} className="post--btn">
             Post
           </button>

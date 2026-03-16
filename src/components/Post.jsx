@@ -30,8 +30,7 @@ function Post({
   handleUpdate,
   isBookmarked,
   onBookmarkChange,
-  likedBy,
-  onLikeToggle
+  likedBy
 }) {
   const {
     username,
@@ -64,29 +63,6 @@ const navigate = useNavigate();
   console.log("likedBy:", likedBy, "userID:", userID);
 
   let isLiked = likedBy?.includes(userID) || false;
-
-  const handleLikeClick = async () => {
-    const success = await handleLike(postId);
-    if (success && onLikeToggle) {
-      onLikeToggle(postId, true);
-    }
-
-    if (success && onBookmarkChange) {
-      onBookmarkChange();
-    }
-  };
-
-  const handleDislikeClick = async () => {
-    const success = await handleDislike(postId);
-    if (success && onLikeToggle) {
-      onLikeToggle(postId, false);
-    }
-
-    if (success && onBookmarkChange) {
-      onBookmarkChange();
-    }
-  };
-
   return (
     <div className="post">
       <div
@@ -237,11 +213,21 @@ const navigate = useNavigate();
       <div className="post--btns">
         <div>
           {isLiked ? (
-            <span onClick={handleDislikeClick}>
+            <span onClick={() =>{ handleDislike(postId)
+
+            setTimeout(() => {
+                if( onBookmarkChange) onBookmarkChange();
+              }, 500);
+            }}>
               <i class="fa-solid fa-heart"></i>
             </span>
           ) : (
-            <span onClick={handleLikeClick}>
+            <span onClick={() => {handleLike(postId)
+
+              setTimeout(() => {
+                if( onBookmarkChange) onBookmarkChange();
+              }, 500);
+            }}>
               <i class="fa-regular fa-heart"></i>
             </span>
           )}{" "}
