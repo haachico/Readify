@@ -150,15 +150,33 @@ function Home() {
   };
 
   const handlePost = async () => {
+    // console.log("called post")
     if (!content) return;
+    
+    try {
+      const validateResponse  = await fetchWithAuth('/api/ai/validate-post', {
+        method: 'POST',
+        body: JSON.stringify({ text: content }),
+      });
 
-    const formData = new FormData();
+      if(!validateResponse.ok){
+        alert("Failed to validate post content. Please try again.");
+        return;
+      }
+
+      const validateResult = await validateResponse.json();
+
+      if(!validateResult.isBookRelated){
+        alert("Your post does not seem to be related to books. Please make sure your post is about books or reading.");
+        return;
+      }
+
+  const formData = new FormData();
     formData.append('content', content);
     if (imgContent) {
       formData.append('image', imgContent);
     }
-    
-    try {
+
       const response = await fetchWithAuth('/api/posts', {
         method: "POST",
         body: formData,

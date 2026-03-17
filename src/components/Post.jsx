@@ -211,28 +211,27 @@ const navigate = useNavigate();
         />
       )}
       <div className="post--btns">
-        <div>
-          {isLiked ? (
-            <span onClick={() =>{ handleDislike(postId)
+        {isLiked ? (
+          <span onClick={() =>{ handleDislike(postId)
+
+          setTimeout(() => {
+              if( onBookmarkChange) onBookmarkChange();
+            }, 500);
+          }}>
+            <i class="fa-solid fa-heart"></i>
+            {likesCount}
+          </span>
+        ) : (
+          <span onClick={() => {handleLike(postId)
 
             setTimeout(() => {
-                if( onBookmarkChange) onBookmarkChange();
-              }, 500);
-            }}>
-              <i class="fa-solid fa-heart"></i>
-            </span>
-          ) : (
-            <span onClick={() => {handleLike(postId)
-
-              setTimeout(() => {
-                if( onBookmarkChange) onBookmarkChange();
-              }, 500);
-            }}>
-              <i class="fa-regular fa-heart"></i>
-            </span>
-          )}{" "}
-          {likesCount}
-        </div>
+              if( onBookmarkChange) onBookmarkChange();
+            }, 500);
+          }}>
+            <i class="fa-regular fa-heart"></i>
+            {likesCount}
+          </span>
+        )}
         <span onClick={handleComment}>
           <i class="fa-regular fa-comment"></i>
           {commentsCount}
