@@ -1,6 +1,7 @@
 ## Features
 
 ### 🔐 Authentication
+
 - **Sign-up** - Create a new account with email & password
 - **Login** - Secure login with JWT tokens
 - **Google OAuth** - Sign in with Google account
@@ -10,6 +11,7 @@
 - **Token Refresh** - Automatic JWT token refresh (15m access, 7d refresh)
 
 ### 📰 User Feed
+
 - **View User Feed** - See posts from followed users
 - **View All Posts** - Browse posts from all users
 - **Sort by Date** - View posts newest first
@@ -18,6 +20,7 @@
 - **Search Posts** - Find posts by content (via Explore)
 
 ### ✍️ Post Management
+
 - **Create a Post** - Create text posts with optional image
 - **Upload Images** - Post images with ImageKit cloud storage (persistent across restarts)
 - **Edit Post** - Update post content and images
@@ -27,11 +30,13 @@
 - **Get Posts by User** - View specific user's posts
 
 ### 📌 Bookmarks
+
 - **Bookmark Post** - Save posts for later
 - **View Bookmarked Posts** - Access saved posts in one place
 - **Remove Bookmark** - Unbookmark posts
 
 ### 💬 Comments & Replies
+
 - **Add Comment** - Comment on posts
 - **View Comments** - See all comments on a post
 - **Reply to Comments** - Nested comment replies
@@ -39,6 +44,7 @@
 - **Comment Notifications** - Get notified when people comment
 
 ### 👤 User Profile
+
 - **View User Profile** - See user information & posts
 - **Edit Profile** - Update bio and portfolio URL
 - **Add/Change Avatar** - Upload profile picture
@@ -47,6 +53,7 @@
 - **View User Posts** - See all posts by a specific user
 
 ### 👥 Follow System
+
 - **Follow Users** - Subscribe to user's posts
 - **Unfollow Users** - Stop following users
 - **View Followers** - See who follows you
@@ -55,6 +62,7 @@
 - **Follow Notifications** - Get notified when followed
 
 ### 🔔 Notifications
+
 - **Real-time Notifications** - Get alerts for:
   - Likes on your posts
   - Comments on your posts
@@ -66,12 +74,14 @@
 - **Notification History** - View all past notifications
 
 ### 🔍 Explore & Discovery
+
 - **Explore Page** - Discover posts from all users
 - **Trending Posts** - View most popular posts
 - **Search Users** - Find users by username
 - **Suggested Users** - Get follow recommendations
 
 ### 🎨 UI/UX Features
+
 - **Responsive Design** - Works on desktop, tablet, mobile
 - **Comment Modal** - Inline comment viewing & adding
 - **Post Interactions** - Smooth like/bookmark/comment interactions
@@ -79,7 +89,20 @@
 - **Loading States** - Visual feedback during API calls
 - **Avatar Selection** - Choose from predefined avatars
 
+### 🤖 AI-Powered Features (Google Gemini)
+
+- **AI Post Improvement** - Enhance post text to be more engaging and compelling
+  - Automatically improves grammar, clarity, and appeal
+  - User sees improved version before posting
+  - Preserves original meaning
+- **AI Content Validation** - Ensure posts are book-related
+  - Validates that posts are about books, reading, or literature
+  - Rejects non-book content automatically
+  - Keeps community focused on reading & books
+  - Real-time validation feedback
+
 ### 🔒 Security & Performance
+
 - **JWT Authentication** - Secure token-based auth
 - **Rate Limiting** - Prevent spam/abuse
 - **Email Verification** - Forgot password via email
@@ -90,6 +113,7 @@
 - **Redis Integration** - Cache management & token blacklisting
 
 ### 📊 Database Features
+
 - **User Management** - Store user profiles & credentials
 - **Post Storage** - Persist posts with images
 - **Comment Threading** - Support nested replies
