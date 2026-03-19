@@ -150,10 +150,11 @@ function BookmarkPost() {
 
   const handleLocalLikeToggle = (postId, shouldLike) => {
     setBookmarkPosts((currentPosts) =>
-      updatePostsAfterLikeToggle(currentPosts, postId, userID, shouldLike)
+      updatePostsAfterLikeToggle(currentPosts, postId, userID, shouldLike),
     );
   };
 
+  console.log(bookmarkPosts, "BOOKMARK POSTS");
   return (
     <div>
       <h2 style={{ textAlign: "center" }}>Bookmarked Posts</h2>
@@ -193,6 +194,7 @@ function BookmarkPost() {
                   setEditedImgContent={setEditedImgContent}
                   handleEdit={handleEdit}
                   handleUpdate={handleUpdate}
+                  isBookmarked={post.isBookmarked}
                   onLikeToggle={handleLocalLikeToggle}
                 />
               ))}

@@ -30,7 +30,7 @@ function Post({
   handleUpdate,
   isBookmarked,
   onBookmarkChange,
-  likedBy
+  likedBy,
 }) {
   const {
     username,
@@ -45,10 +45,10 @@ function Post({
     // handleComment
   } = useContext(LoginProvider);
 
-const navigate = useNavigate();
+  const navigate = useNavigate();
   const handleComment = () => {
     navigate(`/post/${postId}`);
-  }
+  };
   const getDate = (timestamp) => {
     const date = new Date(timestamp);
     const options = {
@@ -75,7 +75,10 @@ const navigate = useNavigate();
       >
         <Link to={`/profile/${postUsername}`}>
           <img
-            src={image || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"}
+            src={
+              image ||
+              "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+            }
             alt={postUsername}
             style={{
               width: "2rem",
@@ -136,7 +139,13 @@ const navigate = useNavigate();
       </div>
       {postId === editedPostID && isEditBoxOpen && (
         <div className="editBox--div">
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "flex-start",
+            }}
+          >
             <h3 style={{ margin: 0, color: "#00b8ff" }}>Edit Post</h3>
             <button
               className="editbox-close-btn"
@@ -212,22 +221,28 @@ const navigate = useNavigate();
       )}
       <div className="post--btns">
         {isLiked ? (
-          <span onClick={() =>{ handleDislike(postId)
+          <span
+            onClick={() => {
+              handleDislike(postId);
 
-          setTimeout(() => {
-              if( onBookmarkChange) onBookmarkChange();
-            }, 500);
-          }}>
+              setTimeout(() => {
+                if (onBookmarkChange) onBookmarkChange();
+              }, 500);
+            }}
+          >
             <i class="fa-solid fa-heart"></i>
             {likesCount}
           </span>
         ) : (
-          <span onClick={() => {handleLike(postId)
+          <span
+            onClick={() => {
+              handleLike(postId);
 
-            setTimeout(() => {
-              if( onBookmarkChange) onBookmarkChange();
-            }, 500);
-          }}>
+              setTimeout(() => {
+                if (onBookmarkChange) onBookmarkChange();
+              }, 500);
+            }}
+          >
             <i class="fa-regular fa-heart"></i>
             {likesCount}
           </span>
@@ -238,30 +253,29 @@ const navigate = useNavigate();
         </span>
 
         {isBookmarked ? (
-          <span onClick={() => {
-            handleRemoveBookmark(postId);
-            if (onBookmarkChange) onBookmarkChange();
-          }}>
+          <span
+            onClick={() => {
+              handleRemoveBookmark(postId);
+            }}
+          >
             {" "}
             <i class="fa-solid fa-bookmark"></i>
           </span>
         ) : (
-          <span onClick={() => {
-            handleBookmark(postId);
-            if (onBookmarkChange) onBookmarkChange();
-          }}>
+          <span
+            onClick={() => {
+              handleBookmark(postId);
+            }}
+          >
             <i class="fa-regular fa-bookmark"></i>
           </span>
         )}
         {postUsername === username && (
-          <span onClick={() => {
-            handleDelete(postId)
-            if( onBookmarkChange) onBookmarkChange();
-          
-          }
-            
-            
-            }>
+          <span
+            onClick={() => {
+              handleDelete(postId);
+            }}
+          >
             <i class="fa-solid fa-trash-can"></i>
           </span>
         )}

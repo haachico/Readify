@@ -12,12 +12,12 @@ import { API_BASE_URL } from "../utils/api";
 import { refreshAccessToken } from "../utils/refreshAccessToken";
 import { updatePostsAfterLikeToggle } from "../utils/postState";
 
-
 function Profile() {
   const [isEditFormOpen, setIsEditFormOpen] = useState(false);
   const [isFollowersBoxOpen, setIsFollowersBoxOpen] = useState(false);
   const [isFollowingsBoxOpen, setIsFollowingsBoxOpen] = useState(false);
   const [profilePosts, setProfilePosts] = useState([]);
+  const [selectedProfileFile, setSelectedProfileFile] = useState(null);
 
   const {
     encodedToken,
@@ -46,7 +46,7 @@ function Profile() {
 
   const handleProfileLikeToggle = (postId, shouldLike) => {
     setProfilePosts((currentPosts) =>
-      updatePostsAfterLikeToggle(currentPosts, postId, userID, shouldLike)
+      updatePostsAfterLikeToggle(currentPosts, postId, userID, shouldLike),
     );
   };
 
@@ -61,14 +61,14 @@ function Profile() {
 
   const fetchProfilePosts = async (userId) => {
     try {
-      let token = encodedToken || localStorage.getItem('token');
+      let token = encodedToken || localStorage.getItem("token");
       let response = await fetch(`${API_BASE_URL}/api/posts/user/${userId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
           authorization: token,
         },
-        credentials: 'include',
+        credentials: "include",
       });
 
       if (response.status === 401) {
@@ -80,7 +80,7 @@ function Profile() {
               "Content-Type": "application/json",
               authorization: token,
             },
-            credentials: 'include',
+            credentials: "include",
           });
         }
       }
@@ -95,7 +95,7 @@ function Profile() {
   const handleUpdate = async (id) => {
     // /api/posts/edit/:postId
     try {
-      let token = encodedToken || localStorage.getItem('token');
+      let token = encodedToken || localStorage.getItem("token");
       let response = await fetch(`${API_BASE_URL}/api/posts/edit/${id}`, {
         method: "POST",
         headers: {
@@ -108,7 +108,7 @@ function Profile() {
             imgContent: editedImgContent,
           },
         }),
-        credentials: 'include',
+        credentials: "include",
       });
       if (response.status === 401) {
         token = await refreshAccessToken();
@@ -125,7 +125,7 @@ function Profile() {
                 imgContent: editedImgContent,
               },
             }),
-            credentials: 'include',
+            credentials: "include",
           });
         }
       }
@@ -153,19 +153,18 @@ function Profile() {
     setEditPreviewImg(editedImgContent);
   }, [editedImgContent]);
 
-
   const fetchProfileData = async () => {
     try {
-      let token = encodedToken || localStorage.getItem('token');
+      let token = encodedToken || localStorage.getItem("token");
       let response = await fetch(`${API_BASE_URL}/api/users/${profileName}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
           authorization: token,
         },
-        credentials: 'include',
+        credentials: "include",
       });
-      
+
       if (response.status === 401) {
         token = await refreshAccessToken();
         if (token) {
@@ -175,7 +174,7 @@ function Profile() {
               "Content-Type": "application/json",
               authorization: token,
             },
-            credentials: 'include',
+            credentials: "include",
           });
         }
       }
@@ -190,34 +189,33 @@ function Profile() {
     }
   };
   useEffect(() => {
-    
     if (profileName) {
       fetchProfileData();
     }
-  }, [profileName, encodedToken])
-  
+  }, [profileName, encodedToken]);
+
   const handleSaveEditForm = async (id) => {
     console.log("SUBMITEDDDD");
     setIsLoading(true);
 
     try {
+      let formData = new FormData();
+      formData.append("profileImage", selectedProfileFile);
+      formData.append("about", about);
+      formData.append("link", link);
+
       const response = await fetch(`${API_BASE_URL}/api/users/updateProfile`, {
         method: "POST", // or 'PUT'
         headers: {
-          "Content-Type": "application/json",
+          // contentType: "multipart/form-data",
           authorization: encodedToken,
         },
-        body: JSON.stringify({
-            profileImage: profileImg,
-            about: about,
-            link: link,
-        }),
-        credentials: 'include',
+        body: formData,
+        credentials: "include",
       });
 
       const result = await response.json();
 
-      
       //updating only the user in allUsers array whose profile we updated, keeping other users intact
       // setAllUsers(
       //   allUsers?.map((user) =>
@@ -241,7 +239,7 @@ function Profile() {
       // const postResult = await postResponse.json();
       // setPosts(postResult.posts);
       setEditedPostID("");
-      
+
       setIsEditFormOpen(false);
       toast.success("Profile updated!", {
         position: toast.POSITION.TOP_RIGHT,
@@ -263,7 +261,7 @@ function Profile() {
           authorization: encodedToken,
         },
         body: JSON.stringify({ followingId: id }),
-        credentials: 'include',
+        credentials: "include",
       });
 
       const result = await response.json();
@@ -271,8 +269,8 @@ function Profile() {
       // Toggle: if already following, remove; else add
       setFollowedUsers(
         followedUsers.includes(id)
-          ? followedUsers.filter(userId => userId !== id)
-          : [...followedUsers, id]
+          ? followedUsers.filter((userId) => userId !== id)
+          : [...followedUsers, id],
       );
     } catch (err) {
       console.error(err);
@@ -295,8 +293,8 @@ function Profile() {
       // Toggle: if already following, remove; else add
       setFollowedUsers(
         followedUsers.includes(id)
-          ? followedUsers.filter(userId => userId !== id)
-          : [...followedUsers, id]
+          ? followedUsers.filter((userId) => userId !== id)
+          : [...followedUsers, id],
       );
     } catch (err) {
       console.error(err);
@@ -304,7 +302,7 @@ function Profile() {
   };
 
   const postUpdateProfileId = profilePosts?.find(
-    (e) => e.username == selectedUser?.username
+    (e) => e.username == selectedUser?.username,
   )?._id;
 
   return (
@@ -320,64 +318,63 @@ function Profile() {
       ) : (
         <div>
           {selectedUser && (
-          <UserProfile
-            userId={selectedUser.id}
-            firstName={selectedUser.firstName}
-            lastName={selectedUser.lastName}
-            image={selectedUser.profileImage}
-            userName={selectedUser.username}
-            aboutUser={selectedUser.about}
-            setAbout={setAbout}
-            bioLink={selectedUser.link}
-            setLink={setLink}
-            followings={selectedUser.followings}
-            followers={selectedUser.followers}
-            postUpdateProfileId={postUpdateProfileId}
-            handleFollowClick={handleFollowClick}
-            handleUnfollowClick={handleUnfollowClick}
-            handleSaveEditForm={handleSaveEditForm}
-            isFollowersBoxOpen={isFollowersBoxOpen}
-            setIsFollowersBoxOpen={setIsFollowersBoxOpen}
-            isFollowingsBoxOpen={isFollowingsBoxOpen}
-            setIsFollowingsBoxOpen={setIsFollowingsBoxOpen}
-            isEditBoxOpen={isEditBoxOpen}
-            setIsEditBoxOpen={setIsEditBoxOpen}
-            profileImg={profileImg}
-            setProfileImg={setProfileImg}
-            isEditFormOpen={isEditFormOpen}
-            setIsEditFormOpen={setIsEditFormOpen}
-          />
+            <UserProfile
+              userId={selectedUser.id}
+              firstName={selectedUser.firstName}
+              lastName={selectedUser.lastName}
+              image={selectedUser.profileImage}
+              userName={selectedUser.username}
+              aboutUser={selectedUser.about}
+              setAbout={setAbout}
+              bioLink={selectedUser.link}
+              setLink={setLink}
+              followings={selectedUser.followings}
+              followers={selectedUser.followers}
+              postUpdateProfileId={postUpdateProfileId}
+              handleFollowClick={handleFollowClick}
+              handleUnfollowClick={handleUnfollowClick}
+              handleSaveEditForm={handleSaveEditForm}
+              isFollowersBoxOpen={isFollowersBoxOpen}
+              setIsFollowersBoxOpen={setIsFollowersBoxOpen}
+              isFollowingsBoxOpen={isFollowingsBoxOpen}
+              setIsFollowingsBoxOpen={setIsFollowingsBoxOpen}
+              isEditBoxOpen={isEditBoxOpen}
+              setIsEditBoxOpen={setIsEditBoxOpen}
+              profileImg={profileImg}
+              setProfileImg={setProfileImg}
+              isEditFormOpen={isEditFormOpen}
+              setIsEditFormOpen={setIsEditFormOpen}
+              setSelectedProfileFile={setSelectedProfileFile}
+            />
           )}
           <div className="posts--div">
-            {profilePosts?.map((e) =>
-              (
-                <Post
-                  key={e?._id}
-                  postId={e?._id}
-                  postUsername={e?.username}
-                  image={e?.image}
-                  firstName={e?.firstName}
-                  lastName={e?.lastName}
-                  content={e?.content}
-                  imgContent={e?.imgContent}
-                  likesCount={e?.likes.likeCount}
-                  likedBy={e?.likes.likedBy}
-                  commentsCount={e?.commentCount}
-                  createdAt={e?.createdAt}
-                  editedPostID={editedPostID}
-                  isEditBoxOpen={isEditBoxOpen}
-                  setIsEditBoxOpen={setIsEditBoxOpen}
-                  editedPost={editedPost}
-                  setEditedPost={setEditedPost}
-                  editboxPreviewImg={editboxPreviewImg}
-                  setEditPreviewImg={setEditPreviewImg}
-                  setEditedImgContent={setEditedImgContent}
-                  handleEdit={handleEdit}
-                  handleUpdate={handleUpdate}
-                  onLikeToggle={handleProfileLikeToggle}
-                />
-              )
-            )}
+            {profilePosts?.map((e) => (
+              <Post
+                key={e?._id}
+                postId={e?._id}
+                postUsername={e?.username}
+                image={e?.image}
+                firstName={e?.firstName}
+                lastName={e?.lastName}
+                content={e?.content}
+                imgContent={e?.imgContent}
+                likesCount={e?.likes.likeCount}
+                likedBy={e?.likes.likedBy}
+                commentsCount={e?.commentCount}
+                createdAt={e?.createdAt}
+                editedPostID={editedPostID}
+                isEditBoxOpen={isEditBoxOpen}
+                setIsEditBoxOpen={setIsEditBoxOpen}
+                editedPost={editedPost}
+                setEditedPost={setEditedPost}
+                editboxPreviewImg={editboxPreviewImg}
+                setEditPreviewImg={setEditPreviewImg}
+                setEditedImgContent={setEditedImgContent}
+                handleEdit={handleEdit}
+                handleUpdate={handleUpdate}
+                onLikeToggle={handleProfileLikeToggle}
+              />
+            ))}
           </div>
         </div>
       )}

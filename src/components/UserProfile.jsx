@@ -17,7 +17,7 @@ function UserProfile({
   setLink,
   followers,
   followings,
-  
+
   postUpdateProfileId,
   handleFollowClick,
   handleUnfollowClick,
@@ -30,35 +30,48 @@ function UserProfile({
   setIsEditFormOpen,
   profileImg,
   setProfileImg,
+  setSelectedProfileFile,
 }) {
-  const { link, about, username, followedUsers, refreshAccessToken, handleLogout } = useContext(LoginProvider);
-  
+  const {
+    link,
+    about,
+    username,
+    followedUsers,
+    refreshAccessToken,
+    handleLogout,
+  } = useContext(LoginProvider);
+
   const [followersList, setFollowersList] = useState([]);
   const [followingsList, setFollowingsList] = useState([]);
-  
-  
+
   const getFollowers = async () => {
     try {
       let token = localStorage.getItem("token");
-      let response = await fetch(`${API_BASE_URL}/api/users/getFollowers/${userId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          authorization: token,
+      let response = await fetch(
+        `${API_BASE_URL}/api/users/getFollowers/${userId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: token,
+          },
+          credentials: "include",
         },
-        credentials: 'include',
-      });
+      );
       if (response.status === 401) {
         token = await refreshAccessToken();
         if (token) {
-          response = await fetch(`${API_BASE_URL}/api/users/getFollowers/${userId}`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              authorization: token,
+          response = await fetch(
+            `${API_BASE_URL}/api/users/getFollowers/${userId}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                authorization: token,
+              },
+              credentials: "include",
             },
-            credentials: 'include',
-          });
+          );
         } else {
           handleLogout && handleLogout();
           return;
@@ -67,35 +80,33 @@ function UserProfile({
       const data = await response.json();
       setFollowersList(data);
     } catch (error) {
-      console.error('Error fetching followers:', error);
+      console.error("Error fetching followers:", error);
     }
   };
 
-
-  const getFollowings =async()=>{
-
+  const getFollowings = async () => {
     try {
-   const repsonse = await fetch(`${API_BASE_URL}/api/users/getFollowing/${userId}`,{
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      authorization: localStorage.getItem("token"),
-    },
-   });
+      const repsonse = await fetch(
+        `${API_BASE_URL}/api/users/getFollowing/${userId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: localStorage.getItem("token"),
+          },
+        },
+      );
 
-    const data = await repsonse.json();
-    setFollowingsList(data);
-    
+      const data = await repsonse.json();
+      setFollowingsList(data);
+    } catch (error) {
+      console.error("Error fetching followers:", error);
     }
-    catch(error){
-      console.error('Error fetching followers:', error);
-    }
-  }
-  
+  };
 
-  useEffect(()=>{
+  useEffect(() => {
     getFollowers();
-    getFollowings()
+    getFollowings();
   }, [isFollowersBoxOpen, isFollowingsBoxOpen]);
 
   return (
@@ -103,7 +114,10 @@ function UserProfile({
       <div className="profile--div">
         <div className="profile--dp">
           <img
-            src={image || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"}
+            src={
+              image ||
+              "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+            }
             alt=""
             style={{ width: "8rem", height: "8rem", borderRadius: "50%" }}
           />
@@ -198,7 +212,10 @@ function UserProfile({
                   {followersList?.map((user) => (
                     <div>
                       <div className="follower--box">
-                        <Link to={`/profile/${user.username}`} onClick={() => setIsFollowersBoxOpen(false)}>
+                        <Link
+                          to={`/profile/${user.username}`}
+                          onClick={() => setIsFollowersBoxOpen(false)}
+                        >
                           {" "}
                           <img
                             src={user.profileImage}
@@ -210,7 +227,10 @@ function UserProfile({
                             }}
                           />
                         </Link>
-                        <Link to={`/profile/${user.username}`} onClick={() => setIsFollowersBoxOpen(false)}>
+                        <Link
+                          to={`/profile/${user.username}`}
+                          onClick={() => setIsFollowersBoxOpen(false)}
+                        >
                           {" "}
                           <div
                             style={{
@@ -255,7 +275,10 @@ function UserProfile({
                   {followingsList?.map((user) => (
                     <div>
                       <div className="following--box">
-                        <Link to={`/profile/${user.username}`} onClick={() => setIsFollowingsBoxOpen(false)}>
+                        <Link
+                          to={`/profile/${user.username}`}
+                          onClick={() => setIsFollowingsBoxOpen(false)}
+                        >
                           {" "}
                           <img
                             src={user.profileImage}
@@ -267,7 +290,10 @@ function UserProfile({
                             }}
                           />
                         </Link>
-                        <Link to={`/profile/${user.username}`} onClick={() => setIsFollowingsBoxOpen(false)}>
+                        <Link
+                          to={`/profile/${user.username}`}
+                          onClick={() => setIsFollowingsBoxOpen(false)}
+                        >
                           {" "}
                           <div
                             style={{
@@ -351,9 +377,10 @@ function UserProfile({
                   type="file"
                   accept="image/*"
                   className="img--select"
-                  onChange={(e) =>
-                    setProfileImg(URL.createObjectURL(e.target.files[0]))
-                  } // Set the selected image file to the state
+                  onChange={(e) => {
+                    setProfileImg(URL.createObjectURL(e.target.files[0]));
+                    setSelectedProfileFile(e.target.files[0]);
+                  }} // Set the selected image file to the state
                 />
 
                 <AvatarSelection setProfileImg={setProfileImg} />
