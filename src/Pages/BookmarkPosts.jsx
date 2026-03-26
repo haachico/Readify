@@ -195,6 +195,7 @@ function BookmarkPost() {
   //   );
   // };
 
+  console.log(bookmarkPosts, "BOOKMARK POSTS");
   return (
     <div>
       <h2 style={{ textAlign: "center" }}>Bookmarked Posts</h2>

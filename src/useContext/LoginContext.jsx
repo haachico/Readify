@@ -48,7 +48,7 @@ export function LoginContext({ children }) {
   const [posts, setPosts] = useState([]);
   const [loggedInUserDetails, setLoggedInUserDetails] = useState({});
   const [profileImg, setProfileImg] = useState(
-    "https://img.freepik.com/free-icon/user_318-159711.jpg"
+    "https://img.freepik.com/free-icon/user_318-159711.jpg",
   );
   const [about, setAbout] = useState("");
   const [link, setLink] = useState("");
@@ -56,8 +56,8 @@ export function LoginContext({ children }) {
 
   // Load token and user data from localStorage on mount
   useEffect(() => {
-    const savedToken = localStorage.getItem('token');
-    const savedUser = localStorage.getItem('user');
+    const savedToken = localStorage.getItem("token");
+    const savedUser = localStorage.getItem("user");
     if (savedToken && savedUser) {
       const userData = JSON.parse(savedUser);
       setEncodedToken(savedToken);
@@ -89,10 +89,22 @@ export function LoginContext({ children }) {
         link,
         followedUsers,
       };
-      localStorage.setItem('token', encodedToken);
-      localStorage.setItem('user', JSON.stringify(userData));
+      localStorage.setItem("token", encodedToken);
+      localStorage.setItem("user", JSON.stringify(userData));
     }
-  }, [isLogin, encodedToken, firstName, lastName, email, username, userID, profileImg, about, link, followedUsers]);
+  }, [
+    isLogin,
+    encodedToken,
+    firstName,
+    lastName,
+    email,
+    username,
+    userID,
+    profileImg,
+    about,
+    link,
+    followedUsers,
+  ]);
 
   const handleLike = async (id) => {
     try {
@@ -122,7 +134,7 @@ export function LoginContext({ children }) {
       });
       if (response.ok) {
         setPosts((currentPosts) =>
-          updatePostsAfterLikeToggle(currentPosts, id, userID, true)
+          updatePostsAfterLikeToggle(currentPosts, id, userID, true),
         );
       }
       return response.ok;
@@ -159,7 +171,7 @@ export function LoginContext({ children }) {
       });
       if (response.ok) {
         setPosts((currentPosts) =>
-          updatePostsAfterLikeToggle(currentPosts, id, userID, false)
+          updatePostsAfterLikeToggle(currentPosts, id, userID, false),
         );
       }
       return response.ok;
@@ -192,7 +204,7 @@ export function LoginContext({ children }) {
       }
       if (response.ok) {
         // Immediately remove the post from state
-        setPosts(posts.filter(post => post._id !== id));
+        setPosts(posts.filter((post) => post._id !== id));
         toast.success("You deleted a post!", {
           position: toast.POSITION.TOP_RIGHT,
         });
@@ -230,6 +242,14 @@ export function LoginContext({ children }) {
       toast.success("You bookmarked a post!", {
         position: toast.POSITION.TOP_RIGHT,
       });
+      // Update posts state immediately
+      if (response.ok) {
+        setPosts((currentPosts) =>
+          currentPosts.map((post) =>
+            post._id === id ? { ...post, isBookmarked: true } : post,
+          ),
+        );
+      }
     } catch (err) {
       console.error(err);
     }
@@ -237,29 +257,43 @@ export function LoginContext({ children }) {
 
   const handleRemoveBookmark = async (id) => {
     try {
-      let response = await fetch(`${API_BASE_URL}/api/posts/remove-bookmark/${id}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: encodedToken,
+      let response = await fetch(
+        `${API_BASE_URL}/api/posts/remove-bookmark/${id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: encodedToken,
+          },
         },
-      });
+      );
       if (response.status === 401) {
         const newToken = await refreshAccessToken();
         if (newToken) {
-          response = await fetch(`${API_BASE_URL}/api/posts/remove-bookmark/${id}`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              authorization: newToken,
+          response = await fetch(
+            `${API_BASE_URL}/api/posts/remove-bookmark/${id}`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                authorization: newToken,
+              },
             },
-          });
+          );
         }
       }
       const result = await response.json();
       toast.success("Bookmark removed!", {
         position: toast.POSITION.TOP_RIGHT,
       });
+      // Update posts state immediately
+      if (response.ok) {
+        setPosts((currentPosts) =>
+          currentPosts.map((post) =>
+            post._id === id ? { ...post, isBookmarked: false } : post,
+          ),
+        );
+      }
     } catch (err) {
       console.error(err);
     }
@@ -273,9 +307,9 @@ export function LoginContext({ children }) {
 
   const handleLogout = () => {
     // Clear localStorage
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
     // Reset all state
     setIsLogin(false);
     setEncodedToken("");

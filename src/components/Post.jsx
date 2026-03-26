@@ -110,7 +110,10 @@ function Post({
       >
         <Link to={`/profile/${postUsername}`}>
           <img
-            src={image || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"}
+            src={
+              image ||
+              "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+            }
             alt={postUsername}
             style={{
               width: "2rem",
@@ -172,7 +175,13 @@ function Post({
       {/* Edit Modal - kept inside Post */}
       {isEditBoxOpen && (
         <div className="editBox--div">
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "flex-start",
+            }}
+          >
             <h3 style={{ margin: 0, color: "#00b8ff" }}>Edit Post</h3>
             <button
               className="editbox-close-btn"
