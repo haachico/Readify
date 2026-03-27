@@ -198,15 +198,7 @@ function BookmarkPost() {
   return (
     <div>
       <h2 style={{ textAlign: "center" }}>Bookmarked Posts</h2>
-      {isLoading ? (
-        <FadeLoader
-          color={"#f5f5f5"}
-          loading={isLoading}
-          size={300}
-          aria-label="Loading Spinner"
-          data-testid="loader"
-        />
-      ) : (
+    
         <div className="posts--div">
             <div>
                 <Feed 
@@ -237,7 +229,6 @@ function BookmarkPost() {
             </div>
           
         </div>
-      )}
     </div>
   );
 }

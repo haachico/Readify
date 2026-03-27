@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { API_BASE_URL } from "../utils/api";
+import FadeLoader from "react-spinners/FadeLoader";
 
 const Feed = ({ 
   endpoint, 
@@ -102,7 +103,14 @@ const Feed = ({
     fetchPosts(page, false);
   }, [page]); 
 
-
+   {loading && 
+             <FadeLoader
+               color={"#f5f5f5"}
+               loading={loading}
+               size={300}
+               aria-label="Loading Spinner"
+               data-testid="loader"
+             />}
   if (!loading && posts.length === 0) {
   return <div>No posts found</div>;
 }
@@ -117,7 +125,7 @@ const Feed = ({
           {renderPost ? renderPost(post) : <div>{post.content}</div>}
         </div>
       ))}
-      {loading && <div>Loading...</div>}
+    
       {!hasMore && posts.length > 0 && <div>No more posts</div>}
     </div>
   );

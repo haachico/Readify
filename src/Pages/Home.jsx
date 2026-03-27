@@ -68,11 +68,11 @@ function Home() {
     return response;
   };
 
-  useEffect(() => {
-    setIsLoading(true);
-    const timer = setTimeout(() => setIsLoading(false), 1000);
-    return () => clearTimeout(timer);
-  }, []);
+  // useEffect(() => {
+  //   setIsLoading(true);
+  //   const timer = setTimeout(() => setIsLoading(false), 1000);
+  //   return () => clearTimeout(timer);
+  // }, []);
 
   // Handle edit - receives post data from Post component
   // const handleEdit = (post) => {
@@ -149,15 +149,7 @@ function Home() {
     <div>
       <h2 style={{ textAlign: "center" }}>Home</h2>
       
-      {isLoading ? (
-        <FadeLoader
-          color={"#f5f5f5"}
-          loading={isLoading}
-          size={300}
-          aria-label="Loading Spinner"
-          data-testid="loader"
-        />
-      ) : (
+      
         <>
           <SortBtns pressedButton={pressedButton} handleSort={handleSort} />
           
@@ -215,7 +207,6 @@ function Home() {
             </div>
           </div>
         </>
-      )}
     </div>
   );
 }

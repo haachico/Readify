@@ -210,17 +210,17 @@ function Trending() {
   //   );
   // };
 
-  useEffect(() => {
-    setIsLoading(true);
-    // getPosts();
-    getUsers();
+  // useEffect(() => {
+  //   setIsLoading(true);
+  //   // getPosts();
+  //   getUsers();
     
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
+  //   const timer = setTimeout(() => {
+  //     setIsLoading(false);
+  //   }, 1000);
     
-    return () => clearTimeout(timer);
-  }, []);
+  //   return () => clearTimeout(timer);
+  // }, []);
 
   // useEffect(() => {
   //   if (!imgContent) {
@@ -235,20 +235,12 @@ function Trending() {
   // }, [editedImgContent]);
 
   // Sort posts by createdAt if needed (trending might already be sorted by backend)
-  const displayedPosts = posts;
+  // const displayedPosts = posts;
 
   return (
     <div>
       <h2 style={{ textAlign: "center" }}>Trending</h2>
-      {isLoading ? (
-        <FadeLoader
-          color={"#f5f5f5"}
-          loading={isLoading}
-          size={300}
-          aria-label="Loading Spinner"
-          data-testid="loader"
-        />
-      ) : (
+     
         <div className="posts--div">
           <div>
             <Feed 
@@ -278,7 +270,6 @@ function Trending() {
               />
           </div>
         </div>
-      )}
     </div>
   );
 }

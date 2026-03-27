@@ -209,16 +209,16 @@ function Explore() {
   //   );
   // };
 
-  useEffect(() => {
-    setIsLoading(true);
-    // getPosts();
-    getUsers();
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
+  // useEffect(() => {
+  //   setIsLoading(true);
+  //   // getPosts();
+  //   getUsers();
+  //   const timer = setTimeout(() => {
+  //     setIsLoading(false);
+  //   }, 1000);
     
-    return () => clearTimeout(timer);
-  }, []);
+  //   return () => clearTimeout(timer);
+  // }, []);
 
   // useEffect(() => {
   //   setEditPreviewImg(editedImgContent);
@@ -231,15 +231,7 @@ function Explore() {
   return (
     <div>
       <h2 style={{ textAlign: "center" }}>Explore</h2>
-      {isLoading ? (
-        <FadeLoader
-          color={"#f5f5f5"}
-          loading={isLoading}
-          size={300}
-          aria-label="Loading Spinner"
-          data-testid="loader"
-        />
-      ) : (
+     
         <div className="posts--div">
           <div>
             <Feed 
@@ -269,7 +261,7 @@ function Explore() {
               />
           </div>
         </div>
-      )}
+
     </div>
   );
 }
