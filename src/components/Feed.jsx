@@ -12,7 +12,8 @@ const Feed = ({
   const [posts, setPosts] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false); // For initial load/refresh
+  const [loadingMore, setLoadingMore] = useState(false); // For pagination
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const observer = useRef();
@@ -33,38 +34,42 @@ const Feed = ({
   const paramsKey = `${endpoint}-${sortValue}`;
 
   const fetchPosts = useCallback(async (pageNum, shouldReplace = false) => {
-    if (loading) return;
-    
-    setLoading(true);
-        try {
-           let url = `${endpoint}?page=${pageNum}&limit=5`;
-    
-            if (params.sort) {
-            url += `&sort=${params.sort}`;
-            }
-            
+    if (pageNum === 1) {
+      if (loading) return;
+      setLoading(true);
+    } else {
+      if (loadingMore) return;
+      setLoadingMore(true);
+    }
+
+    try {
+      let url = `${endpoint}?page=${pageNum}&limit=5`;
+      if (params.sort) {
+        url += `&sort=${params.sort}`;
+      }
       const response = await fetchWithAuth(url);
       const data = await response.json();
-      
+
       if (shouldReplace) {
-        // Replace all posts (for refresh or initial load)
         setPosts(data.posts);
       } else {
-        // Append new posts, avoiding duplicates
         setPosts(prev => {
           const existingIds = new Set(prev.map(p => p._id));
           const newPosts = data.posts.filter(p => !existingIds.has(p._id));
           return [...prev, ...newPosts];
         });
       }
-      
       setHasMore(data.posts.length === 5);
     } catch (error) {
       console.error("Error fetching posts:", error);
     } finally {
-      setLoading(false);
+      if (pageNum === 1) {
+        setLoading(false);
+      } else {
+        setLoadingMore(false);
+      }
     }
-  }, [fetchWithAuth, sortValue, loading]);
+  }, [fetchWithAuth, sortValue, loading, loadingMore]);
 
  useEffect(() => {
   const abortController = new AbortController();
@@ -103,7 +108,7 @@ const Feed = ({
     fetchPosts(page, false);
   }, [page]); 
 
-     if (loading) {
+  if (loading) {
     return (
       <div style={{ display: "flex", justifyContent: "center", padding: "2rem" }}>
         <FadeLoader
@@ -117,20 +122,32 @@ const Feed = ({
     );
   }
   if (!loading && posts?.length === 0) {
-  return <div>No posts found</div>;
-}
+    return <div>No posts found</div>;
+  }
 
   return (
     <div>
       {posts.map((post, idx) => (
-        <div 
-          ref={idx === posts.length - 1 ? lastPostRef : null} 
+        <div
+          ref={idx === posts.length - 1 ? lastPostRef : null}
           key={post._id}
         >
           {renderPost ? renderPost(post) : <div>{post.content}</div>}
         </div>
       ))}
-    
+
+      {loadingMore && (
+        <div style={{ display: "flex", justifyContent: "center", padding: "1rem" }}>
+          <FadeLoader
+            color={"#f5f5f5"}
+            loading={true}
+            size={30}
+            aria-label="Loading More Spinner"
+            data-testid="loader-more"
+          />
+        </div>
+      )}
+
       {!hasMore && posts.length > 0 && <div>No more posts</div>}
     </div>
   );
