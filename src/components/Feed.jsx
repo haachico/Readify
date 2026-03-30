@@ -103,15 +103,20 @@ const Feed = ({
     fetchPosts(page, false);
   }, [page]); 
 
-   {loading && 
-             <FadeLoader
-               color={"#f5f5f5"}
-               loading={loading}
-               size={300}
-               aria-label="Loading Spinner"
-               data-testid="loader"
-             />}
-  if (!loading && posts.length === 0) {
+     if (loading) {
+    return (
+      <div style={{ display: "flex", justifyContent: "center", padding: "2rem" }}>
+        <FadeLoader
+          color={"#f5f5f5"}
+          loading={true}
+          size={100}
+          aria-label="Loading Spinner"
+          data-testid="loader"
+        />
+      </div>
+    );
+  }
+  if (!loading && posts?.length === 0) {
   return <div>No posts found</div>;
 }
 

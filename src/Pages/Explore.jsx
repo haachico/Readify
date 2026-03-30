@@ -209,16 +209,16 @@ function Explore() {
   //   );
   // };
 
-  // useEffect(() => {
-  //   setIsLoading(true);
-  //   // getPosts();
-  //   getUsers();
-  //   const timer = setTimeout(() => {
-  //     setIsLoading(false);
-  //   }, 1000);
+  useEffect(() => {
+    setIsLoading(true);
+    // getPosts();
+    getUsers();
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
     
-  //   return () => clearTimeout(timer);
-  // }, []);
+    return () => clearTimeout(timer);
+  }, []);
 
   // useEffect(() => {
   //   setEditPreviewImg(editedImgContent);
