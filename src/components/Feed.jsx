@@ -1,6 +1,7 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState, useRef, useCallback, useContext } from "react";
 import { API_BASE_URL } from "../utils/api";
 import FadeLoader from "react-spinners/FadeLoader";
+import { LoginProvider } from "../useContext/LoginContext";
 
 const Feed = ({ 
   endpoint, 
@@ -9,12 +10,16 @@ const Feed = ({
   fetchWithAuth,
   refreshTrigger
 }) => {
-  const [posts, setPosts] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false); // For initial load/refresh
   const [loadingMore, setLoadingMore] = useState(false); // For pagination
   const [isRefreshing, setIsRefreshing] = useState(false);
+
+    const {
+      posts,
+      setPosts
+    } = useContext(LoginProvider);
 
   const observer = useRef();
 
@@ -100,7 +105,7 @@ const Feed = ({
   return () => {
     abortController.abort();
   };
-}, [paramsKey, refreshTrigger]);
+}, [paramsKey]);
 
   useEffect(() => {
     if (page === 1) return; 
