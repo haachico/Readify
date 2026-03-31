@@ -187,7 +187,7 @@ return (
 
         <div className="post-meta">
           <span>{post.likes.likeCount || 0} Likes</span>
-          <span>{comments.length} Comments</span>
+          <span>{comments.totalComments} Comments</span>
           <span>{new Date(post.createdAt).toLocaleString()}</span>
         </div>
       </div>
@@ -207,10 +207,10 @@ return (
       {/* Comments */}
       <div className="comments-section">
         <h3>Replies</h3>
-        {comments.length === 0 ? (
+        {comments?.totalComments === 0 ? (
           <div className="no-comments">No comments yet</div>
         ) : (
-          comments.map(comment => (
+          comments?.comments?.map(comment => (
             <Comment
               key={comment.id}
               comment={comment}
