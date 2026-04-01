@@ -47,8 +47,12 @@ function Home() {
 
     let response = await fetch(`${API_BASE_URL}${url}`, defaultOptions);
 
+    console.log(response, "debug response")
+
     if (response.status === 401) {
       token = await refreshAccessToken();
+
+      console.log(token, "debug new token")
       if (token) {
         if (setEncodedToken) setEncodedToken(token);
         
@@ -59,6 +63,8 @@ function Home() {
             'Authorization': `Bearer ${token}`,
           },
         });
+
+        console.log(response, "debug response after refresh")
       } else {
         window.location.href = '/login';
         return null;
