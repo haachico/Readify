@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./CoverLetterSender.css";
+import { API_BASE_URL } from "../utils/api";
 
 export default function CoverLetterSender() {
   const [formData, setFormData] = useState({
@@ -36,16 +37,13 @@ export default function CoverLetterSender() {
     setMessage("");
 
     try {
-      const response = await fetch(
-        "http://localhost:5000/api/xyzab2025/send-cover-letter",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
+      const response = await fetch(`${API_BASE_URL}/api/cover-letter`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify(formData),
+      });
 
       const data = await response.json();
 
