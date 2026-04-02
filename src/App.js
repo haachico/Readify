@@ -27,10 +27,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
 
         <Route path="reset-password" element={<ResetPassword />} />
-        <Route
-          path="/pqr9283xyzab/cover-letter"
-          element={<CoverLetterSender />}
-        />
+        <Route path="/cover-letter" element={<CoverLetterSender />} />
         <Route
           path="/"
           element={
