@@ -3,8 +3,6 @@ import React from "react";
 import { useContext } from "react";
 import { LoginProvider } from "..";
 import { Link } from "react-router-dom";
-import { useState } from "react";
-import CommentModal from "./CommentModal";
 
 function Post({
   postUsername,
@@ -16,39 +14,77 @@ function Post({
   likesCount,
   commentsCount,
   createdAt,
-  handleEdit,
   postId,
-  editedPostID,
-  isEditBoxOpen,
-  setIsEditBoxOpen,
-  editedPost,
-  setEditedPost,
-  editboxPreviewImg,
-  setEditPreviewImg,
-  setEditedImgContent,
-  setEditedImgFile,
-  handleUpdate,
   isBookmarked,
   onBookmarkChange,
   likedBy,
+  fetchWithAuth
 }) {
+  const [isEditBoxOpen, setIsEditBoxOpen] = React.useState(false);
+  const [editedPost, setEditedPost] = React.useState(content);
+  const [editboxPreviewImg, setEditPreviewImg] = React.useState(imgContent);
+  const [editedImgContent, setEditedImgContent] = React.useState("");
+  const [editedImgFile, setEditedImgFile] = React.useState(null);
   const {
     username,
     userID,
-    likedPosts,
-    bookmarkPosts,
     handleLike,
     handleDislike,
     handleBookmark,
     handleRemoveBookmark,
     handleDelete,
-    // handleComment
   } = useContext(LoginProvider);
 
   const navigate = useNavigate();
+  
   const handleComment = () => {
     navigate(`/post/${postId}`);
+  }
+
+  // Open edit modal and initialize state
+  const handleEdit = () => {
+    setIsEditBoxOpen(true);
+    setEditedPost(content);
+    setEditPreviewImg(imgContent);
+    setEditedImgContent("");
+    setEditedImgFile(null);
   };
+
+  // Update post API call
+  const handleUpdate = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("content", editedPost);
+      if (editedImgFile) {
+        formData.append("image", editedImgFile);
+      }
+      // imgContent is not needed in formData for update
+
+      let response;
+      if (fetchWithAuth) {
+        response = await fetchWithAuth(`/api/posts/edit/${postId}`, {
+          method: "POST",
+          body: formData,
+        });
+      } else {
+        response = await fetch(`/api/posts/edit/${postId}`, {
+          method: "POST",
+          body: formData,
+        });
+      }
+
+      if (response && response.ok) {
+        setIsEditBoxOpen(false);
+        setEditedImgFile(null);
+        setEditedImgContent("");
+        setEditPreviewImg(null);
+        if (onBookmarkChange) onBookmarkChange(); // Refresh feed
+      }
+    } catch (err) {
+      console.error('Error updating post:', err);
+    }
+  };
+  
   const getDate = (timestamp) => {
     const date = new Date(timestamp);
     const options = {
@@ -60,9 +96,8 @@ function Post({
     return date.toLocaleDateString("en-US", options).replace(/,/g, "");
   };
 
-  console.log("likedBy:", likedBy, "userID:", userID);
-
   let isLiked = likedBy?.includes(userID) || false;
+  
   return (
     <div className="post">
       <div
@@ -97,12 +132,11 @@ function Post({
               alignItems: "flex-end",
             }}
           >
-            {" "}
             <h4 style={{ marginBottom: "0px" }}>
-              <Link to={`/profile/${postUsername}`} style={{ height: "" }}>
+              <Link to={`/profile/${postUsername}`}>
                 {firstName}
               </Link>
-            </h4>{" "}
+            </h4>
             <h4 style={{ marginBottom: "0px" }}>
               <Link to={`/profile/${postUsername}`}>{lastName}</Link>
             </h4>
@@ -124,8 +158,8 @@ function Post({
                 }}
               >
                 <i
-                  class="fa-solid fa-pen-to-square"
-                  onClick={() => handleEdit(postId)}
+                  className="fa-solid fa-pen-to-square"
+                  onClick={handleEdit}
                 ></i>
               </span>
             )}
@@ -137,7 +171,9 @@ function Post({
           </div>
         </div>
       </div>
-      {postId === editedPostID && isEditBoxOpen && (
+      
+      {/* Edit Modal - kept inside Post */}
+      {isEditBoxOpen && (
         <div className="editBox--div">
           <div
             style={{
@@ -193,15 +229,13 @@ function Post({
               onChange={(e) => {
                 const file = e.target.files[0];
                 if (file) {
-                  // Store preview blob URL
                   setEditPreviewImg(URL.createObjectURL(file));
-                  // Store actual File object for upload
-                  if (setEditedImgFile) setEditedImgFile(file);
+                  setEditedImgFile(file);
                 }
               }}
             />
             <button
-              onClick={() => handleUpdate(postId)}
+              onClick={handleUpdate}
               className="editbox-update--btn"
             >
               Update
@@ -209,6 +243,7 @@ function Post({
           </div>
         </div>
       )}
+      
       <div style={{ margin: "2rem 0" }}>
         <p>{content}</p>
       </div>
@@ -221,66 +256,55 @@ function Post({
       )}
       <div className="post--btns">
         {isLiked ? (
-          <span
-            onClick={() => {
-              handleDislike(postId);
-
-              setTimeout(() => {
-                if (onBookmarkChange) onBookmarkChange();
-              }, 500);
-            }}
-          >
-            <i class="fa-solid fa-heart"></i>
+          <span onClick={() =>{ 
+            handleDislike(postId);
+            setTimeout(() => {
+              if(onBookmarkChange) onBookmarkChange();
+            }, 500);
+          }}>
+            <i className="fa-solid fa-heart"></i>
             {likesCount}
           </span>
         ) : (
-          <span
-            onClick={() => {
-              handleLike(postId);
-
-              setTimeout(() => {
-                if (onBookmarkChange) onBookmarkChange();
-              }, 500);
-            }}
-          >
-            <i class="fa-regular fa-heart"></i>
+          <span onClick={() => {
+            handleLike(postId);
+            setTimeout(() => {
+              if(onBookmarkChange) onBookmarkChange();
+            }, 500);
+          }}>
+            <i className="fa-regular fa-heart"></i>
             {likesCount}
           </span>
         )}
         <span onClick={handleComment}>
-          <i class="fa-regular fa-comment"></i>
+          <i className="fa-regular fa-comment"></i>
           {commentsCount}
         </span>
 
         {isBookmarked ? (
-          <span
-            onClick={() => {
-              handleRemoveBookmark(postId);
-            }}
-          >
-            {" "}
-            <i class="fa-solid fa-bookmark"></i>
+          <span onClick={() => {
+            handleRemoveBookmark(postId);
+            if (onBookmarkChange) onBookmarkChange();
+          }}>
+            <i className="fa-solid fa-bookmark"></i>
           </span>
         ) : (
-          <span
-            onClick={() => {
-              handleBookmark(postId);
-            }}
-          >
-            <i class="fa-regular fa-bookmark"></i>
+          <span onClick={() => {
+            handleBookmark(postId);
+            if (onBookmarkChange) onBookmarkChange();
+          }}>
+            <i className="fa-regular fa-bookmark"></i>
           </span>
         )}
         {postUsername === username && (
-          <span
-            onClick={() => {
-              handleDelete(postId);
-            }}
-          >
-            <i class="fa-solid fa-trash-can"></i>
+          <span onClick={() => {
+            handleDelete(postId);
+            if(onBookmarkChange) onBookmarkChange();
+          }}>
+            <i className="fa-solid fa-trash-can"></i>
           </span>
         )}
       </div>
-      {/* CommentModal removed. Comment functionality moved to PostDetails page. */}
     </div>
   );
 }
