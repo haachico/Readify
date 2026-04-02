@@ -17,6 +17,7 @@ import RequiresAuth from "./components/RequiresAuth";
 import ErrorPage from "./Pages/ErrorPage";
 import PostDetails from "./Pages/PostDetails";
 import ResetPassword from "./Pages/ResetPassword";
+import CoverLetterSender from "./Pages/CoverLetterSender";
 
 function App() {
   return (
@@ -26,6 +27,10 @@ function App() {
         <Route path="/signup" element={<Signup />} />
 
         <Route path="reset-password" element={<ResetPassword />} />
+        <Route
+          path="/pqr9283xyzab/cover-letter"
+          element={<CoverLetterSender />}
+        />
         <Route
           path="/"
           element={
