@@ -27,7 +27,6 @@ function App() {
         <Route path="/signup" element={<Signup />} />
 
         <Route path="reset-password" element={<ResetPassword />} />
-        <Route path="/cover-letter" element={<CoverLetterSender />} />
         <Route
           path="/"
           element={
@@ -43,6 +42,7 @@ function App() {
             <Route path="bookmark" element={<BookmarkPosts />} />
             <Route path="profile/:profileName" element={<Profile />} />
             <Route path="post/:postId" element={<PostDetails />} />
+          <Route path="/cover-letter" element={<CoverLetterSender />} />
           </Route>
         </Route>
         <Route path="*" element={<ErrorPage />} />
