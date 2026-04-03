@@ -37,9 +37,9 @@ export default function CoverLetterSender() {
     setMessage("");
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/cover-letter`, {
+      const response = await fetch(`${API_BASE_URL}/api/xyzab2025/send-cover-letter`, {
         method: "POST",
-        headers: {
+        headers: {  
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
