@@ -74,14 +74,17 @@ function PostBox({
           method: "POST",
           body: formData,
         });
+
+
         if (response && response.ok) {
           setContent("");
           setImgContent(null);
           setPreview(null);
           setIsPostBoxOpen(false);
-          if (setPosts) setPosts(prev => [response.data, ...prev]);
-
-
+          
+          const data = await response.json();
+          console.log(data, "debug post response");
+          if (setPosts) setPosts(prev => [data.posts[0], ...prev]);
         }
       } catch (err) {
         console.error('Error creating post:', err);
