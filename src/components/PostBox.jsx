@@ -12,7 +12,7 @@ function PostBox({
   profileImg,
   setRefreshTrigger
 }) {
-    const { encodedToken, setEncodedToken } = useContext(LoginProvider);
+    const { encodedToken, setEncodedToken, setPosts } = useContext(LoginProvider);
     // Helper for authenticated API calls
     const fetchWithAuth = async (url, options = {}) => {
       let token = encodedToken || localStorage.getItem('token');
@@ -79,7 +79,9 @@ function PostBox({
           setImgContent(null);
           setPreview(null);
           setIsPostBoxOpen(false);
-          if (setRefreshTrigger) setRefreshTrigger(prev => prev + 1);
+          if (setPosts) setPosts(prev => [response.data, ...prev]);
+
+
         }
       } catch (err) {
         console.error('Error creating post:', err);
